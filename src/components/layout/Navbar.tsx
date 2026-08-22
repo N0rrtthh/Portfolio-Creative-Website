@@ -8,13 +8,11 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useSectionNav } from "@/lib/hooks/useSectionNav";
 import { useActiveSection, useMenuDismiss } from "@/lib/hooks/useActiveSection";
 
-/* Mirrors the running order in ClassicLayout — a nav that lists sections in
-   a different order than the page scrolls them is its own usability bug.
-   Commits now sits right after About, matching the moved GitHub archive. */
+/* Mirrors the running order in ClassicLayout. The intro act (About, GitHub
+   archive, Tech Stack) is treated as one block, so only About gets a nav
+   entry — Commits and Skills are reached by scrolling through About. */
 const NAV_ITEMS = [
   { label: "About", href: "#about" },
-  { label: "Commits", href: "#github-activity" },
-  { label: "Skills", href: "#techstack" },
   { label: "Certifications", href: "#certifications" },
   { label: "Projects", href: "#projects" },
   { label: "Experience", href: "#experience" },
@@ -100,7 +98,12 @@ export default function Navbar() {
         {/* ── Section links, centred pill ──────────────────── */}
         <nav className="flex-1 flex justify-center min-w-0">
           <div
-            className={`hidden md:flex items-center gap-1 rounded-full px-3 py-2 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ease-out ${
+            /* `backdrop-filter` is deliberately NOT in the transition list:
+               it is not smoothly animatable, and tweening it while crossing
+               the 40px scroll threshold repainted the whole pill every frame
+               — the visible "glitching" navbar. Background/border/shadow
+               still ease; the blur snaps on, which reads as instant. */
+            className={`hidden md:flex items-center gap-1 rounded-full px-3 py-2 transition-[background-color,border-color,box-shadow] duration-500 ease-out ${
               scrolled
                 ? "glass-heavy shadow-[0_8px_32px_rgba(0,0,0,0.2)]"
                 : "bg-transparent border border-transparent"

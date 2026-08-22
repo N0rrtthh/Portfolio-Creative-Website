@@ -10,25 +10,15 @@ import { getAdaptiveQuality, observeVisibility } from "@/lib/performance";
 import { useReducedMotionPref } from "@/lib/hooks/useClientFlag";
 import {
   PointSim, makeRefAttribute, HG_LIB, HG_UNIFORMS, HG_TARGET,
+  isGPGPUSupported,
 } from "@/lib/three/hologramSim";
 
 const BASE = process.env.NODE_ENV === "production" ? "/Portfolio-Website" : "";
 
 const SLOTS = [
   {
-    id: "web",
-    index: "1/04",
-    label: "WEB / FULLSTACK",
-    title: "FULL-STACK WEB",
-    body: "React, Next.js, Node.js, Firebase — production apps shipped and running in the wild.",
-    model: `${BASE}/3d/model_a.glb`,
-    footerK: "DIRECTION",
-    footerV: "3D'S",
-    glass: false,
-  },
-  {
     id: "mobile",
-    index: "2/04",
+    index: "1/03",
     label: "MOBILE",
     title: "MOBILE APPS",
     body: "Cross-platform Flutter apps with offline-first architecture and real-time sync.",
@@ -39,7 +29,7 @@ const SLOTS = [
   },
   {
     id: "creative",
-    index: "3/04",
+    index: "2/03",
     label: "CREATIVE / 3D",
     title: "CREATIVE DEV",
     body: "Godot games, Blender models, motion design — where engineering meets craft.",
@@ -50,12 +40,12 @@ const SLOTS = [
   },
   {
     id: "logo",
-    index: "4/04",
-    label: "IDENTITY / MARK",
-    title: "THE FOX MARK",
-    body: "The NRTH fox as a point cloud — and the only slot that can leave point form. Freeze it and the cloud crystallises outward from its core into solid glass.",
+    index: "3/03",
+    label: "LOGO / NRTH",
+    title: "THE LOGO",
+    body: "NRTH's logo which is a fox — the only model in here that can leave particle form. You can turn it into a solid form and the original colored glass.",
     model: `${BASE}/3d/model1.glb`,
-    footerK: "MARK",
+    footerK: "THE LOGO",
     footerV: "NRTH / FOX",
     glass: true,
   },
@@ -1603,6 +1593,13 @@ export default function HologramShowcase() {
   /* Repulsion is off by default — the dither hover reveal is this section's
      headline interaction and stays the default behaviour. */
   const [pushOn, setPushOn]   = useState(false);
+  /* GPU capability check: the GPGPU spring simulation requires float or
+     half-float render targets. On GPUs without either (some older Intel
+     integrated graphics, certain mobile GPUs), the repulsion physics
+     cannot run — the render targets silently return zeros and the cloud
+     collapses to the origin. Detect this and disable repulsion with a
+     notice rather than shipping a broken effect. */
+  const gpgpuSupported = useMemo(() => isGPGPUSupported(), []);
   /* Freeze-to-glass, only offered on slots flagged `glass`. Mutually
      exclusive with repulsion — see the toggles for why. */
   const [glassOn, setGlassOn] = useState(false);
@@ -1849,7 +1846,7 @@ export default function HologramShowcase() {
               {[
                 { k: "SIGNAL", v: slot.footerK },
                 { k: "OUTPUT", v: slot.footerV },
-                { k: "RENDER", v: "REAL-TIME 3D" },
+                { k: "RENDER", v: "3D" },
               ].map(({ k, v }) => (
                 <div key={k} className="flex justify-between font-mono text-[10px] tracking-widest">
                   <span className="text-[var(--color-ash)]">{k}</span>
@@ -1861,8 +1858,8 @@ export default function HologramShowcase() {
             {/* Pointer mode — outside the canvas card, like the palette */}
             <div className="space-y-2 border-t pt-4" style={{ borderColor: `${color}18` }}>
               <div className="flex justify-between font-mono text-[10px] tracking-widest">
-                <span className="text-[var(--color-ash)]">POINTER</span>
-                <span style={{ color }}>{pushOn ? "REPULSION" : "HOVER REVEAL"}</span>
+                <span className="text-[var(--color-ash)]">HOVER</span>
+                <span style={{ color }}>{pushOn ? "PARTICLES" : "DITHERING"}</span>
               </div>
               <button
                 type="button"
@@ -1875,22 +1872,32 @@ export default function HologramShowcase() {
                     return !v;
                   });
                 }}
+                disabled={!gpgpuSupported}
                 aria-pressed={pushOn}
+                aria-disabled={!gpgpuSupported}
                 className="w-full border px-3 py-2 text-left font-mono text-[10px] uppercase tracking-widest transition-colors duration-200"
                 style={{
                   borderColor: pushOn ? color : `${color}33`,
                   color: pushOn ? color : "var(--color-silver)",
                   background: pushOn ? `${color}14` : "transparent",
+                  opacity: gpgpuSupported ? 1 : 0.4,
+                  cursor: gpgpuSupported ? "pointer" : "not-allowed",
                 }}
-                data-cursor-hover
+                data-cursor-hover={gpgpuSupported || undefined}
               >
-                {pushOn ? "◉ Repulsion armed" : "◎ Arm repulsion"}
+                {pushOn ? "◉ Particle Sim On" : "◎ Particle Sim Off"}
               </button>
-              <p className="font-mono text-[9px] leading-relaxed text-[var(--color-ash)]">
-                Armed: the cloud parts around the cursor and the dither hover
-                reveal is disabled. Slow moves open a pocket; fast sweeps only
-                comb the surface.
-              </p>
+              {gpgpuSupported ? (
+                <p className="font-mono text-[9px] leading-relaxed text-[var(--color-ash)]">
+                  On: the particles react on the cursor and hover
+                  mode is disabled.
+                </p>
+              ) : (
+                <p className="font-mono text-[9px] leading-relaxed" style={{ color: "#ff6b4a" }}>
+                  ⚠ GPU does not support the particle simulation (float render
+                  targets unavailable). Particle simulation is disabled on this device.
+                </p>
+              )}
 
               {/* Brush silhouette — the influence zone is measured with an
                   SDF, so it doesn't have to be a disc. */}
@@ -1928,7 +1935,7 @@ export default function HologramShowcase() {
               <div className="space-y-2 border-t pt-4" style={{ borderColor: `${color}18` }}>
                 <div className="flex justify-between font-mono text-[10px] tracking-widest">
                   <span className="text-[var(--color-ash)]">SURFACE</span>
-                  <span style={{ color }}>{glassOn ? "GLASS" : "POINTS"}</span>
+                  <span style={{ color }}>{glassOn ? "SOLID" : "PARTICLES"}</span>
                 </div>
                 <button
                   type="button"
@@ -1949,17 +1956,16 @@ export default function HologramShowcase() {
                   }}
                   data-cursor-hover
                 >
-                  {glassOn ? "◉ Frozen to glass" : "◎ Freeze to glass"}
+                  {glassOn ? "◉ Solid Mode On" : "◎ Solid Mode Off"}
                 </button>
                 <p className="font-mono text-[9px] leading-relaxed text-[var(--color-ash)]">
-                  Crystallises outward from the core: each point turns to
-                  solid glass as the front reaches it. Disarms repulsion.
+                  Turns the model into solid. Disarms repulsion.
                 </p>
 
                 {/* Tint vs the model's own materials */}
                 <div className="flex justify-between font-mono text-[10px] tracking-widest pt-2">
-                  <span className="text-[var(--color-ash)]">GLASS</span>
-                  <span style={{ color }}>{glassNative ? "NATIVE" : "TINTED"}</span>
+                  <span className="text-[var(--color-ash)]">SOLIDITY</span>
+                  <span style={{ color }}>{glassNative ? "ORIGINAL" : "SOLID"}</span>
                 </div>
                 {/* Icon-only, matching the brush row: the label is already
                     in the GLASS header above, and text plus a swatch
@@ -1995,8 +2001,8 @@ export default function HologramShowcase() {
                   ))}
                 </div>
                 <p className="font-mono text-[9px] leading-relaxed text-[var(--color-ash)]">
-                  Native keeps the model&apos;s authored colour and textures —
-                  the GLB as it was before it came into this scene, in glass.
+                  Solid applies the palette tint to the model.
+                  Original keeps the logo&apos;s original colour and textures it was intended.
                 </p>
               </div>
             )}
@@ -2005,7 +2011,7 @@ export default function HologramShowcase() {
 
             <div className="space-y-2 border-t pt-4" style={{ borderColor: `${color}18` }}>
               <div className="flex justify-between font-mono text-[10px] tracking-widest">
-                <span className="text-[var(--color-ash)]">SPECTRUM</span>
+                <span className="text-[var(--color-ash)]">COLORS</span>
                 <span style={{ color }}>{COLOR_PRESETS.find((p) => p.hex === color)?.name ?? "CUSTOM"}</span>
               </div>
               <div className="flex gap-2">

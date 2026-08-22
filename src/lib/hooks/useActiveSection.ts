@@ -59,6 +59,19 @@ export function useActiveSection(hrefs: string[]) {
     const pick = () => {
       const line = window.innerHeight * LINE;
       const list = hrefsRef.current;
+
+      // At the very top of the page, always use the first section.
+      if (window.scrollY < 10) return list[0] ?? "";
+
+      // If any expected section hasn't mounted yet, don't guess. A partial
+      // DOM makes the "last section past the line" check land on the wrong
+      // item — this was the load-time "starts at Projects" bug: the sections
+      // above Projects are dynamic and were not yet in the DOM, so Projects
+      // was the first element found past the reading line.
+      for (const href of list) {
+        if (!document.querySelector(href)) return list[0] ?? "";
+      }
+
       let best = list[0] ?? "";
       let bestTop = -Infinity;
 
@@ -106,8 +119,23 @@ export function useActiveSection(hrefs: string[]) {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
-    update();
+
+    // Run the first pick only once every section has mounted. Dynamic
+    // sections (github-activity, techstack, certifications) render after
+    // first paint; picking before they exist lands on the wrong item (the
+    // "starts at Projects" load bug). Poll each frame until they're present.
+    let pollFrame = 0;
+    const waitForSections = () => {
+      const ready = hrefsRef.current.every((href) =>
+        document.querySelector(href)
+      );
+      if (ready) update();
+      else pollFrame = requestAnimationFrame(waitForSections);
+    };
+    pollFrame = requestAnimationFrame(waitForSections);
+
     return () => {
+      cancelAnimationFrame(pollFrame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };

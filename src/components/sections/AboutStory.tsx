@@ -11,12 +11,12 @@ const EASING = [0.22, 1, 0.36, 1] as const;
 
 export default function AboutStory() {
   return (
-    <section id="about" className="section-padding relative min-h-[90vh] flex flex-col justify-center">
+    <section id="about" className="section-padding relative">
       <div className="container-narrow">
         <ChapterLabel index={2} classic="Who I Am" eva="USER IDENTITY" className="mb-8" />
 
         {/* Editorial Headline */}
-        <div className="mb-16">
+        <div className="mb-10">
           <RevealText
             as="h2"
             className="text-section-title font-display text-[var(--color-starlight)]"

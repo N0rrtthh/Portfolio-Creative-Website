@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useMemo, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLenis } from "lenis/react";
 import { useScrollLock } from "@/lib/hooks/useScrollLock";
+import { useLenis } from "@/components/providers/SmoothScrollProvider";
 import {
   BadgeCheck,
   Search,
@@ -18,7 +18,12 @@ import ChapterLabel from "@/components/ui/ChapterLabel";
 import RevealText from "@/components/ui/RevealText";
 
 const EASING = [0.22, 1, 0.36, 1] as const;
-const TAB_SPRING = { type: "spring", stiffness: 480, damping: 38, mass: 0.9 } as const;
+/* The issuer pill used to run a very stiff spring (stiffness 480). A stiff
+   spring overshoots its target and settles with a visible bounce; combined
+   with the content cross-fade happening underneath, that read as the tab
+   "glitching" on click. A softer, critically-damped spring glides to the
+   new tab and stops dead — no overshoot, no wobble. */
+const TAB_SPRING = { type: "spring", stiffness: 300, damping: 32, mass: 0.8 } as const;
 
 /* ══════════════════════════════════════════════════════════
    Certificate viewer — why it's scaled the way it is
@@ -1002,6 +1007,12 @@ export default function Certifications() {
   const [expanded, setExpanded] = useState(false);
   const lenis = useLenis();
 
+  /* Clicking a subject filter tab re-renders the credential grid, which can
+     change the page height. Left alone, Lenis' cached scroll limit goes stale
+     and the page jumps — the "tab click resets scroll" report. Capture the
+     offset at click time and restore it once the new grid is laid out. */
+  const preserveScrollRef = useRef<number | null>(null);
+
   useEffect(() => {
     const id = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(id);
@@ -1024,6 +1035,17 @@ export default function Certifications() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedCert]);
+
+  /* Restore the scroll offset captured on a subject-tab click, after the new
+     grid has been laid out. `immediate` + `force` write straight through
+     Lenis so the restore can't be animated or swallowed by a stale state. */
+  useLayoutEffect(() => {
+    const y = preserveScrollRef.current;
+    if (y === null) return;
+    preserveScrollRef.current = null;
+    if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
+    else window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior });
+  }, [activeSubject, expanded, lenis]);
 
   // Open Inspector Modal with default variant selected
   const handleOpenInspector = (cert: RealCertification) => {
@@ -1109,6 +1131,7 @@ export default function Certifications() {
                   key={cat}
                   type="button"
                   onClick={() => {
+                    preserveScrollRef.current = window.scrollY;
                     setActiveSubject(cat);
                     setExpanded(false);
                   }}
@@ -1420,51 +1443,60 @@ export default function Certifications() {
                     )}
                   </div>
 
-                  <div className="scroll-panel flex-1 min-h-0 pr-1 space-y-4 pb-2">
-                    {selectedCert.variants.length > 1 && (
-                      <div className="px-1">
-                        <div className="flex items-center justify-between gap-3 mb-3">
-                          <span className="font-mono text-[10px] uppercase tracking-[0.32em] text-slate-400">
-                            Issued by
-                          </span>
-                          <span className="font-mono text-[9px] uppercase tracking-wider text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 px-2.5 py-1 rounded-full flex items-center gap-1 shrink-0">
-                            <Layers size={10} />
-                            {selectedCert.variants.length} issuers
-                          </span>
-                        </div>
-
-                        {/* Notch-style animated pill tab switcher — spans full width, tabs share it evenly */}
-                        <div className="relative flex items-end gap-1 rounded-full bg-white/[0.04] border border-white/10 p-1.5 pt-4 w-full">
-                          {selectedCert.variants.map((variant) => {
-                            const isTabActive = variant.id === currentVariant.id;
-                            return (
-                              <button
-                                key={variant.id}
-                                type="button"
-                                onClick={() => setActiveVariantId(variant.id)}
-                                className="relative z-10 flex-1 min-w-0 whitespace-nowrap px-3 sm:px-5 py-2.5 rounded-full font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider cursor-pointer"
-                              >
-                                {isTabActive && (
-                                  <motion.span
-                                    layoutId="issuerTabPill"
-                                    transition={TAB_SPRING}
-                                    className="absolute inset-0 -top-3 rounded-t-2xl rounded-b-xl bg-[var(--color-accent-primary)] shadow-[0_10px_28px_rgba(67,97,238,0.5)]"
-                                  />
-                                )}
-                                <span
-                                  className={`relative block truncate transition-colors duration-200 ${
-                                    isTabActive ? "text-white" : "text-slate-400 hover:text-slate-100"
-                                  }`}
-                                >
-                                  {variant.name}
-                                </span>
-                              </button>
-                            );
-                          })}
-                        </div>
+                  {/* Issuer tabs — pinned ABOVE the scroll area, not inside it.
+                      They used to live at the top of the scroll panel, so the
+                      certificate cross-fade below changed the panel's scroll
+                      height mid-animation and reflowed the tab bar. The
+                      layoutId pill read that reflow as a move and jumped —
+                      the "tab glitch". Pinning the tabs (like the action
+                      buttons above) takes them out of any content-driven
+                      reflow entirely, so the pill only ever animates between
+                      stable tab positions. */}
+                  {selectedCert.variants.length > 1 && (
+                    <div className="shrink-0 px-1 pb-4 mb-4 border-b border-white/10">
+                      <div className="flex items-center justify-between gap-3 mb-3">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.32em] text-slate-400">
+                          Issued by
+                        </span>
+                        <span className="font-mono text-[9px] uppercase tracking-wider text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 px-2.5 py-1 rounded-full flex items-center gap-1 shrink-0">
+                          <Layers size={10} />
+                          {selectedCert.variants.length} issuers
+                        </span>
                       </div>
-                    )}
 
+                      {/* Notch-style animated pill tab switcher — spans full width, tabs share it evenly */}
+                      <div className="relative flex items-end gap-1 rounded-full bg-white/[0.04] border border-white/10 p-1.5 pt-4 w-full">
+                        {selectedCert.variants.map((variant) => {
+                          const isTabActive = variant.id === currentVariant.id;
+                          return (
+                            <button
+                              key={variant.id}
+                              type="button"
+                              onClick={() => setActiveVariantId(variant.id)}
+                              className="relative z-10 flex-1 min-w-0 whitespace-nowrap px-3 sm:px-5 py-2.5 rounded-full font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider cursor-pointer"
+                            >
+                              {isTabActive && (
+                                <motion.span
+                                  layoutId="issuerTabPill"
+                                  transition={TAB_SPRING}
+                                  className="absolute inset-0 -top-3 rounded-t-2xl rounded-b-xl bg-[var(--color-accent-primary)] shadow-[0_10px_28px_rgba(67,97,238,0.5)]"
+                                />
+                              )}
+                              <span
+                                className={`relative block truncate transition-colors duration-200 ${
+                                  isTabActive ? "text-white" : "text-slate-400 hover:text-slate-100"
+                                }`}
+                              >
+                                {variant.name}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="scroll-panel flex-1 min-h-0 pr-1 space-y-4 pb-2">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentVariant.id}

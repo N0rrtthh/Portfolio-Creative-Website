@@ -49,17 +49,23 @@ export default function Hero() {
 
   // GPU-only scroll exit: opacity + transform. Avoid animating filter:blur
   // (forces continuous paint/composite on every scroll frame).
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.35], [1, 0]);
-  const contentBlur = useTransform(scrollYProgress, [0, 0.35], [0, 12]);
-  const contentScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
-  const contentY = useTransform(scrollYProgress, [0, 0.5], [0, -70]);
+  //
+  // The old fade drove opacity to 0 at ~35% of a 160svh pinned scroll, which
+  // left the remaining ~65% as an invisible hero — a tall empty dark band
+  // before "Ch. 02 — Who I Am". The hero now stays fully opaque through the
+  // pin and only fades as it physically scrolls out of view, so there is no
+  // empty gap: the hero fills the screen right up until the next section.
+  const contentOpacity = useTransform(scrollYProgress, [0.5, 0.92], [1, 0]);
+  const contentBlur = useTransform(scrollYProgress, [0.5, 0.92], [0, 12]);
+  const contentScale = useTransform(scrollYProgress, [0.5, 0.95], [1, 0.92]);
+  const contentY = useTransform(scrollYProgress, [0.5, 0.95], [0, -60]);
 
-  const glowOpacity = useTransform(scrollYProgress, [0, 0.3], [0.18, 0]);
-  const glowY = useTransform(scrollYProgress, [0, 0.5], [0, -90]);
+  const glowOpacity = useTransform(scrollYProgress, [0.4, 0.8], [0.18, 0]);
+  const glowY = useTransform(scrollYProgress, [0.5, 0.95], [0, -90]);
 
   return (
-    <div ref={wrapRef} id="hero" className="relative min-h-[160svh]">
-      <section className="sticky top-0 flex min-h-svh flex-col overflow-hidden py-16 justify-center">
+    <div ref={wrapRef} id="hero" className="relative min-h-svh">
+      <section className="flex min-h-svh flex-col overflow-hidden py-16 justify-center">
         {/* Particle field background */}
         <div className="pointer-events-none absolute inset-0 opacity-50">
           <ParticleField scrollProgress={scrollYProgress} />

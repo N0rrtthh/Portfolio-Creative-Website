@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
+import { prefersReducedMotion } from "@/lib/performance";
 
 const LenisContext = createContext<Lenis | null>(null);
 
@@ -20,11 +21,9 @@ export default function SmoothScrollProvider({
   const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) return;
+    // Override-aware: `?motion=full` restores smooth scrolling even when
+    // the OS asks for reduced motion.
+    if (prefersReducedMotion()) return;
 
     const isHeavy = weight === "heavy";
 

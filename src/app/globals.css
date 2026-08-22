@@ -377,10 +377,11 @@ body {
 
 /* Vertical rhythm. These were clamp(6rem, 14vh, 12rem) top AND bottom, so
    every section boundary stacked up to 24rem of empty space and the classic
-   page scrolled far longer than it had content for. Roughly halved. */
+   page scrolled far longer than it had content for. Tightened further so
+   sections hug their content instead of leaving tall empty bands. */
 .section-padding {
-  padding-top: clamp(3.5rem, 8vh, 7rem);
-  padding-bottom: clamp(3.5rem, 8vh, 7rem);
+  padding-top: clamp(2.5rem, 5vh, 4.5rem);
+  padding-bottom: clamp(2.5rem, 5vh, 4.5rem);
   content-visibility: auto;
   contain-intrinsic-size: auto 800px;
 }

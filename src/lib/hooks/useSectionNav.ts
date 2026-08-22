@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useLenis } from "@/components/providers/SmoothScrollProvider";
+import { prefersReducedMotion } from "@/lib/performance";
 
 /* ══════════════════════════════════════════════════════════
    useSectionNav — the ONE code path for every in-page jump
@@ -65,9 +66,9 @@ export function useSectionNav() {
 
       abortRef.current?.();
 
-      const prefersReduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
+      // Override-aware: `?motion=full` restores animated navigation even
+      // when the OS asks for reduced motion.
+      const prefersReduced = prefersReducedMotion();
 
       const write = (y: number) => {
         // `immediate` keeps Lenis' internal animatedScroll/targetScroll in

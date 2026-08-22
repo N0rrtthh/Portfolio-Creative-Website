@@ -30,8 +30,12 @@ function MobileProjectCarousel({ onSelect }: { onSelect: (p: Project) => void })
   const prev = () => setIdx((i) => (i - 1 + all.length) % all.length);
   const next = () => setIdx((i) => (i + 1) % all.length);
 
+  // The canonical `id="projects"` lives on the desktop section below.
+  // A duplicate id here made `querySelector("#projects")` resolve to this
+  // hidden element on desktop — its rect.top is 0, so nav clicks scrolled
+  // to the top of the page instead of to Selected Works.
   return (
-    <div className="md:hidden section-padding" id="projects">
+    <div className="md:hidden section-padding" id="projects-mobile">
       <div className="container-narrow">
         <ChapterLabel index={6} classic="Selected Work" eva="OPERATION LOG" className="mb-3" />
         <RevealText as="h2" className="text-section-title font-display text-[var(--color-starlight)] mb-8">
@@ -157,14 +161,17 @@ export default function Projects() {
   const sectionHeight = Math.max(300, trackWidth + viewportH);
 
   return (
-    <>
+    /* Single canonical `id="projects"` lives on this wrapper so nav clicks
+       resolve to whichever layout is actually visible. Putting the id on the
+       desktop <section> alone broke mobile (that section is display:none below
+       md); putting it on both created a duplicate-id bug on desktop. */
+    <div id="projects">
       {/* Mobile carousel — shown below md */}
       <MobileProjectCarousel onSelect={setSelectedProject} />
 
       {/* Desktop horizontal scroll section — hidden on mobile */}
       <section
         ref={sectionRef}
-        id="projects"
         className="relative hidden md:block"
         style={{ height: sectionHeight }}
       >
@@ -223,12 +230,12 @@ export default function Projects() {
               />
 
               {/* Project image */}
-              {/* Artwork legibility: at 20% the screenshots read as noise behind
-                  the copy. 55% (85% on hover) is contrast-safe because the
-                  gradient below only clears in the top third, where no text
-                  sits. */}
+              {/* Artwork legibility: raised from 55% to 80% (95% on hover) so
+                  screenshots stay clearly viewable while scrolling through the
+                  track. The gradient overlay still protects text contrast in
+                  the lower half where the copy sits. */}
               {cardImg && (
-                <div className="absolute inset-0 opacity-55 group-hover:opacity-85 transition-opacity duration-700">
+                <div className="absolute inset-0 opacity-80 group-hover:opacity-95 transition-opacity duration-700">
 
 
                   <Image
@@ -370,11 +377,11 @@ export default function Projects() {
                   exit={{ scale: 0.96, opacity: 0, y: 8, transition: { duration: DUR.fast, ease: EASE.in } }}
                   transition={SPRING.panel}
                   onClick={(e) => e.stopPropagation()}
-                  className="scroll-panel relative w-full max-w-4xl max-h-[90vh] rounded-[2rem] border border-white/10 bg-[#0a0a12]/98 p-6 sm:p-8 text-white shadow-[0_32px_100px_rgba(0,0,0,0.9)] flex flex-col z-[100000]"
+                  className="relative w-full max-w-4xl max-h-[90vh] rounded-[2rem] border border-white/10 bg-[#0a0a12]/98 p-6 sm:p-8 text-white shadow-[0_32px_100px_rgba(0,0,0,0.9)] flex flex-col z-[100000] overflow-hidden"
                 >
 
-                  {/* Header row */}
-                  <div className="flex items-start justify-between gap-4 pb-4 border-b border-white/10 mb-5">
+                  {/* Header row — pinned above the scroll area */}
+                  <div className="flex items-start justify-between gap-4 pb-4 border-b border-white/10 mb-5 shrink-0">
                     <div>
                       <div className="flex items-center gap-2 mb-1.5">
                         <span
@@ -402,6 +409,15 @@ export default function Projects() {
                       Close
                     </button>
                   </div>
+
+                  {/* Scrollable content area — hidden scrollbar.
+                      `data-lenis-prevent` tells Lenis to NOT intercept wheel
+                      events that start inside this panel, so it scrolls
+                      natively even while Lenis drives the page behind it. */}
+                  <div
+                    data-lenis-prevent
+                    className="scroll-panel flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                  >
 
                   {/* HIGH-END MAC BROWSER WINDOW SHOWCASE PREVIEW */}
                   <div className="relative w-full rounded-2xl border border-white/15 bg-slate-950 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.7)] mb-6 shrink-0">
@@ -463,7 +479,7 @@ export default function Projects() {
                   </div>
 
                   {/* Body Grid: Problem, Solution, Outcome */}
-                  <div className="space-y-6 flex-1">
+                  <div className="space-y-6">
                     <div>
                       <h4 className="font-mono text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
                         Project Summary
@@ -523,34 +539,43 @@ export default function Projects() {
                     </div>
                   </div>
 
-                  {/* Footer Action Links */}
-                  <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      {selectedProject.github && (
-                        <a
-                          href={selectedProject.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 font-mono text-xs font-bold text-white hover:bg-white/10 transition-all cursor-pointer"
-                        >
-                          <GitHubIcon size={14} /> View GitHub Source
-                        </a>
-                      )}
-                      {selectedProject.live && (
-                        <a
-                          href={selectedProject.live}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-2.5 font-mono text-xs font-bold text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
-                        >
-                          Launch Live Site <ArrowUpRight size={14} />
-                        </a>
-                      )}
-                    </div>
+                  </div>{/* end scrollable content area */}
 
-                    <span className="font-mono text-[11px] text-slate-400">
-                      AUTHENTICATED PROJECT DOSSIER // NRTH
-                    </span>
+                  {/* Sticky CTA footer — always visible, the most important actions */}
+                  <div className="shrink-0 border-t border-white/10 bg-[#0d0d18]/95 pt-4 pb-1 backdrop-blur-sm">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex flex-wrap items-center gap-3">
+                        {selectedProject.github && (
+                          <a
+                            href={selectedProject.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2.5 rounded-xl border-2 border-indigo-400/60 bg-indigo-950/70 px-6 py-3 font-mono text-sm font-bold text-indigo-200 hover:bg-indigo-600 hover:text-white hover:border-indigo-400 hover:shadow-[0_0_28px_rgba(99,102,241,0.5)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+                          >
+                            <GitHubIcon size={18} /> View Source
+                          </a>
+                        )}
+                        {selectedProject.live && (
+                          <a
+                            href={selectedProject.live}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2.5 rounded-xl bg-indigo-600 px-6 py-3 font-mono text-sm font-bold text-white shadow-lg shadow-indigo-600/40 hover:bg-indigo-500 hover:shadow-[0_0_32px_rgba(99,102,241,0.6)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+                          >
+                            Launch Live Site <ArrowUpRight size={18} />
+                          </a>
+                        )}
+                        {!selectedProject.github && !selectedProject.live && (
+                          <span className="font-mono text-xs text-slate-500">
+                            Links coming soon
+                          </span>
+                        )}
+                      </div>
+
+                      <span className="hidden font-mono text-[10px] text-slate-500 sm:block">
+                        PROJECT DOSSIER // NRTH
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               </motion.div>
@@ -559,6 +584,6 @@ export default function Projects() {
           document.body
         )}
       </section>
-    </>
+    </div>
   );
 }

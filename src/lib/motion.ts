@@ -54,13 +54,12 @@ export const SPRING = {
 export const STAGGER = { tight: 0.03, base: 0.05, loose: 0.08 } as const;
 
 /**
- * Reads the OS reduced-motion preference. Safe during SSR (returns false).
- * Prefer the reactive `useReducedMotion` for anything rendered.
+ * Reads the effective reduced-motion preference. Safe during SSR (returns
+ * false). Honours the `?motion=full|reduced` URL param and the
+ * `motion-override` localStorage key (see lib/performance.ts).
+ * Prefer the reactive `useReducedMotionPref` for anything rendered.
  */
-export function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
+export { prefersReducedMotion } from "@/lib/performance";
 
 /**
  * A transition that collapses to "effectively instant" when the user has

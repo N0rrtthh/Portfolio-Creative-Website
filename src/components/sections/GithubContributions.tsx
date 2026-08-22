@@ -81,7 +81,7 @@ export default function GithubContributions() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="relative py-16 md:py-20 border-t border-[var(--color-glass-border)] bg-[var(--color-abyss)] overflow-hidden transition-colors duration-500"
+      className="relative py-12 md:py-14 border-t border-[var(--color-glass-border)] bg-[var(--color-abyss)] overflow-hidden transition-colors duration-500"
 
     >
       <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/10 blur-[120px] rounded-full" />

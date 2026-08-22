@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { getAdaptiveQuality } from "@/lib/performance";
+import { getAdaptiveQuality, prefersReducedMotion } from "@/lib/performance";
 
 /* ══════════════════════════════════════════════════════════
    Client-only booleans, read safely
@@ -26,9 +26,15 @@ function subscribeReducedMotion(onChange: () => void) {
   return () => mql.removeEventListener("change", onChange);
 }
 
+/**
+ * Effective reduced-motion state, honouring the `?motion=full|reduced`
+ * URL param and the `motion-override` localStorage key. See
+ * `lib/performance.ts` for why: Windows' "Animation effects" toggle feeds
+ * this media query, and when it's off the site disables almost every
+ * effect even on fast hardware.
+ */
 function getReducedMotion() {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia(REDUCED_QUERY).matches;
+  return prefersReducedMotion();
 }
 
 /**

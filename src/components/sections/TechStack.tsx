@@ -2,9 +2,8 @@
 
 import RevealText from "@/components/ui/RevealText";
 import ChapterLabel from "@/components/ui/ChapterLabel";
-import TechStackConveyor from "@/components/ui/TechStackConveyor";
+import TechFlipGrid from "@/components/ui/TechFlipGrid";
 import AnimeTraceLine from "@/components/ui/AnimeTraceLine";
-import TechConstellation from "@/components/ui/TechConstellation";
 
 
 /* The Anime.js stagger matrix used to live here as a second, unrelated
@@ -30,17 +29,12 @@ export default function TechStack() {
           What I build with daily — full-stack, mobile, game engines, and design systems.
         </p>
 
-        {/* Frameless trace between the copy and the conveyor: it reads as the
-            signal feeding the belt below rather than as a widget in a box. */}
+        {/* Frameless trace between the copy and the flip grid: it reads
+            as the signal feeding the cards below rather than as a
+            widget in a box. */}
         <AnimeTraceLine className="mb-2" height={22} duration={4} />
 
-        {/* The constellation answers a question the belt structurally can't:
-            how the stack is grouped. Clusters read at a glance; the belt
-            below is still where you go to read each name at leisure. Also
-            frameless, for the same reason as the trace above it. */}
-        <TechConstellation className="mb-4" />
-
-        <TechStackConveyor />
+        <TechFlipGrid />
 
       </div>
     </section>

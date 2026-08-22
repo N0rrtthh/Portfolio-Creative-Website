@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { flushSync } from "react-dom";
+import { prefersReducedMotion } from "@/lib/performance";
 
 export type ColorMode = "light" | "dark";
 export type DesignTheme = "classic" | "eva";
@@ -121,9 +122,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       // origin-less call still behaves.
       if (origin) setRevealOrigin(origin);
 
-      const reduced =
-        typeof window !== "undefined" &&
-        window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      // Override-aware: `?motion=full` restores the wipe transition even
+      // when the OS asks for reduced motion.
+      const reduced = prefersReducedMotion();
 
       const startViewTransition = document.startViewTransition?.bind(document);
 

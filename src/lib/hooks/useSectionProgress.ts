@@ -47,8 +47,23 @@ export function useSectionProgress(
 
     const commit = () => {
       frame = 0;
-      const { top, range } = metricsRef.current;
-      const raw = (window.scrollY - top) / range;
+      // Compute progress from the section's LIVE bounding rect, not from a
+      // cached document offset + window.scrollY. Two bugs came from that
+      // pairing: (1) content above the section (images, fonts, dynamically
+      // mounted sections) shifts the section's true offset after the first
+      // measurement, and (2) under Lenis smooth scrolling window.scrollY can
+      // lag the visual position mid-animation. Both made the timeline appear
+      // to arrive already partway through (e.g. at node 1/2) and to advance
+      // while still being scrolled into view.
+      //
+      // `-rect.top / range` is equivalent to `(scrollY - top) / range` but
+      // reads only the visual position, so it is always accurate:
+      //   • section top at viewport top (fully in view) → rect.top = 0 → 0
+      //   • approaching (top below viewport top)        → rect.top > 0 → <0 → clamps to 0
+      //   • scrolled into the section                    → rect.top < 0 → >0
+      const rect = el.getBoundingClientRect();
+      const { range } = metricsRef.current;
+      const raw = -rect.top / range;
       const progress = raw < 0 ? 0 : raw > 1 ? 1 : raw;
       progressRef.current = progress;
       onChangeRef.current?.(progress);
@@ -64,7 +79,10 @@ export function useSectionProgress(
     };
 
     measure();
-    commit();
+    // Delay initial commit by one frame to ensure scroll position has settled.
+    // This fixes the issue where the Experience section arrives already at
+    // point 1/2 because the measurement happened mid-scroll-animation.
+    frame = requestAnimationFrame(commit);
 
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", remeasure);

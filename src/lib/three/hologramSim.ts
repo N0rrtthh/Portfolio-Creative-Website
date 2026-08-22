@@ -33,6 +33,7 @@
  */
 
 import * as THREE from "three";
+import { getFloatTargetSupport, FloatTargetSupport } from "./webglCapabilities";
 
 /* ─── Shared GLSL ─────────────────────────────────────── */
 
@@ -320,9 +321,16 @@ const SIM_FRAG_INIT = /* glsl */ `
 
 /* ─── PointSim ────────────────────────────────────────── */
 
+/** Texture type used by the sim. Set once at construction based on the
+    probed GPU capability, then used consistently for render targets and
+    data textures. Half-float has less precision (~3 decimal digits) but
+    the sim's value range (positions within a few units, velocities well
+    under 10) fits comfortably, and it works on far more GPUs. */
+let SIM_TEX_TYPE: THREE.TextureDataType = THREE.FloatType;
+
 function makeRT(size: number) {
   return new THREE.WebGLRenderTarget(size, size, {
-    type: THREE.FloatType,
+    type: SIM_TEX_TYPE,
     format: THREE.RGBAFormat,
     minFilter: THREE.NearestFilter,
     magFilter: THREE.NearestFilter,
@@ -335,6 +343,22 @@ function makeRT(size: number) {
 function makeDataTex(size: number, src: Float32Array, count: number) {
   // RGBA rather than RGB: three-channel float textures aren't universally
   // renderable/samplable, and the alpha channel costs nothing here.
+  if (SIM_TEX_TYPE === THREE.HalfFloatType) {
+    // Half-float data textures need Uint16Array with IEEE 754 half values.
+    const data = new Uint16Array(size * size * 4);
+    for (let i = 0; i < count; i++) {
+      data[i * 4]     = THREE.DataUtils.toHalfFloat(src[i * 3]);
+      data[i * 4 + 1] = THREE.DataUtils.toHalfFloat(src[i * 3 + 1]);
+      data[i * 4 + 2] = THREE.DataUtils.toHalfFloat(src[i * 3 + 2]);
+      data[i * 4 + 3] = THREE.DataUtils.toHalfFloat(1);
+    }
+    const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat, THREE.HalfFloatType);
+    tex.minFilter = THREE.NearestFilter;
+    tex.magFilter = THREE.NearestFilter;
+    tex.needsUpdate = true;
+    return tex;
+  }
+
   const data = new Float32Array(size * size * 4);
   for (let i = 0; i < count; i++) {
     data[i * 4]     = src[i * 3];
@@ -371,6 +395,15 @@ export interface PointSimOptions {
 }
 
 /**
+ * True when the GPU can run the GPGPU simulation at all (float or half).
+ * Callers should check this and fall back to a static or CPU-driven cloud
+ * when it returns false.
+ */
+export function isGPGPUSupported(): boolean {
+  return getFloatTargetSupport() !== "none";
+}
+
+/**
  * Owns the ping-ponged position/velocity textures and the two passes that
  * advance them. Deliberately not a React component: it's GPU state with a
  * lifetime tied to a model, created and disposed by the memo that builds
@@ -379,6 +412,8 @@ export interface PointSimOptions {
 export class PointSim {
   readonly size: number;
   readonly count: number;
+  /** The texture type actually used, for diagnostics. */
+  readonly texType: FloatTargetSupport;
 
   private posRT: THREE.WebGLRenderTarget[];
   private velRT: THREE.WebGLRenderTarget[];
@@ -408,6 +443,12 @@ export class PointSim {
     shared: Record<string, THREE.IUniform>,
     opts: PointSimOptions = {},
   ) {
+    // Probe GPU capability ONCE and set the module-level texture type.
+    // This must happen before makeRT / makeDataTex are called.
+    const support = getFloatTargetSupport();
+    this.texType = support;
+    SIM_TEX_TYPE = support === "half" ? THREE.HalfFloatType : THREE.FloatType;
+
     this.count = count;
     this.size = Math.max(2, Math.ceil(Math.sqrt(count)));
     const s = this.size;
