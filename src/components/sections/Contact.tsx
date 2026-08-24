@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
+import dynamic from "next/dynamic";
 
 import ContactForm from "@/components/ui/ContactForm";
 import ChapterLabel from "@/components/ui/ChapterLabel";
@@ -12,6 +13,11 @@ import {
   GlowTrail,
   ScrambleText,
 } from "@/components/ui/anime/AnimeInteractions";
+
+const World = dynamic(
+  () => import("@/components/ui/globe").then((m) => m.World),
+  { ssr: false }
+);
 
 
 
@@ -48,6 +54,49 @@ const ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
   twitter: XIcon,
 };
 
+/* ── Cinematic globe config ─────────────────────────────────
+   Aceternity-style World: real country polygons, animated arcs
+   radiating from Manila (the only persistent point — red),
+   drag-to-rotate. Destination points bloom then slowly vanish. */
+const GLOBE_COLORS = ["#ff3b3b", "#ff6b6b", "#ef4444"];
+
+const GLOBE_CONFIG = {
+  globeColor: "#062056",
+  showAtmosphere: true,
+  atmosphereColor: "#FFFFFF",
+  atmosphereAltitude: 0.1,
+  emissive: "#062056",
+  emissiveIntensity: 0.1,
+  shininess: 0.9,
+  polygonColor: "rgba(255,255,255,0.7)",
+  ambientLight: "#38bdf8",
+  directionalLeftLight: "#ffffff",
+  directionalTopLight: "#ffffff",
+  pointLight: "#ffffff",
+  arcTime: 2450,
+  arcLength: 0.9,
+  initialPosition: { lat: 14.4791, lng: 120.8969 },
+  autoRotate: true,
+  autoRotateSpeed: 0.5,
+};
+
+const SAMPLE_ARCS = [
+  { order: 1, startLat: 14.5995, startLng: 120.9842, endLat: 35.6762, endLng: 139.6503, arcAlt: 0.2, color: GLOBE_COLORS[0] },
+  { order: 1, startLat: 14.5995, startLng: 120.9842, endLat: 1.3521, endLng: 103.8198, arcAlt: 0.15, color: GLOBE_COLORS[1] },
+  { order: 2, startLat: 14.5995, startLng: 120.9842, endLat: -33.8688, endLng: 151.2093, arcAlt: 0.3, color: GLOBE_COLORS[2] },
+  { order: 2, startLat: 14.5995, startLng: 120.9842, endLat: 51.5072, endLng: -0.1276, arcAlt: 0.4, color: GLOBE_COLORS[0] },
+  { order: 3, startLat: 14.5995, startLng: 120.9842, endLat: 40.7128, endLng: -74.006, arcAlt: 0.5, color: GLOBE_COLORS[1] },
+  { order: 3, startLat: 14.5995, startLng: 120.9842, endLat: 37.7749, endLng: -122.4194, arcAlt: 0.45, color: GLOBE_COLORS[2] },
+  { order: 4, startLat: 14.5995, startLng: 120.9842, endLat: 28.6139, endLng: 77.209, arcAlt: 0.25, color: GLOBE_COLORS[0] },
+  { order: 4, startLat: 14.5995, startLng: 120.9842, endLat: 52.52, endLng: 13.405, arcAlt: 0.4, color: GLOBE_COLORS[1] },
+  { order: 5, startLat: 14.5995, startLng: 120.9842, endLat: -22.9068, endLng: -43.1729, arcAlt: 0.7, color: GLOBE_COLORS[2] },
+  { order: 5, startLat: 14.5995, startLng: 120.9842, endLat: 34.0522, endLng: -118.2437, arcAlt: 0.4, color: GLOBE_COLORS[0] },
+  { order: 6, startLat: 14.5995, startLng: 120.9842, endLat: 48.8566, endLng: -2.3522, arcAlt: 0.4, color: GLOBE_COLORS[1] },
+  { order: 6, startLat: 14.5995, startLng: 120.9842, endLat: -34.6037, endLng: -58.3816, arcAlt: 0.65, color: GLOBE_COLORS[2] },
+  { order: 7, startLat: 14.5995, startLng: 120.9842, endLat: 37.5665, endLng: 126.978, arcAlt: 0.15, color: GLOBE_COLORS[0] },
+  { order: 7, startLat: 14.5995, startLng: 120.9842, endLat: -6.2088, endLng: 106.8456, arcAlt: 0.15, color: GLOBE_COLORS[1] },
+];
+
 const FACTS = [
   {
     icon: Mail,
@@ -55,9 +104,12 @@ const FACTS = [
     value: CONTACT_EMAIL,
     href: `mailto:${CONTACT_EMAIL}`,
   },
-  /* Reply time and location were removed at the owner's request: both were
-     promises the page cannot keep on its own. */
-
+  {
+    icon: MapPin,
+    label: "Location",
+    value: "Cavite, Philippines",
+    href: undefined,
+  },
 ];
 
 
@@ -115,6 +167,27 @@ export default function Contact() {
             node riding it. Same job, and it replaces dead border space with
             motion rather than adding a new element to the page. */}
         <AnimeTraceLine className="mb-6 md:mb-8" height={24} />
+
+        {/* ── Cinematic Globe — full-width hero-scale element ── */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: DUR.reveal * 1.4, ease: EASE.out }}
+          className="relative mb-10 md:mb-14"
+        >
+          <div className="relative h-[420px] w-full overflow-hidden rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-void)]/60 sm:h-[500px] lg:h-[560px]">
+            <World data={SAMPLE_ARCS} globeConfig={GLOBE_CONFIG} />
+            {/* Single hint label — no location text */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-end p-5">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--color-ash)]">
+                Drag to explore
+              </span>
+            </div>
+            {/* Gradient vignette for cinematic depth */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,var(--color-void)_100%)]" />
+          </div>
+        </motion.div>
 
 
 
@@ -184,6 +257,7 @@ export default function Contact() {
                 );
               })}
             </div>
+
           </div>
 
           {/* ── The form, in a ringed card ────────────────────── */}

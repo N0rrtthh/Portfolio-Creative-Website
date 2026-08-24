@@ -87,6 +87,36 @@ function LayeredParticleSwarm({ progress }: { progress?: MotionValue<number> }) 
   const midMatRef = useRef<THREE.PointsMaterial>(null);
   const targetColor = useMemo(() => new THREE.Color(particleColor), [particleColor]);
 
+  // Hologram-style glow core: a soft additive sprite at the center that lights
+  // up when the mouse hovers near it (like the Hologram showcase), then eases
+  // back down when the pointer leaves.
+  const glowRef = useRef<THREE.Sprite>(null);
+  const glowMatRef = useRef<THREE.SpriteMaterial>(null);
+  const glowLevel = useRef(0);
+
+  const glowTexture = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = 128;
+    c.height = 128;
+    const ctx = c.getContext("2d");
+    if (ctx) {
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0, "rgba(255,255,255,0.9)");
+      grad.addColorStop(0.35, "rgba(255,255,255,0.35)");
+      grad.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 128);
+    }
+    const tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+  }, []);
+
+  const glowColor = useMemo(() => {
+    if (isEva) return mode === "dark" ? "#39ff14" : "#ff6a00";
+    return mode === "dark" ? "#818cf8" : "#4361ee";
+  }, [isEva, mode]);
+
   useFrame(({ clock, pointer }) => {
     mouse.current.x += (pointer.x - mouse.current.x) * 0.02;
     mouse.current.y += (pointer.y - mouse.current.y) * 0.02;
@@ -114,6 +144,20 @@ function LayeredParticleSwarm({ progress }: { progress?: MotionValue<number> }) 
       fgPointsRef.current.rotation.y =
         -t * 0.06 * slow + mouse.current.x * 0.4 + p * 1.5;
       fgPointsRef.current.rotation.x = -mouse.current.y * 0.25;
+    }
+
+    // Glow core: proximity of the pointer to the center drives the target
+    // level; ease toward it so it blooms and settles smoothly.
+    const dist = Math.hypot(pointer.x, pointer.y);
+    const target = Math.max(0, 1 - dist / 0.55);
+    glowLevel.current += (target - glowLevel.current) * 0.06;
+    const lvl = glowLevel.current;
+    if (glowMatRef.current) {
+      glowMatRef.current.opacity = 0.1 + lvl * 0.55;
+    }
+    if (glowRef.current) {
+      const gs = 2.2 + lvl * 1.6 + Math.sin(t * 1.6) * 0.08;
+      glowRef.current.scale.set(gs, gs, 1);
     }
   });
 
@@ -162,6 +206,19 @@ function LayeredParticleSwarm({ progress }: { progress?: MotionValue<number> }) 
           depthWrite={false}
         />
       </points>
+
+      {/* Center glow core — blooms on mouse hover like the hologram showcase. */}
+      <sprite ref={glowRef} position={[0, 0, -0.5]}>
+        <spriteMaterial
+          ref={glowMatRef}
+          map={glowTexture}
+          color={glowColor}
+          transparent
+          opacity={0.1}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </sprite>
     </group>
   );
 }

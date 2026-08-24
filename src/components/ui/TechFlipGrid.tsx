@@ -14,8 +14,9 @@ import { useReducedMotionPref } from "@/lib/hooks/useClientFlag";
  *  - The whole strip drifts continuously (row A left, row B right).
  *  - Hovering the strip pauses the conveyor (CSS `group:hover`).
  *  - Hovering (or keyboard-focusing) a card flips it in 3D to reveal a
- *    quick dossier, and every OTHER card smoothly blurs + dims out so the
- *    focused tile commands attention. The blur fades in/out, it doesn't snap.
+ *    quick dossier, and every OTHER card smoothly dims + recedes so the
+ *    focused tile commands attention. Uses GPU-composited opacity/scale only
+ *    (no `filter: blur()`) so it stays smooth while the marquee scrolls.
  *  - Category tabs filter the conveyors.
  *  - Reduced-motion users get a static grid that shows everything at once.
  */
@@ -24,7 +25,7 @@ import { useReducedMotionPref } from "@/lib/hooks/useClientFlag";
    wobbles or re-triggers while the pointer sits on its edge. */
 const FLIP_TRANSITION = { duration: 0.55, ease: [0.32, 0.72, 0, 1] } as const;
 
-/* Gentle deceleration used for the blur/dim fade — no overshoot. */
+/* Gentle deceleration used for the dim/recede fade — no overshoot. */
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /* ─── One 3D flip card ───────────────────────────────────── */
@@ -41,7 +42,7 @@ const FlipCard = memo(function FlipCard({
   instanceId: string;
   /** This card is hovered/focused → flip it. */
   isActive: boolean;
-  /** A different card is active → blur + dim this one out. */
+  /** A different card is active → dim + recede this one. */
   isDimmed: boolean;
   onActivate: (id: string) => void;
   onDeactivate: (id: string) => void;
@@ -65,10 +66,14 @@ const FlipCard = memo(function FlipCard({
   );
 
   /* The OUTER wrapper is the stable hit-area: it never rotates on hover, so
-     the pointer can't "fall off" a moving card and re-trigger the flip. It
-     only animates the blur/dim when THIS card is the one being de-emphasised
-     (never while it sits under the pointer), so it can't oscillate either.
-     Only the INNER element rotates to flip. */
+     the pointer can't "fall off" a moving card and re-trigger the flip.
+
+     PERFORMANCE: the focus/dim effect animates ONLY `opacity` and `scale`
+     (transform + opacity are GPU-composited → zero repaint). We deliberately
+     avoid `filter: blur()` here: blurring ~80 cards simultaneously forces an
+     expensive per-frame repaint of every card and was the source of the lag.
+     The active card pops slightly (scale 1.04) while the rest dim + shrink,
+     which reads as the same "everything recedes" focus effect, smoothly. */
   return (
     <motion.div
       tabIndex={0}
@@ -79,11 +84,10 @@ const FlipCard = memo(function FlipCard({
       onFocus={() => onActivate(instanceId)}
       onBlur={() => onDeactivate(instanceId)}
       animate={{
-        filter: isDimmed ? "blur(7px)" : "blur(0px)",
-        opacity: isDimmed ? 0.35 : 1,
-        scale: isDimmed ? 0.95 : 1,
+        opacity: isDimmed ? 0.22 : 1,
+        scale: isDimmed ? 0.94 : isActive ? 1.04 : 1,
       }}
-      transition={{ duration: 0.45, ease: EASE }}
+      transition={{ duration: 0.35, ease: EASE }}
       className="relative h-52 w-44 shrink-0 cursor-pointer outline-none [perspective:1100px] focus-visible:ring-2 focus-visible:ring-white/50 rounded-2xl sm:w-48"
     >
       {/* Rotating inner — flip only. */}
@@ -304,7 +308,11 @@ function ConveyorRow({
 
   return (
     <div
-      className="group relative overflow-hidden"
+      /* `overflow-hidden` clips the marquee horizontally, but it would also
+         clip the active card's 1.04 scale (and focus ring) top and bottom.
+         The vertical padding gives the scaled card room inside the clip
+         region so it never gets cut off when it flips/pops. */
+      className="group relative overflow-hidden py-3"
       style={{
         maskImage:
           "linear-gradient(to right, transparent, black 7%, black 93%, transparent)",
@@ -417,7 +425,7 @@ export default function TechFlipGrid() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="space-y-4"
           role="region"
-          aria-label="Technology showcase. The cards scroll continuously; hover to pause and flip a card, which blurs the rest out."
+          aria-label="Technology showcase. The cards scroll continuously; hover to pause and flip a card, which dims the rest out."
         >
           <ConveyorRow
             items={rowA}
@@ -441,7 +449,7 @@ export default function TechFlipGrid() {
       {/* Hint */}
       <div className="mt-8 space-y-2 text-center">
         <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-ash)] opacity-70">
-          hover a card to flip it · the rest blur out
+          hover a card to flip it · the rest fade back
         </p>
         <p className="font-display text-sm italic text-[var(--color-silver)]">
           ...and many more tools in the arsenal.

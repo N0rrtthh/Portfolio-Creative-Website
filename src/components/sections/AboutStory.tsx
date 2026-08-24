@@ -11,12 +11,20 @@ const EASING = [0.22, 1, 0.36, 1] as const;
 
 export default function AboutStory() {
   return (
-    <section id="about" className="section-padding relative">
-      <div className="container-narrow">
-        <ChapterLabel index={2} classic="Who I Am" eva="USER IDENTITY" className="mb-8" />
+    /* Fullscreen chapter: fills the viewport and vertically centers its
+       content, so the hero hands off to a full-screen "Who I Am" screen
+       instead of a half-scrolled partial one. */
+    <section id="about" className="relative flex min-h-svh flex-col">
+      {/* `my-auto` (not `justify-center`): centers the block when there's
+          room, but collapses to zero on overflow so the top of the chapter
+          is never clipped when the snap parks the section at the viewport
+          top. Padding lives here so the fixed navbar never covers content.
+          The portrait is kept compact so the whole beat fits one screen. */}
+      <div className="container-narrow my-auto py-16 md:py-20">
+        <ChapterLabel index={2} classic="Who I Am" eva="USER IDENTITY" className="mb-6" />
 
         {/* Editorial Headline */}
-        <div className="mb-10">
+        <div className="mb-8">
           <RevealText
             as="h2"
             className="text-section-title font-display text-[var(--color-starlight)]"
@@ -33,14 +41,14 @@ export default function AboutStory() {
         </div>
 
         {/* Two-Column Story Beat */}
-        <div className="grid gap-12 lg:grid-cols-[1.1fr_1.2fr] lg:items-center">
+        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.25fr] lg:items-center">
           {/* Portrait Image */}
           <motion.div
             initial={{ opacity: 0, x: -30, filter: "blur(8px)" }}
             whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 1.2, ease: EASING }}
-            className="w-full max-w-md mx-auto lg:mx-0"
+            className="w-full max-w-[300px] md:max-w-[340px] mx-auto lg:mx-0"
           >
             <TiltCard max={5} className="overflow-hidden rounded-3xl border border-[var(--color-glass-border)] shadow-[0_16px_50px_rgba(0,0,0,0.4)]">
               <Image
