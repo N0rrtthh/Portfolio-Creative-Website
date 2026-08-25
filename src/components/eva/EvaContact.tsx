@@ -30,7 +30,11 @@ import { GLOBE_CONFIG, MANILA_ARCS } from "@/lib/globeData";
 
    The pane is decorative: pointer-events stay off it entirely, so
    OrbitControls never engages and the canvas never captures a
-   drag. aria-hidden keeps it out of the accessibility tree.
+   drag — and `World` runs with `interactive={false}`, which skips
+   the raycast sphere + hover reticle entirely. Without that flag
+   the per-frame raycast fires from the pointer's rest position
+   (canvas centre) and a reticle ring sits stuck on the surface.
+   aria-hidden keeps it out of the accessibility tree.
 
    Content: "Comms // Uplink Terminal" heading + click-to-open bay
    deck (banner over composer, single grid cell, no runway). On
@@ -175,14 +179,16 @@ export default function EvaContact() {
         {/* Canvas oversized 190% × 150% and shifted so the globe's
             centre sits on the pane's left edge — only the right
             hemisphere enters frame. The filter makes the render read
-            as footage through a degraded monitor. */}
+            as footage through a degraded monitor. interactive={false}
+            kills the hover reticle + surface peel raycast, so no
+            reticle sits stuck on the decorative pane. */}
         <div
           className="absolute -left-[95%] -top-[25%] h-[150%] w-[190%]"
           style={{
             filter: "blur(1.1px) saturate(1.3) contrast(1.12) brightness(0.9)",
           }}
         >
-          <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} />
+          <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} interactive={false} />
         </div>
       </GlobeField>
 
@@ -219,14 +225,20 @@ export default function EvaContact() {
             </motion.div>
 
             {/* Top card. It is lifted off, not flown away: -7% and out
-                over 0.55s. */}
+                over 0.55s. It stretches to the full cell height (no
+                self-start) so its h-full always covers the whole
+                composer: the form is taller than the banner's 60svh
+                minimum, and with self-start the banner stayed 60svh
+                while the cell grew to the composer's height — the
+                message textarea and Transmit button poked out under
+                the banner while the bay was closed. */}
             <AnimatePresence initial={false}>
               {!open && (
                 <motion.div
                   key="banner"
                   exit={{ y: "-7%", opacity: 0, scale: 1.015 }}
                   transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                  className="z-10 [grid-area:1/1] self-start"
+                  className="z-10 [grid-area:1/1]"
                 >
                   <Banner onOpen={() => setOpen(true)} />
                 </motion.div>
