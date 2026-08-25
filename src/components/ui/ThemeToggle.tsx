@@ -272,7 +272,7 @@ export default function ThemeToggle() {
               autoFocus
               className="whitespace-nowrap rounded-xl border border-[var(--color-accent-warm)] bg-[var(--color-obsidian)] px-4 py-2.5 font-mono text-[11px] font-bold tracking-wider text-[var(--color-accent-warm)] transition-colors duration-200 hover:bg-[var(--color-accent-warm)] hover:text-black active:scale-[0.97]"
             >
-              classic mode switch
+              Classic Mode
             </button>
           </motion.div>
         )}

@@ -14,9 +14,6 @@ export const TIMELINE_DATA: TimelineEntry[] = [
     company: "BidaBoss Inc.",
     period: "2025 – Present",
     location: "Manila, Philippines",
-    coordinates: '14°35\'53"N 120°58\'47"E',
-    clearance: "TOP SECRET // LEVEL 4 DEPLOYMENT",
-    operationCode: "OP-MANILA-NEXUS",
     description:
       "Engineered production-grade operations web portal and companion mobile app serving live internal teams with real-time synchronization.",
     highlights: [
@@ -27,7 +24,6 @@ export const TIMELINE_DATA: TimelineEntry[] = [
     ],
     tech: ["React", "Node.js", "Flutter", "Firebase", "TypeScript", "Tailwind CSS"],
     icon: ShieldCheck,
-    badge: "PRODUCTION OUTPOST",
     details: {
       architecture:
         "Micro-frontend web client + Flutter mobile app connected to Express REST API & Firebase RTDB.",
@@ -43,9 +39,6 @@ export const TIMELINE_DATA: TimelineEntry[] = [
     company: "WaterWise Thesis Project",
     period: "2024 – 2025",
     location: "Calapan, Philippines",
-    coordinates: '13°24\'40"N 121°10\'48"E',
-    clearance: "CLASSIFIED // GOLD MEDAL HONORS",
-    operationCode: "OP-FLUID-SIMULATION",
     description:
       "Award-winning 2D/3D Godot game engine thesis project featuring custom shader pipeline, fluid dynamics, and environmental networking.",
     highlights: [
@@ -56,7 +49,6 @@ export const TIMELINE_DATA: TimelineEntry[] = [
     ],
     tech: ["Godot 4", "GDShader", "HLSL", "C#", "Blender 3D", "Multiplayer Netcode"],
     icon: Award,
-    badge: "CAPSTONE EXCELLENCE",
     details: {
       architecture:
         "Godot Engine 4.x custom GDExtension pipeline with custom vertex/fragment shaders.",
@@ -72,9 +64,6 @@ export const TIMELINE_DATA: TimelineEntry[] = [
     company: "GitHub Community",
     period: "2024 – Present",
     location: "Global / Remote",
-    coordinates: '00°00\'00"N 000°00\'00"E',
-    clearance: "PUBLIC RELEASE // OPEN SOURCE INTEL",
-    operationCode: "OP-GLOBAL-FORGE",
     description:
       "Published and maintained developer productivity tools including ResuMaker ATS resume builder and JasFocus Pomodoro applications.",
     highlights: [
@@ -85,7 +74,6 @@ export const TIMELINE_DATA: TimelineEntry[] = [
     ],
     tech: ["Next.js", "Tailwind CSS", "Framer Motion", "TypeScript", "Markdown AST"],
     icon: Code2,
-    badge: "OPEN SOURCE OUTPOST",
     details: {
       architecture:
         "Client-side Next.js App Router with offline LocalStorage & Web Workers.",
@@ -100,9 +88,6 @@ export const TIMELINE_DATA: TimelineEntry[] = [
     company: "Godot 3D & WebGPU R&D",
     period: "2025 – Future",
     location: "R&D Lab",
-    coordinates: '37°46\'30"N 122°25\'00"W',
-    clearance: "RESTRICTED // FUTURE TECH DIVISION",
-    operationCode: "OP-QUANTUM-GRAPHICS",
     description:
       "Exploring cutting-edge WebGL/WebGPU shaders, procedural mesh generation, real-time lighting physics, and Godot 4 architecture.",
     highlights: [
@@ -113,7 +98,6 @@ export const TIMELINE_DATA: TimelineEntry[] = [
     ],
     tech: ["Three.js", "WebGPU", "GLSL", "Godot Engine", "Anime.js", "WebGL"],
     icon: Gamepad2,
-    badge: "FUTURE R&D LAB",
     details: {
       architecture:
         "Experimental WebGPU compute shader pipeline + R3F postprocessing canvas.",

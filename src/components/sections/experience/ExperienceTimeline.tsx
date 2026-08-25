@@ -123,27 +123,16 @@ export default function ExperienceTimeline() {
       <div className="sticky top-0 left-0 h-screen w-full overflow-hidden">
         {/* Header overlay */}
         <div className="pointer-events-none absolute top-16 left-0 z-20 w-full px-6 md:top-20 md:px-12">
-          <div className="mx-auto flex max-w-7xl items-end justify-between">
-            <div>
-              <ChapterLabel
-                index={7}
-                classic="Expedition Timeline"
-                eva="MISSION LOG"
-                className="mb-1"
-              />
-              <h2 className="font-brand text-2xl font-bold uppercase tracking-tight text-white md:text-3xl">
-                My Experience
-              </h2>
-            </div>
-
-            {/* Active checkpoint telemetry */}
-            <div className="hidden items-center gap-3 rounded-full border border-red-500/40 bg-slate-950/90 px-3.5 py-1.5 font-mono text-xs shadow-lg backdrop-blur-xl md:flex">
-              <span className="h-2 w-2 rounded-full bg-red-500" />
-              <span className="text-slate-400">ACTIVE CHECKPOINT:</span>
-              <span className="font-bold text-red-400">
-                {activeItem.number} / 0{TIMELINE_DATA.length}
-              </span>
-            </div>
+          <div className="mx-auto max-w-7xl">
+            <ChapterLabel
+              index={7}
+              classic="Experience"
+              eva="MISSION LOG"
+              className="mb-1"
+            />
+            <h2 className="font-brand text-2xl font-bold uppercase tracking-tight text-white md:text-3xl">
+              My Experience
+            </h2>
           </div>
         </div>
 

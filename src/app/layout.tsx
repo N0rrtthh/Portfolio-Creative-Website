@@ -41,6 +41,11 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+/** Deploy prefix (e.g. `/Portfolio-Website` on GitHub Pages); empty when
+ *  the site is served from the domain root. Set via NEXT_PUBLIC_BASE_PATH
+ *  at build time. */
+const ASSET_PREFIX = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export const metadata: Metadata = {
   title: "Elroni Quiñones — Portfolio",
   description:
@@ -112,9 +117,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href={`${process.env.NODE_ENV === 'production' ? '/Portfolio-Website' : ''}/Favicon.png`} type="image/png" />
-        <link rel="shortcut icon" href={`${process.env.NODE_ENV === 'production' ? '/Portfolio-Website' : ''}/Favicon.png`} />
-        <link rel="apple-touch-icon" href={`${process.env.NODE_ENV === 'production' ? '/Portfolio-Website' : ''}/Favicon.png`} />
+        <link rel="icon" href={`${ASSET_PREFIX}/Favicon.png`} type="image/png" />
+        <link rel="shortcut icon" href={`${ASSET_PREFIX}/Favicon.png`} />
+        <link rel="apple-touch-icon" href={`${ASSET_PREFIX}/Favicon.png`} />
         <script
           id="no-flash-theme-script"
           suppressHydrationWarning

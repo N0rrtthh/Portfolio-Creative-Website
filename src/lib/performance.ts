@@ -131,7 +131,7 @@ export function getAdaptiveQuality(forceRefresh = false): AdaptiveQuality {
   // One diagnostic line so it's easy to see what tier was picked and why.
   if (typeof window !== "undefined") {
     const r = detected.reasons;
-    // eslint-disable-next-line no-console
+     
     console.info(
       `[perf] tier: ${tier.toUpperCase()}` +
         (override ? " (forced by override)" : "") +

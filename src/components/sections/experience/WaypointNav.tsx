@@ -23,7 +23,7 @@ const WaypointNav = memo(function WaypointNav({
             key={item.id}
             type="button"
             onClick={() => onSelect(idx)}
-            title={`Pilot to ${item.company}`}
+            title={`Go to ${item.company}`}
             aria-current={isActive ? "true" : undefined}
             className={`group flex cursor-pointer items-center justify-end gap-3 text-left transition-[transform,opacity] duration-[250ms] ease-out will-change-transform ${
               isActive ? "scale-110 opacity-100" : "opacity-40 hover:opacity-90"
@@ -32,8 +32,8 @@ const WaypointNav = memo(function WaypointNav({
             <span
               className={`hidden font-mono text-[11px] font-bold uppercase tracking-widest transition-colors md:inline ${
                 isActive
-                  ? "text-amber-300 drop-shadow-[0_0_10px_#fbbf24]"
-                  : "text-slate-300 group-hover:text-white"
+                  ? "text-[var(--color-accent-warm)]"
+                  : "text-white/50 group-hover:text-white"
               }`}
             >
               {item.company}
@@ -41,8 +41,8 @@ const WaypointNav = memo(function WaypointNav({
             <span
               className={`flex h-4 w-4 items-center justify-center rounded-full border transition-[border-color,background-color,box-shadow] duration-[250ms] ease-out ${
                 isActive
-                  ? "border-amber-400 bg-red-500 shadow-[0_0_20px_#ff3b3b]"
-                  : "border-slate-700 bg-slate-900 group-hover:border-red-400"
+                  ? "border-white/60 bg-[var(--color-accent-primary)] shadow-[0_0_12px_var(--color-accent-glow)]"
+                  : "border-white/20 bg-white/5 group-hover:border-white/50"
               }`}
             >
               <span

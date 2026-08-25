@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, X, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/BrandIcons";
 import RevealText from "@/components/ui/RevealText";
 import TiltPanel from "@/components/ui/TiltPanel";
@@ -357,7 +357,8 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* PORTAL PROJECT INSPECTOR MODAL WITH PHOTO PREVIEW — Mounted to document.body */}
+      {/* Project detail modal — portalled to <body> so it escapes the
+          section's stacking context. */}
       {mounted &&
         typeof document !== "undefined" &&
         createPortal(
@@ -369,214 +370,148 @@ export default function Projects() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: DUR.fast, ease: EASE.out }}
                 onClick={() => setSelectedProject(null)}
-                className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md select-none pointer-events-auto overflow-hidden"
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${selectedProject.title} — project details`}
+                className="fixed inset-0 z-[99999] flex items-center justify-center bg-[var(--color-void)]/80 p-4 backdrop-blur-md sm:p-6"
               >
                 <motion.div
-                  initial={{ scale: 0.94, opacity: 0, y: 16 }}
+                  initial={{ scale: 0.96, opacity: 0, y: 12 }}
                   animate={{ scale: 1, opacity: 1, y: 0 }}
-                  exit={{ scale: 0.96, opacity: 0, y: 8, transition: { duration: DUR.fast, ease: EASE.in } }}
+                  exit={{ scale: 0.97, opacity: 0, y: 8, transition: { duration: DUR.fast, ease: EASE.in } }}
                   transition={SPRING.panel}
                   onClick={(e) => e.stopPropagation()}
-                  className="relative w-full max-w-4xl max-h-[90vh] rounded-[2rem] border border-white/10 bg-[#0a0a12]/98 p-6 sm:p-8 text-white shadow-[0_32px_100px_rgba(0,0,0,0.9)] flex flex-col z-[100000] overflow-hidden"
+                  className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
                 >
-
-                  {/* Header row — pinned above the scroll area */}
-                  <div className="flex items-start justify-between gap-4 pb-4 border-b border-white/10 mb-5 shrink-0">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span
-                          className="h-2.5 w-2.5 rounded-full animate-pulse"
-                          style={{ backgroundColor: selectedProject.color }}
-                        />
-                        <span className="font-mono text-xs font-bold uppercase tracking-widest text-indigo-400">
-                          {selectedProject.type} · {selectedProject.year}
-                        </span>
-                      </div>
-                      <h3 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
+                  {/* Header — meta, title, close */}
+                  <div className="flex items-start justify-between gap-4 border-b border-[var(--color-glass-border)] px-6 pb-5 pt-6 sm:px-8">
+                    <div className="min-w-0">
+                      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--color-ash)]">
+                        {selectedProject.type} · {selectedProject.year}
+                      </p>
+                      <h3 className="mt-1.5 font-display text-2xl font-bold text-[var(--color-starlight)] sm:text-3xl">
                         {selectedProject.title}
                       </h3>
-                      <p className="font-body text-sm sm:text-base text-slate-300 mt-0.5">
+                      <p className="mt-1 font-body text-sm text-[var(--color-silver)]">
                         {selectedProject.subtitle}
                       </p>
                     </div>
-
                     <button
                       type="button"
                       onClick={() => setSelectedProject(null)}
-                      className="shrink-0 h-10 px-4 rounded-full bg-white/10 hover:bg-white/15 flex items-center gap-2 text-slate-300 hover:text-white transition-all font-mono text-xs font-bold uppercase tracking-wider cursor-pointer border border-white/10"
+                      aria-label="Close project details"
+                      className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--color-glass-border)] text-[var(--color-silver)] transition-colors hover:border-[var(--color-accent-primary)] hover:text-[var(--color-starlight)]"
                     >
                       <X size={16} />
-                      Close
                     </button>
                   </div>
 
-                  {/* Scrollable content area — hidden scrollbar.
-                      `data-lenis-prevent` tells Lenis to NOT intercept wheel
-                      events that start inside this panel, so it scrolls
-                      natively even while Lenis drives the page behind it. */}
+                  {/* Scrollable body — `data-lenis-prevent` keeps Lenis from
+                      hijacking wheel events that start inside the panel. */}
                   <div
                     data-lenis-prevent
-                    className="scroll-panel flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                    className="scroll-panel min-h-0 flex-1 overflow-y-auto px-6 py-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:px-8"
                   >
-
-                  {/* HIGH-END MAC BROWSER WINDOW SHOWCASE PREVIEW */}
-                  <div className="relative w-full rounded-2xl border border-white/15 bg-slate-950 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.7)] mb-6 shrink-0">
-                    {/* Window Controls & Address Bar */}
-                    <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900/90 border-b border-white/10 select-none">
-                      <div className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-rose-500/80 inline-block" />
-                        <span className="h-3 w-3 rounded-full bg-amber-500/80 inline-block" />
-                        <span className="h-3 w-3 rounded-full bg-emerald-500/80 inline-block" />
-                      </div>
-
-                      <div className="flex-1 max-w-sm mx-4 bg-slate-950/90 rounded-lg px-3.5 py-1 border border-white/10 text-center flex items-center justify-center gap-2 shadow-inner">
-                        <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="font-mono text-[11px] text-slate-300 truncate">
-                          {selectedProject.live
-                            ? selectedProject.live.replace("https://", "")
-                            : `https://${selectedProject.id}.app`}
-                        </span>
-                      </div>
-
-                      <div className="hidden sm:block text-right">
-                        <span className="font-mono text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                          HD 1080P SHOWCASE
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Image Viewport Container */}
-                    <div className="relative w-full aspect-[16/9] min-h-[260px] sm:min-h-[340px] md:min-h-[400px] bg-slate-950 overflow-hidden group/browser flex items-center justify-center">
+                    {/* Screenshot */}
+                    <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-[var(--color-glass-border)] bg-[var(--color-void)]">
                       {modalImg ? (
                         <Image
                           src={modalImg}
                           alt={`${selectedProject.title} screenshot`}
-
                           fill
-                          sizes="(max-width: 768px) 100vw, 900px"
-                          className="object-cover object-top group-hover/browser:scale-105 transition-all duration-700"
+                          sizes="(max-width: 768px) 100vw, 768px"
+                          className="object-cover object-top"
                           priority
                         />
                       ) : (
                         <div
-                          className="w-full h-full flex flex-col items-center justify-center p-8 relative overflow-hidden"
+                          className="flex h-full w-full flex-col items-center justify-center p-8 text-center"
                           style={{
-                            background: `radial-gradient(ellipse at 50% 50%, ${selectedProject.color}40, #07070e 85%)`,
+                            background: `radial-gradient(ellipse at 50% 45%, ${selectedProject.color}26, transparent 75%)`,
                           }}
                         >
-                          <span className="font-mono text-xs font-bold text-indigo-300 uppercase tracking-widest mb-3 border border-indigo-500/30 bg-indigo-950/70 px-4 py-1.5 rounded-full flex items-center gap-2">
-                            <ImageIcon size={14} /> LIVE APPLICATION PREVIEW
-                          </span>
-                          <h4 className="font-display text-3xl sm:text-5xl font-black text-white text-center tracking-tight">
+                          <h4 className="font-display text-2xl font-bold text-[var(--color-starlight)] sm:text-3xl">
                             {selectedProject.title}
                           </h4>
-                          <p className="font-body text-sm text-slate-300 mt-2 max-w-lg text-center leading-relaxed">
+                          <p className="mt-2 max-w-md font-body text-sm text-[var(--color-silver)]">
                             {selectedProject.subtitle}
                           </p>
                         </div>
                       )}
                     </div>
-                  </div>
 
-                  {/* Body Grid: Problem, Solution, Outcome */}
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="font-mono text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-                        Project Summary
-                      </h4>
-                      <p className="font-body text-sm sm:text-base leading-relaxed text-slate-200">
-                        {selectedProject.description}
+                    {/* Overview */}
+                    <p className="mt-6 font-body text-sm leading-relaxed text-[var(--color-silver)] sm:text-[15px]">
+                      {selectedProject.description}
+                    </p>
+
+                    {/* Problem / Solution / Outcome — quiet rows, one accent */}
+                    <dl className="mt-6 divide-y divide-[var(--color-glass-border)] border-y border-[var(--color-glass-border)]">
+                      {(
+                        [
+                          ["Problem", selectedProject.problem],
+                          ["Solution", selectedProject.solution],
+                          ["Outcome", selectedProject.outcome],
+                        ] as const
+                      ).map(([label, text]) => (
+                        <div
+                          key={label}
+                          className="grid grid-cols-[5.5rem_1fr] gap-4 py-3.5 sm:grid-cols-[7rem_1fr]"
+                        >
+                          <dt className="pt-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-ash)]">
+                            {label}
+                          </dt>
+                          <dd className="font-body text-sm leading-relaxed text-[var(--color-silver)]">
+                            {text}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+
+                    {/* Stack */}
+                    <div className="mt-6 pb-1">
+                      <p className="mb-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-ash)]">
+                        Stack
                       </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-                      <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-4">
-                        <h5 className="font-mono text-[11px] font-bold text-red-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
-                          The Problem
-                        </h5>
-                        <p className="font-body text-xs text-slate-300 leading-relaxed">
-                          {selectedProject.problem}
-                        </p>
-                      </div>
-
-                      <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-4">
-                        <h5 className="font-mono text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-                          The Solution
-                        </h5>
-                        <p className="font-body text-xs text-slate-300 leading-relaxed">
-                          {selectedProject.solution}
-                        </p>
-                      </div>
-
-                      <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-4">
-                        <h5 className="font-mono text-[11px] font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                          The Outcome
-                        </h5>
-                        <p className="font-body text-xs text-slate-300 leading-relaxed">
-                          {selectedProject.outcome}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Tech Stack Badges */}
-                    <div className="pt-2">
-                      <h4 className="font-mono text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">
-                        Technologies & Frameworks
-                      </h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedProject.technologies.map((tech) => (
                           <span
                             key={tech}
-                            className="rounded-full border border-indigo-500/30 bg-indigo-950/40 px-3 py-1 font-mono text-xs font-semibold text-indigo-200"
+                            className="rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-2.5 py-1 font-mono text-[11px] text-[var(--color-silver)]"
                           >
                             {tech}
                           </span>
                         ))}
                       </div>
                     </div>
-                  </div>
 
                   </div>{/* end scrollable content area */}
 
-                  {/* Sticky CTA footer — always visible, the most important actions */}
-                  <div className="shrink-0 border-t border-white/10 bg-[#0d0d18]/95 pt-4 pb-1 backdrop-blur-sm">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex flex-wrap items-center gap-3">
-                        {selectedProject.github && (
-                          <a
-                            href={selectedProject.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2.5 rounded-xl border-2 border-indigo-400/60 bg-indigo-950/70 px-6 py-3 font-mono text-sm font-bold text-indigo-200 hover:bg-indigo-600 hover:text-white hover:border-indigo-400 hover:shadow-[0_0_28px_rgba(99,102,241,0.5)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-                          >
-                            <GitHubIcon size={18} /> View Source
-                          </a>
-                        )}
-                        {selectedProject.live && (
-                          <a
-                            href={selectedProject.live}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2.5 rounded-xl bg-indigo-600 px-6 py-3 font-mono text-sm font-bold text-white shadow-lg shadow-indigo-600/40 hover:bg-indigo-500 hover:shadow-[0_0_32px_rgba(99,102,241,0.6)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-                          >
-                            Launch Live Site <ArrowUpRight size={18} />
-                          </a>
-                        )}
-                        {!selectedProject.github && !selectedProject.live && (
-                          <span className="font-mono text-xs text-slate-500">
-                            Links coming soon
-                          </span>
-                        )}
-                      </div>
-
-                      <span className="hidden font-mono text-[10px] text-slate-500 sm:block">
-                        PROJECT DOSSIER // NRTH
-                      </span>
+                  {/* Footer — actions (hidden when the project has no links) */}
+                  {(selectedProject.github || selectedProject.live) && (
+                    <div className="flex shrink-0 flex-wrap items-center gap-3 border-t border-[var(--color-glass-border)] px-6 py-4 sm:px-8">
+                      {selectedProject.live && (
+                        <a
+                          href={selectedProject.live}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-accent-primary)] px-5 py-2.5 font-mono text-xs font-bold text-white transition-opacity hover:opacity-90"
+                        >
+                          Launch Live Site <ArrowUpRight size={14} />
+                        </a>
+                      )}
+                      {selectedProject.github && (
+                        <a
+                          href={selectedProject.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-glass-border)] px-5 py-2.5 font-mono text-xs font-bold text-[var(--color-silver)] transition-colors hover:border-[var(--color-accent-primary)] hover:text-[var(--color-starlight)]"
+                        >
+                          <GitHubIcon size={14} /> View Source
+                        </a>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </motion.div>
               </motion.div>
             )}

@@ -2,9 +2,8 @@
 
 import { memo, useMemo, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { BadgeCheck } from "lucide-react";
 import { TECH_STACK, type TechItem } from "@/lib/data";
-import { categoryColor, ENDORSEMENTS } from "@/lib/techMeta";
+import { categoryColor } from "@/lib/techMeta";
 import TechMark from "@/components/ui/TechMark";
 import { useReducedMotionPref } from "@/lib/hooks/useClientFlag";
 
@@ -48,8 +47,6 @@ const FlipCard = memo(function FlipCard({
   onDeactivate: (id: string) => void;
 }) {
   const color = categoryColor(tech.category);
-  const level = tech.level ?? 70;
-  const certs = ENDORSEMENTS[tech.name] ?? [];
 
   const handlePointerEnter = useCallback(
     (e: React.PointerEvent) => {
@@ -77,7 +74,7 @@ const FlipCard = memo(function FlipCard({
   return (
     <motion.div
       tabIndex={0}
-      aria-label={`${tech.name} — ${tech.category}, proficiency ${level}%.`}
+      aria-label={`${tech.name} — ${tech.category}.`}
       data-cursor-hover
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
@@ -146,66 +143,9 @@ const FlipCard = memo(function FlipCard({
             />
           </div>
 
-          <p className="mb-3 line-clamp-3 font-body text-[11px] leading-snug text-[var(--color-silver)]">
+          <p className="my-auto font-body text-[11px] leading-relaxed text-[var(--color-silver)]">
             {tech.note}
           </p>
-
-          <div className="mt-auto">
-            <div className="mb-1 flex items-center justify-between font-mono text-[9px] uppercase tracking-widest text-[var(--color-ash)]">
-              <span>Proficiency</span>
-              <span style={{ color }}>{level}%</span>
-            </div>
-            <div
-              className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]"
-              role="meter"
-              aria-valuenow={level}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={`${tech.name} proficiency`}
-            >
-              <motion.div
-                className="h-full rounded-full"
-                style={{ background: `linear-gradient(90deg, ${color}90, ${color})` }}
-                initial={false}
-                animate={{ width: isActive ? `${level}%` : "0%" }}
-                transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
-              />
-            </div>
-
-            <div
-              className="mt-2.5 flex flex-wrap gap-1 overflow-hidden"
-              style={{ maxHeight: 38 }}
-            >
-              {certs.length > 0 ? (
-                certs.slice(0, 2).map((cert) => (
-                  <span
-                    key={cert}
-                    className="inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-wide"
-                    style={{
-                      borderColor: `${color}45`,
-                      color,
-                      backgroundColor: `${color}12`,
-                    }}
-                  >
-                    <BadgeCheck className="h-2.5 w-2.5 shrink-0" />
-                    {cert}
-                  </span>
-                ))
-              ) : (
-                <span className="font-mono text-[8px] uppercase tracking-widest text-[var(--color-ash)] opacity-70">
-                  Battle-tested in production
-                </span>
-              )}
-              {certs.length > 2 && (
-                <span
-                  className="inline-flex items-center rounded-full border px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase"
-                  style={{ borderColor: `${color}30`, color }}
-                >
-                  +{certs.length - 2}
-                </span>
-              )}
-            </div>
-          </div>
         </div>
       </motion.div>
     </motion.div>
@@ -215,12 +155,11 @@ const FlipCard = memo(function FlipCard({
 /* ─── Static card for reduced-motion users ───────────────── */
 function StaticCard({ tech }: { tech: TechItem }) {
   const color = categoryColor(tech.category);
-  const level = tech.level ?? 70;
 
   return (
     <div
       data-cursor-hover
-      className="flex h-auto min-h-52 flex-col overflow-hidden rounded-2xl border border-[var(--color-glass-border)] p-4"
+      className="flex h-auto min-h-44 flex-col overflow-hidden rounded-2xl border border-[var(--color-glass-border)] p-4"
       style={{
         background: `linear-gradient(165deg, ${color}1c, rgba(255,255,255,0.03) 55%, rgba(255,255,255,0.015))`,
       }}
@@ -241,24 +180,9 @@ function StaticCard({ tech }: { tech: TechItem }) {
           </span>
         </div>
       </div>
-      <p className="mb-3 font-body text-[11px] leading-snug text-[var(--color-silver)]">
+      <p className="mt-auto font-body text-[11px] leading-relaxed text-[var(--color-silver)]">
         {tech.note}
       </p>
-      <div className="mt-auto">
-        <div className="mb-1 flex items-center justify-between font-mono text-[9px] uppercase tracking-widest text-[var(--color-ash)]">
-          <span>Proficiency</span>
-          <span style={{ color }}>{level}%</span>
-        </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
-          <div
-            className="h-full rounded-full"
-            style={{
-              width: `${level}%`,
-              background: `linear-gradient(90deg, ${color}90, ${color})`,
-            }}
-          />
-        </div>
-      </div>
     </div>
   );
 }
@@ -446,15 +370,9 @@ export default function TechFlipGrid() {
         </motion.div>
       )}
 
-      {/* Hint */}
-      <div className="mt-8 space-y-2 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-ash)] opacity-70">
-          hover a card to flip it · the rest fade back
-        </p>
-        <p className="font-display text-sm italic text-[var(--color-silver)]">
-          ...and many more tools in the arsenal.
-        </p>
-      </div>
+      <p className="mt-8 text-center font-display text-sm italic text-[var(--color-silver)]">
+        ...and many more.
+      </p>
     </div>
   );
 }

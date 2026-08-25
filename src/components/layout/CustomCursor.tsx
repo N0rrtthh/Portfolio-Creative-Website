@@ -186,9 +186,6 @@ export default function CustomCursor({ design }: { design: "classic" | "eva" }) 
           opacity: 0,
           willChange: "transform",
           backgroundColor: cursorColor,
-          /* Halo in the opposite direction, so the dot separates from both a
-             black page and a white one without any blending. */
-          boxShadow: "0 0 0 1.5px color-mix(in srgb, var(--color-void) 55%, transparent)",
         }}
         aria-hidden="true"
       />
@@ -202,7 +199,6 @@ export default function CustomCursor({ design }: { design: "classic" | "eva" }) 
           height: baseSize,
           opacity: 0,
           borderColor: cursorColor,
-          boxShadow: "0 0 0 1px color-mix(in srgb, var(--color-void) 45%, transparent)",
           transition:
             "opacity 150ms ease-out, background-color 150ms ease-out, border-color 150ms ease-out",
         }}

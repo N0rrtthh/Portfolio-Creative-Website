@@ -33,6 +33,8 @@ jobs:
         run: npm run build
         env:
           PRIVATE_GITHUB_TOKEN: ${{ secrets.PRIVATE_GITHUB_TOKEN }}
+          # GitHub Pages serves the site under /Portfolio-Website.
+          NEXT_PUBLIC_BASE_PATH: /Portfolio-Website
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

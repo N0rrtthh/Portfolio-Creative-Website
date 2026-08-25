@@ -78,6 +78,65 @@ function MetricValue({
   );
 }
 
+/** A social icon that magnetically pulls toward the cursor on hover. */
+function MagneticSocial({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 260, damping: 18, mass: 0.5 });
+  const sy = useSpring(y, { stiffness: 260, damping: 18, mass: 0.5 });
+
+  const onMove = (e: React.MouseEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    x.set((e.clientX - (r.left + r.width / 2)) * 0.35);
+    y.set((e.clientY - (r.top + r.height / 2)) * 0.35);
+  };
+  const onLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.a
+      ref={ref}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ x: sx, y: sy }}
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-silver)] backdrop-blur-md transition-[color,border-color,box-shadow] duration-200 hover:text-[var(--color-starlight)] hover:border-[var(--color-accent-primary)] hover:shadow-[0_0_18px_rgba(67,97,238,0.25)] will-change-transform"
+      aria-label={label}
+      data-cursor-hover
+    >
+      {children}
+    </motion.a>
+  );
+}
+
+/* HUD corner brackets for the profile card. */
+function HudCorners() {
+  const base =
+    "pointer-events-none absolute z-20 h-5 w-5 border-[var(--color-accent-primary)] opacity-70";
+  return (
+    <>
+      <span className={`${base} left-2 top-2 border-l-2 border-t-2 rounded-tl-md`} />
+      <span className={`${base} right-2 top-2 border-r-2 border-t-2 rounded-tr-md`} />
+      <span className={`${base} bottom-2 left-2 border-b-2 border-l-2 rounded-bl-md`} />
+      <span className={`${base} bottom-2 right-2 border-b-2 border-r-2 rounded-br-md`} />
+    </>
+  );
+}
 
 export default function Hero() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -352,16 +411,9 @@ export default function Hero() {
               >
                 <span className="uppercase tracking-widest text-[10px]">Connect:</span>
                 {SOCIAL_LINKS.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-[var(--color-starlight)] transition-colors p-1"
-                    aria-label={link.label}
-                  >
+                  <MagneticSocial key={link.label} href={link.href} label={link.label}>
                     {link.icon === "github" ? <GitHubIcon size={16} /> : <XIcon size={16} />}
-                  </a>
+                  </MagneticSocial>
                 ))}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
@@ -400,6 +452,8 @@ export default function Hero() {
 
                   <TiltCard className="relative z-10 w-full">
                 <div className="relative overflow-hidden rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] p-4 backdrop-blur-2xl shadow-2xl">
+                  {/* HUD corner brackets */}
+                  <HudCorners />
                   <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl">
                     <Image
                       src={profilePic}

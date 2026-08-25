@@ -8,11 +8,7 @@ import ContactForm from "@/components/ui/ContactForm";
 import ChapterLabel from "@/components/ui/ChapterLabel";
 import ContactField from "@/components/ui/ContactField";
 import AnimeTraceLine from "@/components/ui/AnimeTraceLine";
-import {
-  Magnetic,
-  GlowTrail,
-  ScrambleText,
-} from "@/components/ui/anime/AnimeInteractions";
+import { Magnetic, GlowTrail } from "@/components/ui/anime/AnimeInteractions";
 
 const World = dynamic(
   () => import("@/components/ui/globe").then((m) => m.World),
@@ -54,47 +50,37 @@ const ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
   twitter: XIcon,
 };
 
-/* ── Cinematic globe config ─────────────────────────────────
-   Aceternity-style World: real country polygons, animated arcs
-   radiating from Manila (the only persistent point — red),
-   drag-to-rotate. Destination points bloom then slowly vanish. */
-const GLOBE_COLORS = ["#ff3b3b", "#ff6b6b", "#ef4444"];
-
+/* ── Globe config ───────────────────────────────────────────
+   Interactive wireframe globe: vector country outlines that double
+   as the living data layer (they breathe subtly at rest and peel
+   off + garble under the cursor), a pulsing Manila beacon with
+   great-circle arcs radiating outward. All colours resolve live
+   from the active theme tokens, so Classic/EVA × dark/light retint
+   it. */
 const GLOBE_CONFIG = {
-  globeColor: "#062056",
   showAtmosphere: true,
-  atmosphereColor: "#FFFFFF",
   atmosphereAltitude: 0.1,
-  emissive: "#062056",
-  emissiveIntensity: 0.1,
-  shininess: 0.9,
-  polygonColor: "rgba(255,255,255,0.7)",
-  ambientLight: "#38bdf8",
-  directionalLeftLight: "#ffffff",
-  directionalTopLight: "#ffffff",
-  pointLight: "#ffffff",
-  arcTime: 2450,
-  arcLength: 0.9,
-  initialPosition: { lat: 14.4791, lng: 120.8969 },
+  initialPosition: { lat: 25, lng: 50 },
   autoRotate: true,
   autoRotateSpeed: 0.5,
 };
 
+/* Great-circle flights radiating out of Manila (order = stagger wave). */
 const SAMPLE_ARCS = [
-  { order: 1, startLat: 14.5995, startLng: 120.9842, endLat: 35.6762, endLng: 139.6503, arcAlt: 0.2, color: GLOBE_COLORS[0] },
-  { order: 1, startLat: 14.5995, startLng: 120.9842, endLat: 1.3521, endLng: 103.8198, arcAlt: 0.15, color: GLOBE_COLORS[1] },
-  { order: 2, startLat: 14.5995, startLng: 120.9842, endLat: -33.8688, endLng: 151.2093, arcAlt: 0.3, color: GLOBE_COLORS[2] },
-  { order: 2, startLat: 14.5995, startLng: 120.9842, endLat: 51.5072, endLng: -0.1276, arcAlt: 0.4, color: GLOBE_COLORS[0] },
-  { order: 3, startLat: 14.5995, startLng: 120.9842, endLat: 40.7128, endLng: -74.006, arcAlt: 0.5, color: GLOBE_COLORS[1] },
-  { order: 3, startLat: 14.5995, startLng: 120.9842, endLat: 37.7749, endLng: -122.4194, arcAlt: 0.45, color: GLOBE_COLORS[2] },
-  { order: 4, startLat: 14.5995, startLng: 120.9842, endLat: 28.6139, endLng: 77.209, arcAlt: 0.25, color: GLOBE_COLORS[0] },
-  { order: 4, startLat: 14.5995, startLng: 120.9842, endLat: 52.52, endLng: 13.405, arcAlt: 0.4, color: GLOBE_COLORS[1] },
-  { order: 5, startLat: 14.5995, startLng: 120.9842, endLat: -22.9068, endLng: -43.1729, arcAlt: 0.7, color: GLOBE_COLORS[2] },
-  { order: 5, startLat: 14.5995, startLng: 120.9842, endLat: 34.0522, endLng: -118.2437, arcAlt: 0.4, color: GLOBE_COLORS[0] },
-  { order: 6, startLat: 14.5995, startLng: 120.9842, endLat: 48.8566, endLng: -2.3522, arcAlt: 0.4, color: GLOBE_COLORS[1] },
-  { order: 6, startLat: 14.5995, startLng: 120.9842, endLat: -34.6037, endLng: -58.3816, arcAlt: 0.65, color: GLOBE_COLORS[2] },
-  { order: 7, startLat: 14.5995, startLng: 120.9842, endLat: 37.5665, endLng: 126.978, arcAlt: 0.15, color: GLOBE_COLORS[0] },
-  { order: 7, startLat: 14.5995, startLng: 120.9842, endLat: -6.2088, endLng: 106.8456, arcAlt: 0.15, color: GLOBE_COLORS[1] },
+  { order: 1, startLat: 14.5995, startLng: 120.9842, endLat: 35.6762, endLng: 139.6503, arcAlt: 0.2 },
+  { order: 1, startLat: 14.5995, startLng: 120.9842, endLat: 1.3521, endLng: 103.8198, arcAlt: 0.15 },
+  { order: 2, startLat: 14.5995, startLng: 120.9842, endLat: -33.8688, endLng: 151.2093, arcAlt: 0.3 },
+  { order: 2, startLat: 14.5995, startLng: 120.9842, endLat: 51.5072, endLng: -0.1276, arcAlt: 0.4 },
+  { order: 3, startLat: 14.5995, startLng: 120.9842, endLat: 40.7128, endLng: -74.006, arcAlt: 0.5 },
+  { order: 3, startLat: 14.5995, startLng: 120.9842, endLat: 37.7749, endLng: -122.4194, arcAlt: 0.45 },
+  { order: 4, startLat: 14.5995, startLng: 120.9842, endLat: 28.6139, endLng: 77.209, arcAlt: 0.25 },
+  { order: 4, startLat: 14.5995, startLng: 120.9842, endLat: 52.52, endLng: 13.405, arcAlt: 0.4 },
+  { order: 5, startLat: 14.5995, startLng: 120.9842, endLat: -22.9068, endLng: -43.1729, arcAlt: 0.7 },
+  { order: 5, startLat: 14.5995, startLng: 120.9842, endLat: 34.0522, endLng: -118.2437, arcAlt: 0.4 },
+  { order: 6, startLat: 14.5995, startLng: 120.9842, endLat: 48.8566, endLng: -2.3522, arcAlt: 0.4 },
+  { order: 6, startLat: 14.5995, startLng: 120.9842, endLat: -34.6037, endLng: -58.3816, arcAlt: 0.65 },
+  { order: 7, startLat: 14.5995, startLng: 120.9842, endLat: 37.5665, endLng: 126.978, arcAlt: 0.15 },
+  { order: 7, startLat: 14.5995, startLng: 120.9842, endLat: -6.2088, endLng: 106.8456, arcAlt: 0.15 },
 ];
 
 const FACTS = [
@@ -149,7 +135,7 @@ export default function Contact() {
             <h2 className="text-section-title font-display text-[var(--color-starlight)]">
               Let&apos;s build something{" "}
               <span className="text-[var(--color-accent-primary)]">
-                unforgettable.
+                together.
               </span>
             </h2>
 
@@ -168,7 +154,7 @@ export default function Contact() {
             motion rather than adding a new element to the page. */}
         <AnimeTraceLine className="mb-6 md:mb-8" height={24} />
 
-        {/* ── Cinematic Globe — full-width hero-scale element ── */}
+        {/* ── Interactive globe — full-width band ── */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -184,7 +170,7 @@ export default function Contact() {
                 Drag to explore
               </span>
             </div>
-            {/* Gradient vignette for cinematic depth */}
+            {/* Gradient vignette for depth */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,var(--color-void)_100%)]" />
           </div>
         </motion.div>
@@ -276,10 +262,7 @@ export default function Contact() {
                 <div className="mb-8 flex items-end justify-between gap-4 border-b border-[var(--color-glass-border)] pb-5">
                   <div>
                     <h3 className="font-display text-2xl font-bold text-[var(--color-starlight)]">
-                      {/* Scrambles once on hover — the form header is the one
-                          place in this section a deliberate glitch reads as
-                          "transmission" rather than as noise. */}
-                      <ScrambleText text="Send a message" />
+                      Send a message
                     </h3>
                     <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-[var(--color-ash)]">
                       All fields required

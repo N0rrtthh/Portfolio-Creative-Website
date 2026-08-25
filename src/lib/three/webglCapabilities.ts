@@ -57,7 +57,7 @@ export function getFloatTargetSupport(): FloatTargetSupport {
   cached = override ?? probeFloatTargets();
 
   // One diagnostic line, easy to spot in the console.
-  // eslint-disable-next-line no-console
+   
   console.info(
     `[hologram] float render target support: ${cached.toUpperCase()}` +
       (override ? " (forced by override)" : ""),

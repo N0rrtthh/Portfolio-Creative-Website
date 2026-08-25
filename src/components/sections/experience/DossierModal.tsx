@@ -2,20 +2,16 @@
 
 import { memo, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  Activity,
-  Cpu,
-  FileText,
-  Layers,
-  MapPin,
-  Terminal,
-  X,
-} from "lucide-react";
+import { X } from "lucide-react";
 import type { TimelineEntry } from "@/types/experience";
 
 /**
- * Full mission dossier. Mounted only while open (via AnimatePresence in the
- * parent), so none of this markup exists in the DOM during normal scrolling.
+ * Experience detail modal. Mirrors the Projects modal structure: pinned
+ * header, design-token styling, and an inner `.scroll-panel` body carrying
+ * `data-lenis-prevent` so wheel input that starts inside the panel scrolls
+ * the panel instead of being hijacked by Lenis. Mounted only while open
+ * (via AnimatePresence in the parent), so none of this markup exists in the
+ * DOM during normal scrolling.
  */
 const DossierModal = memo(function DossierModal({
   item,
@@ -46,139 +42,118 @@ const DossierModal = memo(function DossierModal({
 
       aria-modal="true"
       aria-label={`${item.role} at ${item.company}`}
-      className="pointer-events-auto fixed inset-0 z-[99999] flex select-none items-center justify-center bg-black/80 p-4 font-sans backdrop-blur-2xl sm:p-6 md:p-8"
+      className="pointer-events-auto fixed inset-0 z-[99999] flex items-center justify-center bg-[var(--color-void)]/80 p-4 backdrop-blur-md sm:p-6"
     >
-      {/* Ambient radial lighting */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[650px] w-[650px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/15 blur-[140px]" />
-
       <motion.div
         initial={{ scale: 0.96, opacity: 0, y: 16 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.96, opacity: 0, y: 16 }}
         transition={{ type: "spring", stiffness: 360, damping: 30 }}
         onClick={(e) => e.stopPropagation()}
-        /* `.scroll-panel` (globals.css) carries overflow-y:auto +
-           overscroll-behavior:contain + -webkit-overflow-scrolling:touch and
-           hides the bar. That replaces the onWheel/onTouchMove
-           stopPropagation patches, which blocked chaining only for React's
-           synthetic events and did nothing for iOS momentum scrolling. */
-        className="scroll-panel relative z-[100000] max-h-[86vh] w-full max-w-3xl rounded-[2.25rem] border border-white/15 bg-[#0a0a10]/95 p-6 text-slate-100 shadow-[0_30px_100px_rgba(0,0,0,0.85)] sm:p-8"
-
+        /* The panel itself never scrolls — it is a flex column with a pinned
+           header and an inner `.scroll-panel` body (below), the same shape
+           as the Projects modal. `data-lenis-prevent` on that body keeps
+           Lenis from hijacking wheel events that start inside the panel. */
+        className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
       >
-        {/* Top bar */}
-        <div className="mb-6 flex items-center justify-between gap-4 border-b border-white/10 pb-5">
-          <div className="flex items-center gap-2.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400 sm:text-xs">
-              {item.operationCode} • {item.period}
-            </span>
+        {/* Header — identity + close, pinned above the scroll area */}
+        <div className="flex items-start justify-between gap-4 border-b border-[var(--color-glass-border)] px-6 pb-5 pt-6 sm:px-8">
+          <div className="flex min-w-0 items-start gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-accent-primary)]">
+              <Icon size={22} />
+            </div>
+            <div className="min-w-0">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--color-ash)]">
+                {item.period} · {item.location}
+              </p>
+              <h3 className="mt-1.5 font-display text-2xl font-bold leading-tight text-[var(--color-starlight)] sm:text-3xl">
+                {item.role}
+              </h3>
+              <p className="mt-1 font-body text-sm text-[var(--color-silver)]">
+                {item.company}
+              </p>
+            </div>
           </div>
-
           <button
             type="button"
             onClick={onClose}
-            className="group/close flex h-9 cursor-pointer items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 font-mono text-[11px] font-bold uppercase tracking-wider text-slate-300 transition-colors duration-200 hover:bg-white/15 hover:text-white"
+            aria-label="Close experience details"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--color-glass-border)] text-[var(--color-silver)] transition-colors hover:border-[var(--color-accent-primary)] hover:text-[var(--color-starlight)]"
           >
-            <X
-              size={15}
-              className="transition-transform duration-200 group-hover/close:rotate-90"
-            />
-            <span>Close</span>
+            <X size={16} />
           </button>
         </div>
 
-        {/* Hero header */}
-        <div className="mb-6 flex items-start gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
-            <Icon size={28} />
-          </div>
-          <div className="min-w-0">
-            <div className="mb-1 flex flex-wrap items-center gap-2 font-mono text-xs font-bold uppercase tracking-wide text-indigo-400">
-              <span>MISSION {item.number}</span>
-              <span>•</span>
-              <span>{item.company}</span>
-            </div>
-            <h2 className="font-display text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-3xl">
-              {item.role}
-            </h2>
-            <div className="mt-2 flex flex-wrap items-center gap-3 font-mono text-[11px] text-slate-400">
-              <span className="flex items-center gap-1.5 text-slate-300">
-                <MapPin size={12} className="text-indigo-400" />
-                {item.location}
-              </span>
-              <span>•</span>
-              <span>{item.coordinates}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Executive summary */}
-        <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-          <h3 className="mb-2 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-indigo-300">
-            <Terminal size={13} /> Mission Briefing &amp; Context
-          </h3>
-          <p className="font-sans text-sm leading-relaxed text-slate-200">
+        {/* Scrollable body — `data-lenis-prevent` keeps Lenis from hijacking
+            wheel events that start inside the panel; `.scroll-panel` adds
+            overflow, overscroll containment and iOS momentum scrolling. */}
+        <div
+          data-lenis-prevent
+          className="scroll-panel min-h-0 flex-1 px-6 py-6 sm:px-8"
+        >
+          {/* Overview */}
+          <p className="font-body text-sm leading-relaxed text-[var(--color-pearl)] sm:text-base">
             {item.description}
           </p>
-        </div>
 
-        {/* Key objectives */}
-        <div className="mb-6">
-          <h3 className="mb-3 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400">
-            <FileText size={13} className="text-amber-400" /> Key Deliverables &amp;
-            Impact
-          </h3>
-          <div className="grid gap-2.5">
-            {item.highlights.map((h, i) => (
+          {/* Highlights */}
+          <div className="mt-7">
+            <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-ash)]">
+              Highlights
+            </p>
+            <ul className="grid gap-2.5">
+              {item.highlights.map((h) => (
+                <li key={h} className="flex items-start gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent-primary)]"
+                  />
+                  <span className="font-body text-sm leading-relaxed text-[var(--color-silver)]">
+                    {h}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Architecture & impact — same definition-list pattern as the
+              Projects modal's Problem / Solution / Outcome block. */}
+          <dl className="mt-7 divide-y divide-[var(--color-glass-border)] border-y border-[var(--color-glass-border)]">
+            {(
+              [
+                ["Architecture", item.details.architecture],
+                ["Impact", item.details.impact],
+              ] as const
+            ).map(([label, text]) => (
               <div
-                key={h}
-                className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3.5 transition-colors hover:border-white/15"
+                key={label}
+                className="grid grid-cols-[5.5rem_1fr] gap-4 py-3.5 sm:grid-cols-[7rem_1fr]"
               >
-                <span className="shrink-0 rounded-full border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 font-mono text-[10px] font-bold text-indigo-300">
-                  0{i + 1}
-                </span>
-                <span className="font-sans text-xs leading-snug text-slate-200 sm:text-sm">
-                  {h}
-                </span>
+                <dt className="pt-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-ash)]">
+                  {label}
+                </dt>
+                <dd className="font-body text-sm leading-relaxed text-[var(--color-silver)]">
+                  {text}
+                </dd>
               </div>
             ))}
-          </div>
-        </div>
+          </dl>
 
-        {/* Architecture & telemetry */}
-        <div className="mb-6 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <span className="mb-1.5 flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cyan-300">
-              <Layers size={13} className="text-cyan-400" /> Architecture Schematic
-            </span>
-            <p className="font-sans text-xs leading-relaxed text-slate-300">
-              {item.details.architecture}
+          {/* Stack */}
+          <div className="mt-7 pb-1">
+            <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-ash)]">
+              Stack
             </p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <span className="mb-1.5 flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-300">
-              <Activity size={13} className="text-emerald-400" /> Measured Telemetry
-            </span>
-            <p className="font-sans text-xs leading-relaxed text-slate-300">
-              {item.details.impact}
-            </p>
-          </div>
-        </div>
-
-        {/* Arsenal */}
-        <div className="border-t border-white/10 pt-4">
-          <span className="mb-2.5 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400">
-            <Cpu size={13} className="text-indigo-400" /> Deployed Arsenal:
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {item.tech.map((t) => (
-              <span
-                key={t}
-                className="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-xs text-slate-300"
-              >
-                {t}
-              </span>
-            ))}
+            <div className="flex flex-wrap gap-2">
+              {item.tech.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-2.5 py-1 font-mono text-[11px] text-[var(--color-silver)]"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </motion.div>

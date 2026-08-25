@@ -27,7 +27,7 @@ export interface TechItem {
   name: string;
   category: string;
   icon: string;
-  /** 0–100 proficiency shown as an animated bar on the card back. */
+  /** 0–100 proficiency — kept in the data for reference, no longer rendered. */
   level?: number;
   /** One-line note shown on the card back — how the tool is actually used. */
   note?: string;
@@ -332,9 +332,10 @@ export const NAV_ITEMS = [
   { label: "Contact", href: "#contact" },
 ];
 
-/** PLACEHOLDER — add your real resume PDF at /public/resume.pdf (this
- * exact path) to make the "Resume" nav link work. */
-export const RESUME_URL = "/ELRONI_QUIÑONES_Resume.pdf";
+/** The resume PDF lives in /public. It is prefixed with the deploy
+ * basePath (NEXT_PUBLIC_BASE_PATH at build time, e.g. GitHub Pages)
+ * so the link works on every host. */
+export const RESUME_URL = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/ELRONI_QUIÑONES_Resume.pdf`;
 
 export const CONTACT_EMAIL = "quinoneselroni@gmail.com";
 

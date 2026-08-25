@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
@@ -21,6 +21,14 @@ import { asset } from "@/lib/assets";
  *   · two supporting models slide in from the far left and far right,
  *     angled inward, visible but subordinate.
  *   · Mouse parallax is ACTIVE ONLY HERE.
+ *   · All three models bob up and down on smooth sines — the same
+ *     single-sine feel as the Contact globe.
+ *   · Slow box-slice GLITCH bursts: chunky box blocks of the model
+ *     jump sideways in the vertex shaders, the model offsets on X and
+ *     flickers — like a corrupted hologram. The two background models
+ *     run their own, more frequent glitch schedule.
+ *   · Side models also run the tracing scan-line shader (dimmer,
+ *     single pass) so all three holograms share the same language.
  *
  * ABOUT (Ch.02) + GITHUB ARCHIVE (Ch.03) — GREY SOLID:
  *   · the model turns into a solid grey bust, right-of-centre but NOT
@@ -72,11 +80,52 @@ const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
    bright as the band passes and fade behind it — reads as the wireframe
    being traced. Everything is computed in the shader; the CPU only
    updates `uTime` and `uOpacity` once per frame. */
+/* ── GLITCH — box slice ────────────────────────────────────────────
+   Shared vertex displacement: the model is divided into a grid of
+   chunky rectangular BOXES (x bands × y bands); while uGlitch > 0,
+   random boxes jump sideways (with a slight vertical lift) as a unit.
+   uGlitchSeed reshuffles which boxes move, uGlitchAmp scales the
+   shift relative to model height. GLITCH_DISPLACE gets injected into
+   the point-cloud materials via onBeforeCompile; TRACE_VERT inlines
+   the same math. */
+const GLITCH_PARS = /* glsl */ `
+  uniform float uGlitch;
+  uniform float uGlitchSeed;
+  uniform float uGlitchAmp;
+`;
+
+const GLITCH_DISPLACE = /* glsl */ `
+  if (uGlitch > 0.001) {
+    float gBoxX = floor(position.x * 3.0 + uGlitchSeed * 13.1);
+    float gBoxY = floor(position.y * 4.0 + uGlitchSeed * 31.7);
+    float gBoxId = gBoxY * 7.31 + gBoxX;
+    float gRnd = fract(sin(gBoxId * 12.9898 + uGlitchSeed * 78.233) * 43758.5453);
+    float gGate = step(0.55, fract(gRnd * 5.7 + uGlitchSeed * 0.31));
+    float gShift = (fract(gRnd * 3.31) - 0.5) * 2.0;
+    float gLift = (fract(gRnd * 9.13) - 0.5) * 0.6;
+    transformed.x += gShift * gGate * uGlitch * uGlitchAmp;
+    transformed.y += gLift * gGate * uGlitch * uGlitchAmp;
+  }
+`;
+
 const TRACE_VERT = /* glsl */ `
+  ${GLITCH_PARS}
   varying vec3 vPos;
   void main() {
-    vPos = position;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vec3 pos = position;
+    if (uGlitch > 0.001) {
+      float gBoxX = floor(pos.x * 3.0 + uGlitchSeed * 13.1);
+      float gBoxY = floor(pos.y * 4.0 + uGlitchSeed * 31.7);
+      float gBoxId = gBoxY * 7.31 + gBoxX;
+      float gRnd = fract(sin(gBoxId * 12.9898 + uGlitchSeed * 78.233) * 43758.5453);
+      float gGate = step(0.55, fract(gRnd * 5.7 + uGlitchSeed * 0.31));
+      float gShift = (fract(gRnd * 3.31) - 0.5) * 2.0;
+      float gLift = (fract(gRnd * 9.13) - 0.5) * 0.6;
+      pos.x += gShift * gGate * uGlitch * uGlitchAmp;
+      pos.y += gLift * gGate * uGlitch * uGlitchAmp;
+    }
+    vPos = pos;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   }
 `;
 
@@ -116,20 +165,30 @@ const SOLID_STOPS = [0, 0.3, 0.45, 0.95, 1];
 const SOLID_OPACITY = [0, 0, 0.7, 0.7, 0];
 const WIRE_MULT = [1, 1, 0, 0, 0];
 
-/* ── BACKGROUND side models: visible only in the hero ── */
+/* ── BACKGROUND side models: visible only in the hero ──
+   Opacity raised from 0.32 → 0.55 so they read clearly as background
+   companions, but the dim color + additive blending keeps them well
+   below the brightness of the hero text. */
 const SIDE_STOPS = [0, 0.22, 0.33, 1];
-const SIDE_OPACITY = [0.32, 0.32, 0, 0];
+const SIDE_OPACITY = [0.55, 0.55, 0, 0];
 
-/* Side models: visible, angled inward, pushed back. */
-const SIDE_REST_X = 2.9;
+/* Side models: visible, angled inward, pushed back.
+   Both sit at the FAR edges of the frame — the left one hugs the far
+   left, the right one the far right — so the main centre model owns
+   the stage. Left renders as a DITHERED point cloud (jittered grain),
+   right as a clean POINT cloud, so the trio reads as three distinct
+   hologram styles. */
+const SIDE_REST_X_L = 5.2;
+const SIDE_REST_X_R = 4.8;
 const SIDE_Z = -2.2;
 const SIDE_SCALE = 1.4;
 const SIDE_ENTER_FROM = 9.0;
-const SIDE_Y_OFFSET = -0.4;
+const SIDE_Y_OFFSET_L = -0.45;
+const SIDE_Y_OFFSET_R = -0.25;
 
 /* Point sizing. */
 const MAIN_POINT_SIZE = 0.04;
-const SIDE_POINT_SIZE = 0.032;
+const SIDE_POINT_SIZE = 0.038;
 
 function FoxTrio({
   mainX,
@@ -164,14 +223,39 @@ function FoxTrio({
   const rightRef = useRef<THREE.Group>(null);
   const solidRef = useRef<THREE.MeshStandardMaterial>(null);
   const sparkMainRef = useRef<THREE.PointsMaterial>(null);
-  const sparkLeftRef = useRef<THREE.PointsMaterial>(null);
+  const leftPointsMatRef = useRef<THREE.PointsMaterial>(null);
   const sparkRightRef = useRef<THREE.PointsMaterial>(null);
   const traceLinesRef = useRef<THREE.LineSegments>(null);
   const traceMatRef = useRef<THREE.ShaderMaterial>(null);
   const haloLinesRef = useRef<THREE.LineSegments>(null);
   const haloMatRef = useRef<THREE.ShaderMaterial>(null);
+  const leftTraceMatRef = useRef<THREE.ShaderMaterial>(null);
+  const rightTraceMatRef = useRef<THREE.ShaderMaterial>(null);
 
   const mouse = useRef({ x: 0, y: 0 });
+  /* Glitch burst schedule: next trigger time, burst window, box seed,
+     and the per-shuffle jitter/flicker values. */
+  const glitchRef = useRef({
+    next: 3.0,
+    start: -10,
+    end: -10,
+    dur: 0.4,
+    seed: 0,
+    lastShuffle: 0,
+    jx: 0,
+    dip: 0,
+  });
+  /* SIDE models get their own, MORE FREQUENT glitch schedule. */
+  const sideGlitchRef = useRef({
+    next: 2.0,
+    start: -10,
+    end: -10,
+    dur: 0.4,
+    seed: 0,
+    lastShuffle: 0,
+    jx: 0,
+    dip: 0,
+  });
   const intro = useRef(0);
   const rotAccum = useRef(0);
   const lastSpin = useRef(0);
@@ -197,6 +281,30 @@ function FoxTrio({
     return sampleGeometry(geometry, 6);
   }, [geometry]);
 
+  /* Left model: DITHERED point cloud — sampled vertices with a small
+     random jitter per point so the surface reads as grain/dither rather
+     than a clean scan. Deterministic seed so it doesn't re-scatter on
+     re-render. */
+  const sideDitherGeo = useMemo(() => {
+    if (!geometry) return null;
+    const base = sampleGeometry(geometry, 5);
+    const pos = base.getAttribute("position");
+    const jittered = new Float32Array(pos.count * 3);
+    let seed = 1337;
+    const rand = () => {
+      seed = (seed * 16807) % 2147483647;
+      return (seed / 2147483647) * 2 - 1;
+    };
+    for (let i = 0; i < pos.count; i++) {
+      jittered[i * 3] = pos.getX(i) + rand() * 0.03;
+      jittered[i * 3 + 1] = pos.getY(i) + rand() * 0.03;
+      jittered[i * 3 + 2] = pos.getZ(i) + rand() * 0.03;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(jittered, 3));
+    return g;
+  }, [geometry]);
+
   /* The model's own edges — the lines that get traced. Low threshold
      angle (8°) picks up MORE edges for a denser, larger-scale trace. */
   const edges = useMemo(() => {
@@ -216,6 +324,29 @@ function FoxTrio({
   /* Trace shader uniforms — one time uniform drives the whole effect.
      Two passes share the shader: a bright CORE and a slightly enlarged,
      softer HALO that fakes thicker lines + glow (no postprocessing). */
+  /* ── GLITCH uniforms — one envelope drives the slice tear across all
+     hologram materials (trace lines + all three point clouds). Amp is
+     scaled to model height so the tear reads proportionally. Held in a
+     ref (not useMemo) because useFrame mutates the values per frame. ── */
+  const glitchUniforms = useRef({
+    uGlitch: { value: 0 },
+    uGlitchSeed: { value: 0 },
+    uGlitchAmp: { value: 0.12 },
+  });
+  useEffect(() => {
+    glitchUniforms.current.uGlitchAmp.value = bounds.height * 0.12;
+  }, [bounds]);
+
+  /* Side models have their own glitch envelope (more frequent bursts). */
+  const sideGlitchUniforms = useRef({
+    uGlitch: { value: 0 },
+    uGlitchSeed: { value: 0 },
+    uGlitchAmp: { value: 0.12 },
+  });
+  useEffect(() => {
+    sideGlitchUniforms.current.uGlitchAmp.value = bounds.height * 0.12;
+  }, [bounds]);
+
   const traceUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -224,6 +355,10 @@ function FoxTrio({
       uMinY: { value: bounds.minY },
       uHeight: { value: bounds.height },
       uBoost: { value: 1.0 },
+      /* Glitch uniforms — values synced per-frame via traceMatRef. */
+      uGlitch: { value: 0 },
+      uGlitchSeed: { value: 0 },
+      uGlitchAmp: { value: 0.12 },
     }),
     [sparkColor, bounds]
   );
@@ -236,9 +371,65 @@ function FoxTrio({
       uMinY: { value: bounds.minY },
       uHeight: { value: bounds.height },
       uBoost: { value: 0.35 },
+      /* Glitch uniforms — values synced per-frame via haloMatRef. */
+      uGlitch: { value: 0 },
+      uGlitchSeed: { value: 0 },
+      uGlitchAmp: { value: 0.12 },
     }),
     [sparkColor, bounds]
   );
+
+  /* SIDE tracing lines — same scan-band shader as the hero model, one
+     dimmer single pass (no halo). Both side materials share this uniform
+     source; values are copied in by R3F and synced per-frame. */
+  const sideTraceUniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uColor: { value: new THREE.Color(sideSparkColor) },
+      uOpacity: { value: 0 },
+      uMinY: { value: bounds.minY },
+      uHeight: { value: bounds.height },
+      uBoost: { value: 0.55 },
+      /* Glitch uniforms — values synced per-frame via the mat refs. */
+      uGlitch: { value: 0 },
+      uGlitchSeed: { value: 0 },
+      uGlitchAmp: { value: 0.12 },
+    }),
+    [sideSparkColor, bounds]
+  );
+
+  /* Inject the glitch box-slice displacement into all three point-cloud
+     materials via onBeforeCompile — they keep their JSX declarations
+     and refs; this just hooks the glitch uniforms in. The side models
+     use their own, more frequently driven envelope. */
+  useEffect(() => {
+    const patch = (
+      mat: THREE.PointsMaterial | null,
+      u: {
+        uGlitch: { value: number };
+        uGlitchSeed: { value: number };
+        uGlitchAmp: { value: number };
+      }
+    ) => {
+      if (!mat) return;
+      mat.onBeforeCompile = (shader) => {
+        shader.uniforms.uGlitch = u.uGlitch;
+        shader.uniforms.uGlitchSeed = u.uGlitchSeed;
+        shader.uniforms.uGlitchAmp = u.uGlitchAmp;
+        shader.vertexShader = shader.vertexShader
+          .replace("#include <common>", `#include <common>\n${GLITCH_PARS}`)
+          .replace(
+            "#include <begin_vertex>",
+            `#include <begin_vertex>\n${GLITCH_DISPLACE}`
+          );
+      };
+      mat.customProgramCacheKey = () => "journey-glitch-points";
+      mat.needsUpdate = true;
+    };
+    patch(sparkMainRef.current, glitchUniforms.current);
+    patch(leftPointsMatRef.current, sideGlitchUniforms.current);
+    patch(sparkRightRef.current, sideGlitchUniforms.current);
+  }, []);
 
   useFrame(({ clock, pointer }, delta) => {
     const main = mainRef.current;
@@ -266,10 +457,86 @@ function FoxTrio({
     const mainOpacity = mainO.get() * easeFade;
     const heroVisible = wm > 0.01;
 
+    /* ── GLITCH scheduler — slow box-slice bursts, hero only ──
+       Every few seconds a burst fires: random box blocks jump in the
+       vertex shaders, the whole model offsets on X, and the brightness
+       dips. The pattern re-rolls every ~0.12s inside a burst so it
+       reads slow and deliberate, not buzzy. Gated by the wire
+       multiplier so the solid bust in Ch.02+ stays clean. */
+    const g = glitchRef.current;
+    const glitchLive = wm > 0.01;
+    if (glitchLive && t >= g.next) {
+      g.start = t;
+      g.dur = 0.35 + Math.random() * 0.35;
+      g.end = t + g.dur;
+      g.next =
+        g.end + (quality.reduceContinuousFx ? 6.0 : 3.5) + Math.random() * 4.0;
+      g.seed = Math.random() * 100;
+      g.jx = (Math.random() - 0.5) * 0.14;
+      g.dip = 0.45 * Math.random();
+      g.lastShuffle = t;
+    }
+    let glitchAmt = 0;
+    if (glitchLive && t >= g.start && t < g.end) {
+      const ph = clamp01((t - g.start) / Math.max(0.001, g.dur));
+      glitchAmt =
+        Math.sin(Math.PI * ph) * (quality.reduceContinuousFx ? 0.5 : 1);
+      /* Re-roll the box pattern a few times per burst — slow, deliberate. */
+      if (t - g.lastShuffle > 0.12) {
+        g.seed = Math.random() * 100;
+        g.jx = (Math.random() - 0.5) * 0.14;
+        g.dip = 0.45 * Math.random();
+        g.lastShuffle = t;
+      }
+    }
+    glitchUniforms.current.uGlitch.value = glitchAmt;
+    glitchUniforms.current.uGlitchSeed.value = g.seed;
+    const jx = glitchAmt > 0.01 ? g.jx * glitchAmt : 0;
+    const flick = glitchAmt > 0.01 ? 1 - g.dip * glitchAmt : 1;
+
+    /* ── SIDE GLITCH scheduler — more frequent bursts than the main
+       model so the background companions flicker more often. ── */
+    const sg = sideGlitchRef.current;
+    if (glitchLive && t >= sg.next) {
+      sg.start = t;
+      sg.dur = 0.3 + Math.random() * 0.35;
+      sg.end = t + sg.dur;
+      sg.next =
+        sg.end + (quality.reduceContinuousFx ? 2.4 : 1.1) + Math.random() * 1.8;
+      sg.seed = Math.random() * 100;
+      sg.jx = (Math.random() - 0.5) * 0.16;
+      sg.dip = 0.5 * Math.random();
+      sg.lastShuffle = t;
+    }
+    let sideGlitchAmt = 0;
+    if (glitchLive && t >= sg.start && t < sg.end) {
+      const ph = clamp01((t - sg.start) / Math.max(0.001, sg.dur));
+      sideGlitchAmt =
+        Math.sin(Math.PI * ph) * (quality.reduceContinuousFx ? 0.5 : 1);
+      if (t - sg.lastShuffle > 0.1) {
+        sg.seed = Math.random() * 100;
+        sg.jx = (Math.random() - 0.5) * 0.16;
+        sg.dip = 0.5 * Math.random();
+        sg.lastShuffle = t;
+      }
+    }
+    sideGlitchUniforms.current.uGlitch.value = sideGlitchAmt;
+    sideGlitchUniforms.current.uGlitchSeed.value = sg.seed;
+    const jxSide = sideGlitchAmt > 0.01 ? sg.jx * sideGlitchAmt : 0;
+    const sideFlick = sideGlitchAmt > 0.01 ? 1 - sg.dip * sideGlitchAmt : 1;
+
     /* ── MAIN transform ── */
-    const floatY = Math.sin(t * 0.5 * slow) * 0.1;
+    /* Smooth sine bob — same feel as the Contact globe: a clear,
+       gentle up-and-down in the hero, calmer once the model becomes
+       the solid bust in Ch.02+ (amp eases down with the wire mult). */
+    const bobAmp = 0.1 + 0.18 * wm;
+    const floatY = Math.sin(t * 1.0 * slow) * bobAmp;
     const maxX = viewport.width * 0.38;
-    main.position.set(Math.min(mainX.get(), maxX), mainY.get() + floatY, 0);
+    main.position.set(
+      Math.min(mainX.get(), maxX) + jx,
+      mainY.get() + floatY,
+      0
+    );
     const mScale = mainS.get() * easePop;
     main.scale.set(mScale, mScale, mScale);
 
@@ -289,16 +556,24 @@ function FoxTrio({
     if (haloLinesRef.current) haloLinesRef.current.visible = heroVisible;
     if (traceMatRef.current) {
       traceMatRef.current.uniforms.uTime.value = t;
-      traceMatRef.current.uniforms.uOpacity.value = mainOpacity * wm;
+      traceMatRef.current.uniforms.uOpacity.value = mainOpacity * wm * flick;
+      traceMatRef.current.uniforms.uGlitch.value = glitchAmt;
+      traceMatRef.current.uniforms.uGlitchSeed.value = g.seed;
+      traceMatRef.current.uniforms.uGlitchAmp.value =
+        glitchUniforms.current.uGlitchAmp.value;
     }
     if (haloMatRef.current) {
       haloMatRef.current.uniforms.uTime.value = t;
-      haloMatRef.current.uniforms.uOpacity.value = mainOpacity * wm;
+      haloMatRef.current.uniforms.uOpacity.value = mainOpacity * wm * flick;
+      haloMatRef.current.uniforms.uGlitch.value = glitchAmt;
+      haloMatRef.current.uniforms.uGlitchSeed.value = g.seed;
+      haloMatRef.current.uniforms.uGlitchAmp.value =
+        glitchUniforms.current.uGlitchAmp.value;
     }
 
     /* Hero particles. */
     if (sparkMainRef.current) {
-      sparkMainRef.current.opacity = mainOpacity * wm * 0.8;
+      sparkMainRef.current.opacity = mainOpacity * wm * 0.8 * flick;
       sparkMainRef.current.size = MAIN_POINT_SIZE;
     }
 
@@ -310,27 +585,40 @@ function FoxTrio({
     /* ── SIDE models ── */
     const enterT = easeOutCubic(clamp01((t - 0.6) / 1.8));
     const sideOpacity = sideO.get() * enterT * easeFade;
-    const restX = Math.min(SIDE_REST_X, viewport.width * 0.46);
-    const sx = lerp(SIDE_ENTER_FROM, restX, enterT);
+    const restL = Math.min(SIDE_REST_X_L, viewport.width * 0.5);
+    const restR = Math.min(SIDE_REST_X_R, viewport.width * 0.49);
+    const sxL = lerp(SIDE_ENTER_FROM, restL, enterT);
+    const sxR = lerp(SIDE_ENTER_FROM, restR, enterT);
 
-    const bobL = Math.sin(t * 0.4 * slow) * 0.07;
-    const bobR = Math.sin(t * 0.4 * slow + Math.PI) * 0.07;
+    const bobL = Math.sin(t * 0.85 * slow) * 0.16;
+    const bobR = Math.sin(t * 0.85 * slow + Math.PI) * 0.16;
 
-    left.position.set(-sx, SIDE_Y_OFFSET + bobL, SIDE_Z);
-    right.position.set(sx, SIDE_Y_OFFSET + bobR, SIDE_Z);
+    left.position.set(-sxL - jxSide, SIDE_Y_OFFSET_L + bobL, SIDE_Z);
+    right.position.set(sxR + jxSide, SIDE_Y_OFFSET_R + bobR, SIDE_Z);
     left.scale.set(SIDE_SCALE, SIDE_SCALE, SIDE_SCALE);
     right.scale.set(SIDE_SCALE, SIDE_SCALE, SIDE_SCALE);
     /* Angled inward toward centre. */
     left.rotation.y = 0.4 + (-t * 0.12 * slow * enterT);
     right.rotation.y = -0.4 + (t * 0.12 * slow * enterT);
 
-    if (sparkLeftRef.current) {
-      sparkLeftRef.current.opacity = sideOpacity;
-      sparkLeftRef.current.size = SIDE_POINT_SIZE;
+    if (leftPointsMatRef.current) {
+      leftPointsMatRef.current.opacity = sideOpacity * 0.9 * sideFlick;
+      leftPointsMatRef.current.size = SIDE_POINT_SIZE * 0.9;
     }
     if (sparkRightRef.current) {
-      sparkRightRef.current.opacity = sideOpacity;
+      sparkRightRef.current.opacity = sideOpacity * sideFlick;
       sparkRightRef.current.size = SIDE_POINT_SIZE;
+    }
+
+    /* Side tracing lines — same scan-band shader, side glitch envelope. */
+    for (const mat of [leftTraceMatRef.current, rightTraceMatRef.current]) {
+      if (!mat) continue;
+      mat.uniforms.uTime.value = t;
+      mat.uniforms.uOpacity.value = sideOpacity * 0.55 * sideFlick;
+      mat.uniforms.uGlitch.value = sideGlitchAmt;
+      mat.uniforms.uGlitchSeed.value = sg.seed;
+      mat.uniforms.uGlitchAmp.value =
+        sideGlitchUniforms.current.uGlitchAmp.value;
     }
 
     /* Hide side models entirely once faded for perf. */
@@ -339,7 +627,7 @@ function FoxTrio({
     right.visible = sideVisible;
   });
 
-  if (!geometry || !pointsGeo || !sidePointsGeo) return null;
+  if (!geometry || !pointsGeo || !sidePointsGeo || !sideDitherGeo) return null;
 
   return (
     <>
@@ -413,13 +701,13 @@ function FoxTrio({
         </points>
       </group>
 
-      {/* LEFT supporting model. */}
+      {/* LEFT supporting model — dithered point cloud. */}
       <group ref={leftRef}>
-        <points geometry={sidePointsGeo} renderOrder={1}>
+        <points geometry={sideDitherGeo} renderOrder={1}>
           <pointsMaterial
-            ref={sparkLeftRef}
+            ref={leftPointsMatRef}
             color={sideSparkColor}
-            size={SIDE_POINT_SIZE}
+            size={SIDE_POINT_SIZE * 0.9}
             transparent
             opacity={0}
             sizeAttenuation
@@ -427,9 +715,23 @@ function FoxTrio({
             blending={THREE.AdditiveBlending}
           />
         </points>
+        {/* Tracing lines — same scan-band shader as the hero model. */}
+        {edges && (
+          <lineSegments geometry={edges} renderOrder={2}>
+            <shaderMaterial
+              ref={leftTraceMatRef}
+              uniforms={sideTraceUniforms}
+              vertexShader={TRACE_VERT}
+              fragmentShader={TRACE_FRAG}
+              transparent
+              depthWrite={false}
+              blending={THREE.AdditiveBlending}
+            />
+          </lineSegments>
+        )}
       </group>
 
-      {/* RIGHT supporting model. */}
+      {/* RIGHT supporting model — point cloud. */}
       <group ref={rightRef}>
         <points geometry={sidePointsGeo} renderOrder={1}>
           <pointsMaterial
@@ -443,6 +745,20 @@ function FoxTrio({
             blending={THREE.AdditiveBlending}
           />
         </points>
+        {/* Tracing lines — same scan-band shader as the hero model. */}
+        {edges && (
+          <lineSegments geometry={edges} renderOrder={2}>
+            <shaderMaterial
+              ref={rightTraceMatRef}
+              uniforms={sideTraceUniforms}
+              vertexShader={TRACE_VERT}
+              fragmentShader={TRACE_FRAG}
+              transparent
+              depthWrite={false}
+              blending={THREE.AdditiveBlending}
+            />
+          </lineSegments>
+        )}
       </group>
     </>
   );
@@ -471,10 +787,11 @@ export default function JourneyModel({
     return mode === "dark" ? "#a5b4fc" : "#4361ee";
   }, [isEva, mode]);
 
-  // Side model particle color — visible but subordinate.
+  // Side model particle color — visible but subordinate (still dimmer
+  // than the hero text even at the raised opacity).
   const sideSparkColor = useMemo(() => {
-    if (isEva) return mode === "dark" ? "#166534" : "#9a3412";
-    return mode === "dark" ? "#475569" : "#64748b";
+    if (isEva) return mode === "dark" ? "#15803d" : "#c2410c";
+    return mode === "dark" ? "#64748b" : "#94a3b8";
   }, [isEva, mode]);
 
   const mainX = useTransform(progress, STOPS, POS_X);

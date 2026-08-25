@@ -14,14 +14,10 @@ export interface TimelineEntry {
   company: string;
   period: string;
   location: string;
-  coordinates: string;
-  clearance: string;
-  operationCode: string;
   description: string;
   highlights: string[];
   tech: string[];
   icon: TimelineIcon;
-  badge: string;
   details: {
     architecture: string;
     impact: string;
