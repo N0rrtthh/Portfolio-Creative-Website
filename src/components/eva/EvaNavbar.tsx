@@ -8,13 +8,14 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useSectionNav } from "@/lib/hooks/useSectionNav";
 import { useActiveSection, useMenuDismiss } from "@/lib/hooks/useActiveSection";
 
-/* Codes are positional, so they have to follow EvaLayout's running order.
-   COMMITS now sits at 03, right after IDENTITY, matching the moved archive. */
+/* Same five destinations as the Classic pill, in the same order — the
+   two navbars list the same story, so switching themes never changes
+   what you can reach. Codes keep their chapter numbers from the section
+   headings (IDENTITY is Ch.02 there, so it stays 02 here); the intro
+   act's inner beats (COMMITS, DATABASE) are reached by scrolling, same
+   as Classic. SYSTEM (#hero) lives on the brand mark, as in Classic. */
 const SECTIONS = [
-  { label: "SYSTEM", href: "#hero", code: "01" },
   { label: "IDENTITY", href: "#about", code: "02" },
-  { label: "COMMITS", href: "#github-activity", code: "03" },
-  { label: "DATABASE", href: "#techstack", code: "04" },
   { label: "VAULT", href: "#certifications", code: "05" },
   { label: "ARCHIVE", href: "#projects", code: "06" },
   { label: "HISTORY", href: "#experience", code: "07" },

@@ -147,6 +147,11 @@ export type Position = {
 interface WorldProps {
   data?: Position[];
   globeConfig: GlobeConfig;
+  /** Cinematic hover layer (raycast reticle + surface lift). Disable for
+      decorative, pointer-events-none globes — with no pointer events the
+      per-frame raycast keeps firing from the pointer's rest position
+      (canvas centre) and a reticle sits stuck on the surface. Default: true. */
+  interactive?: boolean;
 }
 
 /* Stable empty arc list — avoids rebuilding the scene when no data is
@@ -393,10 +398,12 @@ function GlobeFX({
   globeRef,
   palette,
   data,
+  interactive,
 }: {
   globeRef: React.RefObject<ThreeGlobe | null>;
   palette: GlobePalette;
   data: Position[];
+  interactive: boolean;
 }) {
   const dataFxRef = useRef<DataFx | null>(null);
   const structFxRef = useRef<StructFx | null>(null);
@@ -846,44 +853,52 @@ function GlobeFX({
     }
     arcsRef.current = { beacon, arcs: arcFxs };
 
-    /* ── Invisible raycast sphere (catches the pointer). ── */
-    const hoverSphere = new Mesh(
-      new SphereGeometry(GLOBE_R, 32, 32),
-      new MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
-    );
-    hoverSphereRef.current = hoverSphere;
-    group.add(hoverSphere);
+    /* ── Invisible raycast sphere (catches the pointer) — interactive
+          globes only, so decorative ones never grow a stuck reticle. ── */
+    let hoverSphere: Mesh | null = null;
+    if (interactive) {
+      hoverSphere = new Mesh(
+        new SphereGeometry(GLOBE_R, 32, 32),
+        new MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+      );
+      hoverSphereRef.current = hoverSphere;
+      group.add(hoverSphere);
+    }
 
     /* ── Hover reticle — a pulsing ring + dot that rides the surface
-          under the cursor. ── */
-    const reticleMat = new MeshBasicMaterial({
-      color: new Color(...palette.outline),
-      transparent: true,
-      opacity: 0,
-      side: DoubleSide,
-      blending: AdditiveBlending,
-      depthWrite: false,
-    });
-    const reticle = new Group();
-    const reticleRing = new Mesh(new RingGeometry(3.2, 3.9, 40), reticleMat);
-    const reticleDot = new Mesh(new SphereGeometry(0.9, 10, 10), reticleMat);
-    reticleRing.renderOrder = 3;
-    reticleDot.renderOrder = 3;
-    reticle.add(reticleRing);
-    reticle.add(reticleDot);
-    reticle.visible = false;
-    reticleRef.current = reticle;
-    reticleMatRef.current = reticleMat;
-    group.add(reticle);
-    disposables.push(reticleRing.geometry, reticleDot.geometry, reticleMat);
+          under the cursor. Interactive globes only. ── */
+    if (interactive) {
+      const reticleMat = new MeshBasicMaterial({
+        color: new Color(...palette.outline),
+        transparent: true,
+        opacity: 0,
+        side: DoubleSide,
+        blending: AdditiveBlending,
+        depthWrite: false,
+      });
+      const reticle = new Group();
+      const reticleRing = new Mesh(new RingGeometry(3.2, 3.9, 40), reticleMat);
+      const reticleDot = new Mesh(new SphereGeometry(0.9, 10, 10), reticleMat);
+      reticleRing.renderOrder = 3;
+      reticleDot.renderOrder = 3;
+      reticle.add(reticleRing);
+      reticle.add(reticleDot);
+      reticle.visible = false;
+      reticleRef.current = reticle;
+      reticleMatRef.current = reticleMat;
+      group.add(reticle);
+      disposables.push(reticleRing.geometry, reticleDot.geometry, reticleMat);
+    }
 
     globe.add(group);
 
     return () => {
       globe.remove(group);
       disposables.forEach((d) => d.dispose());
-      (hoverSphere.material as MeshBasicMaterial).dispose();
-      hoverSphere.geometry.dispose();
+      if (hoverSphere) {
+        (hoverSphere.material as MeshBasicMaterial).dispose();
+        hoverSphere.geometry.dispose();
+      }
       dataFxRef.current = null;
       structFxRef.current = null;
       arcsRef.current = null;
@@ -891,7 +906,7 @@ function GlobeFX({
       reticleRef.current = null;
       reticleMatRef.current = null;
     };
-  }, [globeRef, palette, data]);
+  }, [globeRef, palette, data, interactive]);
 
   /* eslint-disable react-hooks/immutability -- Three.js objects are
      handles to GPU state, not React view state: animating the data
@@ -1105,7 +1120,7 @@ function GlobeFX({
   return null;
 }
 
-export function World({ data, globeConfig }: WorldProps) {
+export function World({ data, globeConfig, interactive = true }: WorldProps) {
   const globeRef = useRef<ThreeGlobe | null>(null);
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const [inView, setInView] = useState(false);
@@ -1161,8 +1176,17 @@ export function World({ data, globeConfig }: WorldProps) {
         <directionalLight position={new Vector3(-200, 500, 200)} intensity={0.6} />
 
         <Globe globeRef={globeRef} globeConfig={globeConfig} palette={palette} />
-        <GlobeFX globeRef={globeRef} palette={palette} data={data ?? NO_ARCS} />
+        <GlobeFX
+          globeRef={globeRef}
+          palette={palette}
+          data={data ?? NO_ARCS}
+          interactive={interactive}
+        />
 
+        {/* `enabled` stays on: drei skips controls.update() entirely when it
+            is false, which also kills autoRotate — the decorative EVA globe
+            froze mid-frame. Whether the canvas can be grabbed is decided by
+            CSS pointer-events on the consumer's wrapper instead. */}
         <OrbitControls
           enablePan={false}
           enableZoom={false}

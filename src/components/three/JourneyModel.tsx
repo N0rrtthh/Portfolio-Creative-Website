@@ -138,15 +138,16 @@ const TRACE_FRAG = /* glsl */ `
   varying vec3 vPos;
 
   uniform float uBoost;   // 1.0 = core pass, <1 = soft halo pass
+  uniform float uScan;    // 1.0 = animated upward wipe, 0.0 = static wireframe
 
   void main() {
     float ny = (vPos.y - uMinY) / uHeight;        // 0 at base, 1 at top
     float phase = fract(ny - uTime * 0.16);       // band traveling upward
-    float trail = pow(1.0 - phase, 2.2);          // bright head, wide trail
-    float base = 0.10;                            // faint skeleton line
+    float trail = pow(1.0 - phase, 2.2) * uScan;  // 0 in the static pass
+    float base = mix(0.5, 0.10, uScan);           // static pass: visible skeleton, no band
     float alpha = (base + trail * 1.6) * uOpacity * uBoost;
     // Overdrive the color on the trail for an additive glow bloom.
-    vec3 col = uColor * (0.7 + trail * 2.0);
+    vec3 col = uColor * mix(1.0, 0.7 + trail * 2.0, uScan);
     gl_FragColor = vec4(col, alpha);
   }
 `;
@@ -355,6 +356,7 @@ function FoxTrio({
       uMinY: { value: bounds.minY },
       uHeight: { value: bounds.height },
       uBoost: { value: 1.0 },
+      uScan: { value: 1.0 },
       /* Glitch uniforms — values synced per-frame via traceMatRef. */
       uGlitch: { value: 0 },
       uGlitchSeed: { value: 0 },
@@ -371,6 +373,7 @@ function FoxTrio({
       uMinY: { value: bounds.minY },
       uHeight: { value: bounds.height },
       uBoost: { value: 0.35 },
+      uScan: { value: 1.0 },
       /* Glitch uniforms — values synced per-frame via haloMatRef. */
       uGlitch: { value: 0 },
       uGlitchSeed: { value: 0 },
@@ -379,9 +382,11 @@ function FoxTrio({
     [sparkColor, bounds]
   );
 
-  /* SIDE tracing lines — same scan-band shader as the hero model, one
-     dimmer single pass (no halo). Both side materials share this uniform
-     source; values are copied in by R3F and synced per-frame. */
+  /* SIDE tracing lines — same shader as the hero model but uScan = 0:
+     the upward wipe stays exclusive to the main model, so the sides
+     render as a static, dimmer wireframe (single pass, no halo). Both
+     side materials share this uniform source; values are copied in by
+     R3F and synced per-frame. */
   const sideTraceUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -390,6 +395,7 @@ function FoxTrio({
       uMinY: { value: bounds.minY },
       uHeight: { value: bounds.height },
       uBoost: { value: 0.55 },
+      uScan: { value: 0.0 },
       /* Glitch uniforms — values synced per-frame via the mat refs. */
       uGlitch: { value: 0 },
       uGlitchSeed: { value: 0 },
@@ -610,7 +616,7 @@ function FoxTrio({
       sparkRightRef.current.size = SIDE_POINT_SIZE;
     }
 
-    /* Side tracing lines — same scan-band shader, side glitch envelope. */
+    /* Side tracing lines — static wireframe (uScan 0), side glitch envelope. */
     for (const mat of [leftTraceMatRef.current, rightTraceMatRef.current]) {
       if (!mat) continue;
       mat.uniforms.uTime.value = t;
@@ -715,7 +721,7 @@ function FoxTrio({
             blending={THREE.AdditiveBlending}
           />
         </points>
-        {/* Tracing lines — same scan-band shader as the hero model. */}
+        {/* Wireframe edges — static; the upward wipe stays on the main model. */}
         {edges && (
           <lineSegments geometry={edges} renderOrder={2}>
             <shaderMaterial
@@ -745,7 +751,7 @@ function FoxTrio({
             blending={THREE.AdditiveBlending}
           />
         </points>
-        {/* Tracing lines — same scan-band shader as the hero model. */}
+        {/* Wireframe edges — static; the upward wipe stays on the main model. */}
         {edges && (
           <lineSegments geometry={edges} renderOrder={2}>
             <shaderMaterial

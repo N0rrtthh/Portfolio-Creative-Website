@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, useMemo, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useMemo, type ComponentType, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useScrollLock } from "@/lib/hooks/useScrollLock";
@@ -13,9 +13,45 @@ import {
   X,
   CheckCircle2,
   Layers,
+  Brain,
+  BarChart3,
+  ShieldCheck,
+  Code2,
+  CircuitBoard,
+  Briefcase,
+  Cpu,
 } from "lucide-react";
 import ChapterLabel from "@/components/ui/ChapterLabel";
 import RevealText from "@/components/ui/RevealText";
+
+/* Subject → drawn icon. The badges used to be emoji glyphs — a
+   placeholder standing in for an icon system. One lucide set now:
+   the same stroke and weight on every badge, sized by the caller,
+   coloured by currentColor. */
+const SUBJECT_ICONS: Record<
+  RealCertification["subject"],
+  ComponentType<{ size?: number; className?: string; strokeWidth?: number }>
+> = {
+  AI: Brain,
+  "Data Science": BarChart3,
+  Cybersecurity: ShieldCheck,
+  "Software Engineering": Code2,
+  "Systems & IoT": CircuitBoard,
+  "Business & Professional": Briefcase,
+};
+
+function SubjectIcon({
+  subject,
+  size,
+  className = "",
+}: {
+  subject: RealCertification["subject"];
+  size: number;
+  className?: string;
+}) {
+  const Icon = SUBJECT_ICONS[subject] ?? Cpu;
+  return <Icon size={size} className={className} strokeWidth={1.75} aria-hidden />;
+}
 
 const EASING = [0.22, 1, 0.36, 1] as const;
 /* The issuer pill used to run a very stiff spring (stiffness 480). A stiff
@@ -110,7 +146,6 @@ export interface RealCertification {
   issueDate: string;
   skills: string[];
   description: string;
-  badgeSymbol: string;
   badgeBgColor: string;
   variants: CertVariant[];
   credlyVerified: boolean;
@@ -126,8 +161,7 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Generative AI", "Neural Networks", "Ethics in AI", "Prompt Engineering"],
     description: "Foundational mastery in artificial intelligence architecture, machine learning concepts, ethical AI deployment, and neural model mechanics. Issued across 3 official partner credentials.",
-    badgeSymbol: "🤖",
-    badgeBgColor: "from-indigo-600 via-purple-600 to-pink-600",
+    badgeBgColor: "from-blue-500 via-indigo-600 to-blue-800",
     credlyVerified: true,
     variants: [
       {
@@ -167,7 +201,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Computer Vision", "NLP", "Transformer Models", "Image Processing"],
     description: "Specialized certification in Natural Language Processing (NLP), Computer Vision algorithms, LLM transformers, and multimodal AI systems.",
-    badgeSymbol: "👁️",
     badgeBgColor: "from-blue-600 via-indigo-600 to-violet-600",
     credlyVerified: true,
     variants: [
@@ -209,8 +242,7 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Generative AI", "AI Models", "Prompting", "Responsible AI"],
     description: "Foundational overview of modern AI concepts, model behavior, and responsible generative workflows.",
-    badgeSymbol: "🧠",
-    badgeBgColor: "from-fuchsia-600 via-violet-600 to-indigo-700",
+    badgeBgColor: "from-cyan-500 via-sky-600 to-blue-700",
     credlyVerified: true,
     variants: [
       {
@@ -237,7 +269,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["AI Productivity", "Career Automation", "Workflow Optimization"],
     description: "Practical application of AI productivity tools for career optimization, automated review pipelines, and executive branding.",
-    badgeSymbol: "⚡",
     badgeBgColor: "from-amber-500 via-orange-600 to-red-600",
     credlyVerified: true,
     variants: [
@@ -266,7 +297,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Pandas", "NumPy", "Matplotlib", "Data Wrangling", "Statistical Modeling"],
     description: "Core data science methodology using Python: exploratory data analysis, data cleaning, statistical modeling, and visualization.",
-    badgeSymbol: "🐍",
     badgeBgColor: "from-emerald-600 via-teal-600 to-cyan-600",
     credlyVerified: true,
     variants: [
@@ -293,7 +323,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["SQL", "Data Pipelines", "Business Intelligence", "Analytics Dashboards"],
     description: "Comprehensive data analytics principles: querying relational databases, business metrics extraction, data reporting, and trend analysis.",
-    badgeSymbol: "📊",
     badgeBgColor: "from-cyan-600 via-blue-600 to-indigo-600",
     credlyVerified: true,
     variants: [
@@ -320,7 +349,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Data Life Cycle", "Big Data", "Predictive Analytics"],
     description: "Overview of the end-to-end data science lifecycle, big data infrastructure, machine learning pipelines, and decision intelligence.",
-    badgeSymbol: "📈",
     badgeBgColor: "from-teal-600 via-emerald-600 to-green-600",
     credlyVerified: true,
     variants: [
@@ -349,7 +377,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Penetration Testing", "Vulnerability Scanning", "Network Hardening", "Metasploit"],
     description: "Professional offensive security training: threat modeling, penetration testing methodologies, exploits, network hardening, and security auditing.",
-    badgeSymbol: "🛡️",
     badgeBgColor: "from-red-600 via-rose-600 to-pink-700",
     credlyVerified: true,
     variants: [
@@ -376,7 +403,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Cyber Hygiene", "Cryptography", "Firewalls", "Incident Response"],
     description: "Foundational security protocols, cryptographic standards, malware analysis basics, firewalls, and enterprise security governance.",
-    badgeSymbol: "🔐",
     badgeBgColor: "from-rose-600 via-red-700 to-red-900",
     credlyVerified: true,
     variants: [
@@ -405,7 +431,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Control Flow", "Functions", "Lists & Tuples", "Basic Algorithms"],
     description: "Fundamental Python programming certification covering core control structures, data collections, functions, and problem-solving.",
-    badgeSymbol: "🐍",
     badgeBgColor: "from-yellow-500 via-amber-500 to-green-600",
     credlyVerified: true,
     variants: [
@@ -437,7 +462,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Digital Hygiene", "Threat Awareness", "Online Safety"],
     description: "Practical awareness training for digital safety, secure habits, and online risk reduction.",
-    badgeSymbol: "🔒",
     badgeBgColor: "from-rose-500 via-orange-500 to-amber-500",
     credlyVerified: true,
     variants: [
@@ -464,7 +488,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["OOP", "Modules & Packages", "File Streams", "Exceptions"],
     description: "Advanced Python development certification covering Object-Oriented Programming, custom packages, data streams, and exception handling.",
-    badgeSymbol: "⚙️",
     badgeBgColor: "from-green-600 via-emerald-600 to-teal-700",
     credlyVerified: true,
     variants: [
@@ -496,7 +519,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Variables", "Operators", "Functions", "Pointers Intro"],
     description: "Fundamental C++ system programming: syntax, functions, memory pointers, and compilation mechanics.",
-    badgeSymbol: "💻",
     badgeBgColor: "from-blue-600 via-indigo-600 to-slate-800",
     credlyVerified: true,
     variants: [
@@ -523,7 +545,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Pointers", "Dynamic Memory", "Classes & Structs", "Overloading"],
     description: "Intermediate C++ development: dynamic memory allocation, class inheritance, operator overloading, and reference management.",
-    badgeSymbol: "🛠️",
     badgeBgColor: "from-indigo-600 via-blue-700 to-sky-800",
     credlyVerified: true,
     variants: [
@@ -550,7 +571,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["STL Containers", "Templates", "Exception Safety", "Performance"],
     description: "Advanced C++ specialization: Standard Template Library (STL), generic templates, memory safety, and high-performance algorithms.",
-    badgeSymbol: "⚡",
     badgeBgColor: "from-sky-500 via-blue-600 to-indigo-800",
     credlyVerified: true,
     variants: [
@@ -577,7 +597,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["ES6 Syntax", "DOM Controls", "Events", "Functions"],
     description: "Core JavaScript web engine development: variables, control flow, functions, DOM events, and browser APIs.",
-    badgeSymbol: "🟨",
     badgeBgColor: "from-yellow-400 via-amber-500 to-orange-500",
     credlyVerified: true,
     variants: [
@@ -604,7 +623,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Async/Await", "Promises", "Prototypes", "Web APIs"],
     description: "Advanced JavaScript engineering: asynchronous Event Loop, Promises, Fetch API, class prototypes, and error handling.",
-    badgeSymbol: "🌐",
     badgeBgColor: "from-amber-500 via-yellow-600 to-orange-600",
     credlyVerified: true,
     variants: [
@@ -631,7 +649,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Semantic Tags", "Accessibility (a11y)", "Forms", "DOM Trees"],
     description: "Semantic HTML5 architecture, accessibility compliance, web forms, and document structure standards.",
-    badgeSymbol: "🟠",
     badgeBgColor: "from-orange-500 via-amber-600 to-red-600",
     credlyVerified: true,
     variants: [
@@ -658,7 +675,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Flexbox", "Grid", "Animations", "Responsive Design"],
     description: "Modern CSS layout design: Flexbox, CSS Grid, custom properties, animations, and responsive breakpoints.",
-    badgeSymbol: "🎨",
     badgeBgColor: "from-blue-500 via-indigo-600 to-sky-600",
     credlyVerified: true,
     variants: [
@@ -687,7 +703,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Sensors", "Digital Transformation", "IoT Platforms"],
     description: "Introduction to IoT-driven digital transformation and connected systems for modern operations.",
-    badgeSymbol: "📡",
     badgeBgColor: "from-cyan-600 via-teal-600 to-blue-700",
     credlyVerified: true,
     variants: [
@@ -714,7 +729,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Hardware Support", "Upgrades", "Troubleshooting"],
     description: "Practical hardware maintenance and upgrade support workflows for end-user and enterprise systems.",
-    badgeSymbol: "🛠️",
     badgeBgColor: "from-slate-600 via-gray-700 to-zinc-800",
     credlyVerified: true,
     variants: [
@@ -741,7 +755,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Linux Bash", "Process Control", "File Systems", "Troubleshooting"],
     description: "Operating system internals, Linux bash scripting, process management, memory allocation, troubleshooting, and kernel config.",
-    badgeSymbol: "⚙️",
     badgeBgColor: "from-zinc-600 via-slate-700 to-stone-800",
     credlyVerified: true,
     variants: [
@@ -770,7 +783,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Venture Strategy", "Product Design", "Monetization Models"],
     description: "Technology venture creation, product-market fit evaluation, business model strategy, agile planning, and monetization.",
-    badgeSymbol: "🚀",
     badgeBgColor: "from-emerald-600 via-green-600 to-teal-700",
     credlyVerified: true,
     variants: [
@@ -797,8 +809,7 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Executive Leadership", "Strategic Management", "Global Tech"],
     description: "International executive leadership, organizational strategy, and technology management certification.",
-    badgeSymbol: "🎓",
-    badgeBgColor: "from-purple-700 via-indigo-800 to-violet-950",
+    badgeBgColor: "from-gray-600 via-slate-700 to-zinc-900",
     credlyVerified: false,
     variants: [
       {
@@ -816,7 +827,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Excel", "Office Productivity", "Data Analysis"],
     description: "Real-world office productivity and spreadsheet analytics certification.",
-    badgeSymbol: "📊",
     badgeBgColor: "from-cyan-600 via-blue-700 to-indigo-800",
     credlyVerified: false,
     variants: [
@@ -835,7 +845,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Cybersecurity", "SME Protection", "Risk Awareness"],
     description: "Cybersecurity for small and medium enterprises, focused on protecting businesses from cyber threats.",
-    badgeSymbol: "🛡️",
     badgeBgColor: "from-slate-700 via-slate-800 to-slate-950",
     credlyVerified: false,
     variants: [
@@ -854,7 +863,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["Digital Marketing", "AI", "SME Growth"],
     description: "Digital marketing for startups and MSMEs using AI tools and strategies.",
-    badgeSymbol: "📣",
     badgeBgColor: "from-amber-600 via-orange-700 to-red-800",
     credlyVerified: false,
     variants: [
@@ -873,7 +881,6 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     issueDate: "2026",
     skills: ["International Collaboration", "Online Learning"],
     description: "Collaborative online international learning programme certification.",
-    badgeSymbol: "🌍",
     badgeBgColor: "from-cyan-600 via-blue-700 to-indigo-800",
     credlyVerified: false,
     variants: [
@@ -1081,7 +1088,7 @@ export default function Certifications() {
   return (
     <section id="certifications" className="section-padding relative select-none overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[160px] bg-indigo-600/10 z-0" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[160px] bg-[var(--color-accent-primary)]/10 z-0" />
 
       <div className="container-narrow relative z-10">
         <ChapterLabel index={5} classic="Credential Vault (28 Certs)" eva="CREDENTIAL VAULT" className="mb-8" />
@@ -1202,8 +1209,8 @@ export default function Certifications() {
                   );
                 } else {
                   badgeNode = (
-                    <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${cert.badgeBgColor} flex items-center justify-center text-3xl shadow-[0_22px_28px_rgba(0,0,0,0.6)] transition-all will-change-transform transform-gpu duration-500 ease-out group-hover:-translate-y-3.5 group-hover:scale-105`}>
-                      {cert.badgeSymbol}
+                    <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${cert.badgeBgColor} flex items-center justify-center text-white shadow-[0_22px_28px_rgba(0,0,0,0.6)] transition-all will-change-transform transform-gpu duration-500 ease-out group-hover:-translate-y-3.5 group-hover:scale-105`}>
+                      <SubjectIcon subject={cert.subject} size={40} />
                     </div>
                   );
                 }
@@ -1251,7 +1258,7 @@ export default function Certifications() {
               } else {
                 badgeNode = (
                   <div className={`w-full max-w-[15rem] h-28 rounded-[1.5rem] bg-gradient-to-br ${cert.badgeBgColor} shadow-[0_16px_28px_-18px_rgba(0,0,0,0.6)] flex items-center justify-center transition-all duration-500 ease-out group-hover:-translate-y-3`}>
-                    <div className="text-4xl">{cert.badgeSymbol}</div>
+                    <SubjectIcon subject={cert.subject} size={44} className="text-white" />
                   </div>
                 );
               }

@@ -69,3 +69,15 @@ Crafting An Unforgettable Digital Identity.md
 *.canvas
 *.base
 
+# Agent / tooling infrastructure (not part of the app)
+.codex/
+.github/agents/
+.github/hooks/
+.github/skills/
+.impeccable/
+.vscode/
+headroom-proxy.ps1
+
+# Local 3D source assets — the site serves its models from public/3d
+/3d/
+

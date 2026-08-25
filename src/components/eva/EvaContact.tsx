@@ -1,41 +1,57 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import { ArrowUpRight, ChevronsUp } from "lucide-react";
 import ContactForm from "@/components/ui/ContactForm";
+import GlobeField from "@/components/ui/GlobeField";
 import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/lib/data";
-
+import { GLOBE_CONFIG, MANILA_ARCS } from "@/lib/globeData";
 
 /* ══════════════════════════════════════════════════════════
-   EVA // Comms uplink — click-to-open bay
+   EVA // Comms uplink — GOBOLD-reference composition
    ──────────────────────────────────────────────────────────
-   The scroll-driven version is gone. It needed a 150svh runway plus a
-   `sticky` pin, and that runway IS extra scrollable page: the section
-   could not sit at the bottom of the document because 1.5 viewports of
-   empty scroll distance always followed the heading. Removing it is the
-   only way the composer can be the last pixel on the page.
+   The globe is the left-dominant visual; the content column is
+   pushed right so the two read as one asymmetric composition
+   instead of a centred stack.
 
-   Now: the banner is the trigger, and the two panels are a deck of two
-   cards. The composer is permanently mounted as the bottom card; the
-   banner sits on top of it in the same grid cell. Pressing the button
-   takes the top card off — the banner lifts 4% and fades, and the
-   composer underneath is simply uncovered. It never moves.
+   Globe: the same `World` component the classic contact section
+   renders (config + flights shared from `lib/globeData`), but the
+   canvas is oversized 190% × 150% and shifted (-95% / -25%) so
+   the globe's centre sits on the pane's left edge — only the
+   right hemisphere enters frame, cropped and zoomed. Over it sits
+   the CRT/VHS stack (GlobeField): scanlines, tiled grain, bloom,
+   side fade, vignette, plus the scan sweep and VHS tracking roll
+   (both skipped under reduced motion). The canvas itself takes a
+   blur + saturation/contrast boost so the render reads as footage
+   through a degraded monitor.
 
-   4%, not 100%: a card being removed from a deck barely travels before it
-   stops being the thing you are looking at. Flying it a full panel height
-   (and sliding the composer up to meet it) read as two panels swapping
-   places, which is a much louder gesture than what was asked for.
+   The pane is decorative: pointer-events stay off it entirely, so
+   OrbitControls never engages and the canvas never captures a
+   drag. aria-hidden keeps it out of the accessibility tree.
 
-   Layout: one grid cell (`[grid-area:1/1]`) for both, so the section is
-   always as tall as the composer and its height never changes on open —
-   no reflow, and the page bottom stays where it is.
+   Content: "Comms // Uplink Terminal" heading + click-to-open bay
+   deck (banner over composer, single grid cell, no runway). On
+   mobile the globe becomes a backdrop layer behind a void scrim.
 
+   Bay deck mechanics (banner over composer):
+   The banner is the trigger, and the two panels are a deck of two
+   cards. The composer is permanently mounted as the bottom card;
+   the banner sits on top of it in the same grid cell
+   (`[grid-area:1/1]`). Pressing the button takes the top card off
+   — the banner lifts 7% and fades, and the composer underneath is
+   simply uncovered. It never moves. The section is always as tall
+   as the taller panel, so its height never changes on open — no
+   reflow, and the page bottom stays where it is.
    Motion: transform + opacity only, so it stays on the compositor.
-
    ══════════════════════════════════════════════════════════ */
 
+const World = dynamic(
+  () => import("@/components/ui/globe").then((m) => m.World),
+  { ssr: false }
+);
 
 function Heading() {
   return (
@@ -44,7 +60,6 @@ function Heading() {
         Comms // Uplink Terminal
       </h2>
     </div>
-
   );
 }
 
@@ -145,66 +160,81 @@ function Composer() {
 export default function EvaContact() {
   const [open, setOpen] = useState(false);
   const reduced = useReducedMotion();
-
-  /* Reduced motion: both panels, stacked, no swap at all. */
-  if (reduced) {
-    return (
-      <section id="contact" className="relative">
-        <Heading />
-        <div className="space-y-8">
-          <Banner onOpen={() => undefined} />
-          <Composer />
-        </div>
-      </section>
-    );
-  }
+  const still = reduced ?? false;
 
   return (
-    /* No runway, no sticky, no bottom padding: the composer is the last thing
-       in the document and lands flush against its end. */
-    <section id="contact" className="relative">
-      <Heading />
-
-      {/* Single cell — the two panels swap inside it, so the section height is
-          whichever panel is currently mounted and nothing scrolls past it. */}
-      {/* min-h is the banner's height, kept on the wrapper rather than only on
-          the banner. Without it the section was as tall as the banner while
-          closed and as tall as the (shorter) composer once open, so finishing
-          the animation yanked the layout — that is the "send message goes
-          down" jump. Now the box never changes size and only its contents
-          move. */}
-      <div className="relative grid min-h-[60svh] w-full overflow-hidden">
-        {/* Bottom card: always mounted, top-aligned, uncovered rather than
-            introduced. It only eases its last 1.5% of scale/opacity so the
-            reveal has something of its own, which is what was missing when
-            the banner's exit was the only thing moving. */}
-        <motion.div
-          className="[grid-area:1/1] self-start"
-          initial={false}
-          animate={{ opacity: open ? 1 : 0.9, scale: open ? 1 : 0.985 }}
-          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: open ? 0.1 : 0 }}
+    <section
+      id="contact"
+      className="relative overflow-hidden pt-24 pb-12 lg:pt-32 lg:pb-16"
+    >
+      {/* Globe pane — left-dominant, decorative, full-bleed.
+          GlobeField carries the CRT/VHS stack; its mobile contrast
+          scrim and the ORBITAL RELAY / LIVE UPLINK captions stay on
+          (their defaults), which is what this pane wants. */}
+      <GlobeField still={still} className="inset-0">
+        {/* Canvas oversized 190% × 150% and shifted so the globe's
+            centre sits on the pane's left edge — only the right
+            hemisphere enters frame. The filter makes the render read
+            as footage through a degraded monitor. */}
+        <div
+          className="absolute -left-[95%] -top-[25%] h-[150%] w-[190%]"
+          style={{
+            filter: "blur(1.1px) saturate(1.3) contrast(1.12) brightness(0.9)",
+          }}
         >
-          <Composer />
-        </motion.div>
+          <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} />
+        </div>
+      </GlobeField>
 
-        {/* Top card. It is lifted off, not flown away: -7% and out over 0.55s.
-            The earlier -4%/0.42s was too small and too quick to register as
-            motion at all — it read as an instant swap. */}
-        <AnimatePresence initial={false}>
-          {!open && (
+      {/* Content column — pushed right of the globe's mass */}
+      <div className="container-narrow relative z-10 lg:ml-[40%]">
+        <Heading />
+
+        {reduced ? (
+          /* Reduced motion: both panels, stacked, no swap at all. */
+          <div className="space-y-8">
+            <Banner onOpen={() => undefined} />
+            <Composer />
+          </div>
+        ) : (
+          /* Single cell — the two panels swap inside it, so the section
+             height is whichever panel is currently mounted and nothing
+             scrolls past it. min-h is the banner's height, kept on the
+             wrapper rather than only on the banner: without it the
+             section was banner-tall while closed and composer-tall
+             (shorter) once open, so finishing the animation yanked the
+             layout. Now the box never changes size, only its contents
+             move. */
+          <div className="relative grid min-h-[60svh] w-full overflow-hidden">
+            {/* Bottom card: always mounted, top-aligned, uncovered rather
+                than introduced. It only eases its last 1.5% of
+                scale/opacity so the reveal has something of its own. */}
             <motion.div
-              key="banner"
-              exit={{ y: "-7%", opacity: 0, scale: 1.015 }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="z-10 [grid-area:1/1] self-start"
+              className="[grid-area:1/1] self-start"
+              initial={false}
+              animate={{ opacity: open ? 1 : 0.9, scale: open ? 1 : 0.985 }}
+              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: open ? 0.1 : 0 }}
             >
-
-              <Banner onOpen={() => setOpen(true)} />
+              <Composer />
             </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
 
+            {/* Top card. It is lifted off, not flown away: -7% and out
+                over 0.55s. */}
+            <AnimatePresence initial={false}>
+              {!open && (
+                <motion.div
+                  key="banner"
+                  exit={{ y: "-7%", opacity: 0, scale: 1.015 }}
+                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                  className="z-10 [grid-area:1/1] self-start"
+                >
+                  <Banner onOpen={() => setOpen(true)} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

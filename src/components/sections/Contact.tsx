@@ -1,14 +1,17 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Mail, MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
 
 import ContactForm from "@/components/ui/ContactForm";
 import ChapterLabel from "@/components/ui/ChapterLabel";
 import ContactField from "@/components/ui/ContactField";
+import GlobeField from "@/components/ui/GlobeField";
 import AnimeTraceLine from "@/components/ui/AnimeTraceLine";
 import { Magnetic, GlowTrail } from "@/components/ui/anime/AnimeInteractions";
+import { GLOBE_CONFIG, MANILA_ARCS } from "@/lib/globeData";
 
 const World = dynamic(
   () => import("@/components/ui/globe").then((m) => m.World),
@@ -50,38 +53,8 @@ const ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
   twitter: XIcon,
 };
 
-/* ── Globe config ───────────────────────────────────────────
-   Interactive wireframe globe: vector country outlines that double
-   as the living data layer (they breathe subtly at rest and peel
-   off + garble under the cursor), a pulsing Manila beacon with
-   great-circle arcs radiating outward. All colours resolve live
-   from the active theme tokens, so Classic/EVA × dark/light retint
-   it. */
-const GLOBE_CONFIG = {
-  showAtmosphere: true,
-  atmosphereAltitude: 0.1,
-  initialPosition: { lat: 25, lng: 50 },
-  autoRotate: true,
-  autoRotateSpeed: 0.5,
-};
-
-/* Great-circle flights radiating out of Manila (order = stagger wave). */
-const SAMPLE_ARCS = [
-  { order: 1, startLat: 14.5995, startLng: 120.9842, endLat: 35.6762, endLng: 139.6503, arcAlt: 0.2 },
-  { order: 1, startLat: 14.5995, startLng: 120.9842, endLat: 1.3521, endLng: 103.8198, arcAlt: 0.15 },
-  { order: 2, startLat: 14.5995, startLng: 120.9842, endLat: -33.8688, endLng: 151.2093, arcAlt: 0.3 },
-  { order: 2, startLat: 14.5995, startLng: 120.9842, endLat: 51.5072, endLng: -0.1276, arcAlt: 0.4 },
-  { order: 3, startLat: 14.5995, startLng: 120.9842, endLat: 40.7128, endLng: -74.006, arcAlt: 0.5 },
-  { order: 3, startLat: 14.5995, startLng: 120.9842, endLat: 37.7749, endLng: -122.4194, arcAlt: 0.45 },
-  { order: 4, startLat: 14.5995, startLng: 120.9842, endLat: 28.6139, endLng: 77.209, arcAlt: 0.25 },
-  { order: 4, startLat: 14.5995, startLng: 120.9842, endLat: 52.52, endLng: 13.405, arcAlt: 0.4 },
-  { order: 5, startLat: 14.5995, startLng: 120.9842, endLat: -22.9068, endLng: -43.1729, arcAlt: 0.7 },
-  { order: 5, startLat: 14.5995, startLng: 120.9842, endLat: 34.0522, endLng: -118.2437, arcAlt: 0.4 },
-  { order: 6, startLat: 14.5995, startLng: 120.9842, endLat: 48.8566, endLng: -2.3522, arcAlt: 0.4 },
-  { order: 6, startLat: 14.5995, startLng: 120.9842, endLat: -34.6037, endLng: -58.3816, arcAlt: 0.65 },
-  { order: 7, startLat: 14.5995, startLng: 120.9842, endLat: 37.5665, endLng: 126.978, arcAlt: 0.15 },
-  { order: 7, startLat: 14.5995, startLng: 120.9842, endLat: -6.2088, endLng: 106.8456, arcAlt: 0.15 },
-];
+/* Globe config + flight data live in `lib/globeData` — the EVA comms
+   pane renders the same globe, so both consumers share one source. */
 
 const FACTS = [
   {
@@ -100,6 +73,16 @@ const FACTS = [
 
 
 export default function Contact() {
+  const reduced = useReducedMotion();
+  const still = reduced ?? false;
+
+  /* Framing option for the globe: the default framed orbit, or the
+     EVA-style close-up — the canvas oversizes and shifts so only the
+     right hemisphere enters the card, under the CRT stack. One wrapper,
+     two class sets, CSS-transitioned: the change reads as a camera zoom
+     and the canvas never remounts. */
+  const [closeUp, setCloseUp] = useState(false);
+
   /* Fields, validation and submission live in `ui/ContactForm` so EVA's
      uplink panel renders the same form instead of a second copy of it. */
   return (
@@ -163,15 +146,68 @@ export default function Contact() {
           className="relative mb-10 md:mb-14"
         >
           <div className="relative h-[420px] w-full overflow-hidden rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-void)]/60 sm:h-[500px] lg:h-[560px]">
-            <World data={SAMPLE_ARCS} globeConfig={GLOBE_CONFIG} />
+            {/* Framing toggle — swaps between the framed orbit and the
+                EVA-style close-up (zoomed, left-cropped, CRT stack).
+                Bottom-right so it never collides with the hint label. */}
+            <button
+              type="button"
+              onClick={() => setCloseUp((v) => !v)}
+              aria-pressed={closeUp}
+              className="absolute bottom-4 right-4 z-10 flex items-center gap-2 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-void)]/70 px-3.5 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-silver)] backdrop-blur-sm transition-colors hover:border-[var(--color-accent-primary)]/70 hover:text-[var(--color-starlight)]"
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                  closeUp
+                    ? "bg-[var(--color-accent-primary)]"
+                    : "bg-[var(--color-ash)]"
+                }`}
+              />
+              {closeUp ? "Orbit view" : "Close-up"}
+            </button>
+
+            <GlobeField
+              still={still}
+              active={closeUp}
+              scrim={false}
+              hud={false}
+              className="inset-0"
+            >
+              {/* One wrapper, two framings — position and size are
+                  CSS-transitioned so the swap reads as a camera move.
+                  The close-up numbers are the EVA pane's: canvas
+                  190% × 150%, shifted -95% / -25%, globe centre on
+                  the card's left edge. */}
+              <div
+                className={`absolute pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  closeUp
+                    ? "-left-[95%] -top-[25%] h-[150%] w-[190%]"
+                    : "left-0 top-0 h-full w-full"
+                }`}
+                style={{
+                  filter: closeUp
+                    ? "blur(1.1px) saturate(1.3) contrast(1.12) brightness(0.9)"
+                    : "blur(0px) saturate(1) contrast(1) brightness(1)",
+                }}
+              >
+                <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} />
+              </div>
+            </GlobeField>
             {/* Single hint label — no location text */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-end p-5">
+            <div
+              className={`pointer-events-none absolute inset-x-0 top-0 flex justify-end p-5 transition-opacity duration-500 ${
+                closeUp ? "opacity-0" : "opacity-100"
+              }`}
+            >
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--color-ash)]">
                 Drag to explore
               </span>
             </div>
             {/* Gradient vignette for depth */}
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,var(--color-void)_100%)]" />
+            <div
+              className={`pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,var(--color-void)_100%)] transition-opacity duration-500 ${
+                closeUp ? "opacity-0" : "opacity-100"
+              }`}
+            />
           </div>
         </motion.div>
 
@@ -273,7 +309,7 @@ export default function Contact() {
                   </span>
                 </div>
 
-                <ContactForm variant="classic" />
+                <ContactForm />
               </div>
             </motion.div>
           </div>

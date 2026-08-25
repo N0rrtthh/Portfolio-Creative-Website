@@ -84,7 +84,7 @@ function MobileProjectCarousel({ onSelect }: { onSelect: (p: Project) => void })
                   <span key={t} className="rounded-full border border-[var(--color-glass-border)] px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[var(--color-silver)] bg-white/[0.03]">{t}</span>
                 ))}
               </div>
-              <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-indigo-500/40 bg-indigo-950/60 px-4 py-1.5 font-mono text-[11px] font-bold text-indigo-300">
+              <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-[var(--color-accent-primary)]/40 bg-[var(--color-accent-primary)]/10 px-4 py-1.5 font-mono text-[11px] font-bold text-[var(--color-accent-primary)]">
                 VIEW DETAILS <ArrowUpRight size={12} />
               </span>
             </div>
@@ -97,7 +97,7 @@ function MobileProjectCarousel({ onSelect }: { onSelect: (p: Project) => void })
           </button>
           <div className="flex items-center gap-2">
             {all.map((_, i) => (
-              <button key={i} onClick={() => setIdx(i)} className={`rounded-full transition-all duration-300 ${i === idx ? "w-5 h-2 bg-indigo-400" : "w-2 h-2 bg-[var(--color-ash)]"}`} aria-label={`Project ${i + 1}`} />
+              <button key={i} onClick={() => setIdx(i)} className={`rounded-full transition-all duration-300 ${i === idx ? "w-5 h-2 bg-[var(--color-accent-primary)]" : "w-2 h-2 bg-[var(--color-ash)]"}`} aria-label={`Project ${i + 1}`} />
             ))}
           </div>
           <button onClick={next} className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-silver)]" aria-label="Next">
@@ -216,7 +216,7 @@ export default function Projects() {
               transition={SPRING.soft}
 
               onClick={() => setSelectedProject(project)}
-              className="group relative flex h-full w-full flex-col justify-end overflow-hidden rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] p-10 md:p-14 transition-[border-color,box-shadow] duration-300 ease-out shadow-[0_20px_50px_rgba(0,0,0,0.55)] cursor-pointer hover:border-indigo-500/50 hover:shadow-[0_25px_60px_rgba(99,102,241,0.2)]"
+              className="group relative flex h-full w-full flex-col justify-end overflow-hidden rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] p-10 md:p-14 transition-[border-color,box-shadow] duration-300 ease-out shadow-[0_20px_50px_rgba(0,0,0,0.55)] cursor-pointer hover:border-[var(--color-accent-primary)]/50 hover:shadow-[0_25px_60px_color-mix(in_srgb,var(--color-accent-primary)_20%,transparent)]"
               data-hoverable
               data-cursor-hover
             >
@@ -264,13 +264,13 @@ export default function Projects() {
                   </div>
 
                   {/* VIEW PROJECT DETAILS BUTTON BADGE */}
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/40 bg-indigo-950/60 px-4 py-1.5 font-mono text-[11px] font-bold text-indigo-300 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-md">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-accent-primary)]/40 bg-[var(--color-accent-primary)]/10 px-4 py-1.5 font-mono text-[11px] font-bold text-[var(--color-accent-primary)] group-hover:bg-[var(--color-accent-primary)] group-hover:text-white transition-all shadow-md">
                     <span>VIEW PROJECT DETAILS</span>
                     <ArrowUpRight size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </span>
                 </div>
 
-                <h3 className="font-display text-4xl font-bold text-[var(--color-starlight)] md:text-5xl group-hover:text-indigo-300 transition-colors">
+                <h3 className="font-display text-4xl font-bold text-[var(--color-starlight)] md:text-5xl group-hover:text-[var(--color-accent-primary)] transition-colors">
                   {project.title}
                 </h3>
                 <p className="mt-2 font-body text-lg text-[var(--color-silver)]">
@@ -307,7 +307,7 @@ export default function Projects() {
                 <div
                   key={project.id}
                   onClick={() => setSelectedProject(project)}
-                  className="glass group flex flex-col gap-3 rounded-2xl p-5 transition-all duration-300 hover:border-indigo-500/40 hover:bg-white/[0.06] cursor-pointer"
+                  className="glass group flex flex-col gap-3 rounded-2xl p-5 transition-all duration-300 hover:border-[var(--color-accent-primary)]/40 hover:bg-white/[0.06] cursor-pointer"
                   data-cursor-hover
                   data-hoverable
                 >
@@ -318,7 +318,7 @@ export default function Projects() {
                     />
                     <ArrowUpRight
                       size={14}
-                      className="text-[var(--color-ash)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-indigo-400"
+                      className="text-[var(--color-ash)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--color-accent-primary)]"
                     />
                   </div>
                   <h4 className="font-display text-lg text-[var(--color-starlight)] group-hover:text-white transition-colors">

@@ -320,18 +320,6 @@ body {
    GRADIENT ACCENTS
    ══════════════════════════════════════════════════════════ */
 
-.gradient-text {
-  background: linear-gradient(
-    135deg,
-    var(--color-accent-primary),
-    var(--color-accent-secondary),
-    var(--color-accent-warm)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 .gradient-border {
   position: relative;
 }
@@ -540,11 +528,14 @@ div[style*="overflow: auto"] { -ms-overflow-style: none !important; scrollbar-wi
   to { stroke-dashoffset: 0; }
 }
 
+/* Transform, not top: animating `top` on the fixed scan line forced a
+   layout pass every frame of a 10s infinite loop. translateY runs on the
+   compositor; the opacity ramp hides the loop point at both edges. */
 @keyframes scan-down {
-  0% { top: 0; opacity: 0; }
-  5% { opacity: 0.6; }
-  95% { opacity: 0.6; }
-  100% { top: 100%; opacity: 0; }
+  0% { transform: translateY(0); opacity: 0; }
+  6% { opacity: 0.2; }
+  94% { opacity: 0.2; }
+  100% { transform: translateY(100vh); opacity: 0; }
 }
 
 .animate-float { animation: float 7s var(--ease-cinematic) infinite; }
@@ -720,17 +711,6 @@ div[style*="overflow: auto"] { -ms-overflow-style: none !important; scrollbar-wi
   height: 60px;
 }
 
-[data-design="eva"] .gradient-text {
-  background: linear-gradient(
-    135deg,
-    var(--color-accent-primary),
-    var(--color-accent-warm),
-    var(--color-accent-secondary)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
 [data-design="eva"] ::selection {
   background-color: var(--color-accent-primary);
   color: var(--color-void);
@@ -738,15 +718,6 @@ div[style*="overflow: auto"] { -ms-overflow-style: none !important; scrollbar-wi
 
 [data-design="eva"] :focus-visible {
   outline-color: var(--color-accent-primary);
-}
-
-@keyframes scan-down {
-  0% {
-    top: 0%;
-  }
-  100% {
-    top: 100%;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

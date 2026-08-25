@@ -41,15 +41,17 @@ const SKIN: Record<
      Focus state: the border stays 1px and only shifts colour, with a single
      1px accent ring outside it — no 3px halo. The transition is 260ms on
      border-colour AND box-shadow, so the ring grows in rather than snapping,
-     which was the "instant thick outline" complaint. */
+     which was the "instant thick outline" complaint. The ring and hover
+     glow mix from --color-accent-primary, so they follow the active theme
+     instead of a hardcoded hex. */
   classic: {
     label:
       "font-mono text-[10px] uppercase tracking-widest text-[var(--color-ash)]",
     icon: "text-[var(--color-accent-primary)]",
     field:
-      "w-full rounded-xl glass border border-[var(--color-glass-border)] px-4 py-3.5 font-body text-sm text-[var(--color-starlight)] placeholder-[var(--color-ash)] shadow-[0_0_0_0_rgba(67,97,238,0)] transition-[border-color,box-shadow,background-color] duration-[260ms] ease-out hover:border-[var(--color-silver)]/30 focus:border-[var(--color-accent-primary)]/70 focus:shadow-[0_0_0_1px_rgba(67,97,238,0.55)] focus:outline-none",
+      "w-full rounded-xl glass border border-[var(--color-glass-border)] px-4 py-3.5 font-body text-sm text-[var(--color-starlight)] placeholder-[var(--color-ash)] shadow-[0_0_0_0_transparent] transition-[border-color,box-shadow,background-color] duration-[260ms] ease-out hover:border-[var(--color-silver)]/30 focus:border-[var(--color-accent-primary)]/70 focus:shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-accent-primary)_55%,transparent)] focus:outline-none",
     submit:
-      "w-full flex items-center justify-center gap-2.5 rounded-full bg-[var(--color-accent-primary)] px-8 py-3.5 font-body text-sm font-semibold text-white transition-[background-color,box-shadow,transform] duration-[250ms] ease-out will-change-transform transform-gpu hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(67,97,238,0.42)] active:scale-[0.97] disabled:opacity-50 disabled:hover:translate-y-0",
+      "w-full flex items-center justify-center gap-2.5 rounded-full bg-[var(--color-accent-primary)] px-8 py-3.5 font-body text-sm font-semibold text-white transition-[background-color,box-shadow,transform] duration-[250ms] ease-out will-change-transform transform-gpu hover:-translate-y-0.5 hover:shadow-[0_10px_34px_color-mix(in_srgb,var(--color-accent-primary)_42%,transparent)] active:scale-[0.97] disabled:opacity-50 disabled:hover:translate-y-0",
     note: "text-[var(--color-accent-primary)]",
   },
 

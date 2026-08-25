@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, memo } from "react";
 import { ArrowRight } from "lucide-react";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
 import { useSectionNav } from "@/lib/hooks/useSectionNav";
@@ -66,7 +66,7 @@ function useTypingEffect(lines: string[], charDelay = 18, lineDelay = 400) {
 
    `pointer-events-none` throughout: this is scenery, never a hit
    target, which is also why none of it can steal clicks from the CTAs. */
-function ATFieldBackdrop({ still }: { still: boolean }) {
+const ATFieldBackdrop = memo(function ATFieldBackdrop({ still }: { still: boolean }) {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       {/* Drifting grid field */}
@@ -79,7 +79,7 @@ function ATFieldBackdrop({ still }: { still: boolean }) {
           maskImage: "radial-gradient(ellipse at 50% 45%, black 20%, transparent 72%)",
           WebkitMaskImage: "radial-gradient(ellipse at 50% 45%, black 20%, transparent 72%)",
         }}
-        animate={still ? undefined : { backgroundPositionX: ["0px", "56px"], backgroundPositionY: ["0px", "56px"] }}
+        animate={still ? undefined : { x: [0, 56], y: [0, 56] }}
         transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
       />
 
@@ -111,7 +111,7 @@ function ATFieldBackdrop({ still }: { still: boolean }) {
       />
     </div>
   );
-}
+});
 
 export default function EvaHero() {
   const ref = useRef<HTMLDivElement>(null);
