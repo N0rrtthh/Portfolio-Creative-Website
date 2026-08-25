@@ -51,7 +51,10 @@ import { DUR, EASE } from "@/lib/motion";
    between two stagings. "Band" is the classic staging — the framed
    globe band full-width above the facts | form columns. "Side" is the
    EVA comms staging — the globe as a tall pane in the left lane with
-   the facts + form stacked beside it in the right lane. One DOM tree
+   the facts + form stacked beside it in the right lane, run full-bleed
+   (edge padding only, no 76rem cap) with EVA's globe-dominant 1.2/1
+   split so it occupies the whole screen width like the EVA section
+   itself. One DOM tree
    serves both (only class sets change), so the globe canvas and the
    form's typed state survive the flip; the side staging forces the
    close-up framing, because that crop + CRT stack IS the EVA look.
@@ -157,11 +160,16 @@ export default function Contact() {
       {/* Side staging turns the container itself into the two-lane
           grid: headline, trace line and signal field span both lanes,
           the globe card takes the left lane and the facts + form
-          column takes the right. Band staging stays block flow — no
-          wrapper div needed either way. */}
+          column takes the right. Side runs FULL-BLEED (edge padding
+          only, no 76rem max-width) with EVA's globe-dominant 1.2/1
+          split, so it reads as the EVA comms composition; band
+          staging stays the centred `container-narrow` block flow.
+          No wrapper div needed either way. */}
       <div
-        className={`container-narrow relative z-10 ${
-          side ? "lg:grid lg:grid-cols-[1fr_1.15fr] lg:gap-x-12" : ""
+        className={`relative z-10 ${
+          side
+            ? "px-5 sm:px-8 lg:grid lg:grid-cols-[1.2fr_1fr] lg:gap-x-10 lg:px-10 xl:px-14"
+            : "container-narrow"
         }`}
       >
         {/* ── Headline band ─────────────────────────────────── */}

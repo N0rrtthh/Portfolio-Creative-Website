@@ -175,20 +175,28 @@ export default function EvaContact() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden pt-24 pb-12 lg:pt-32 lg:pb-16"
+      /* One-screen fit at lg: the section floors at the viewport and
+         the grid fills whatever the paddings leave over, so the pane
+         and the deck share exactly one screen — no black dead bands
+         above or below the content to scroll through. Padding is
+         trimmed accordingly (pt-20 clears the fixed navbar). */
+      className="relative overflow-hidden pt-24 pb-12 lg:flex lg:min-h-svh lg:flex-col lg:pt-20 lg:pb-8"
     >
       {/* Two lanes that never overlap: below `lg` the globe pane is
           its own block with the deck stacked under it; at `lg+` they
           sit side by side — globe left, bay deck right. The content
-          never covers the globe at any width. */}
-      <div className="lg:grid lg:grid-cols-[1.2fr_1fr]">
+          never covers the globe at any width. `flex-1 min-h-0` lets
+          the grid take the section's leftover height so both lanes
+          fill one screen instead of overflowing it. */}
+      <div className="lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-[1.2fr_1fr]">
         {/* Globe pane — decorative. GlobeField carries the CRT/VHS
             stack; the ORBITAL RELAY / LIVE UPLINK captions stay on
             (their default). Mobile: own 52svh block, globe shifted
             centre-right so it reads clearly. Desktop: stretches to
-            the row height the content lane sets (grid stretch), with
-            a 72svh floor so it stays monumental. */}
-        <div className="relative h-[52svh] lg:h-auto lg:min-h-[72svh]">
+            the full row height (grid stretch, no floor) — the old
+            72svh floor plus paddings pushed the section past one
+            screen, which read as black bars around the content. */}
+        <div className="relative h-[52svh] lg:h-auto lg:min-h-0">
           <GlobeField still={still} className="inset-0">
             {/* Canvas oversized 190% × 150%. Desktop: -95% puts the
                 globe's centre on the pane's left edge — only the
@@ -210,11 +218,15 @@ export default function EvaContact() {
           </GlobeField>
         </div>
 
-        {/* Content lane — beside the globe, never over it. Own
-            padding replaces the old container-narrow + ml overlap;
-            the max-w keeps the deck's measure sane on wide screens,
-            and the lane vertically centres it against the pane. */}
-        <div className="relative z-10 px-5 pt-10 sm:px-8 lg:flex lg:flex-col lg:justify-center lg:px-12 lg:pt-0 xl:px-16">
+        {/* Content lane — beside the globe, never over it, and pulled
+            CLOSE to it: the old lg:px-12 / xl:px-16 left padding parked
+            the deck far to the right with a wide dead gap off the
+            pane's edge. Now a slim left gutter keeps the banner near
+            the globe without touching it, and the right padding is
+            trimmed to match. The max-w keeps the deck's measure sane
+            on wide screens, and the lane vertically centres it
+            against the pane. */}
+        <div className="relative z-10 px-5 pt-10 sm:px-8 lg:flex lg:min-h-0 lg:flex-col lg:justify-center lg:py-8 lg:pl-8 lg:pr-6 xl:pl-12 xl:pr-10">
           <div className="mx-auto w-full max-w-[40rem] lg:mx-0">
             <Heading />
 

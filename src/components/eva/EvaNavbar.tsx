@@ -96,7 +96,7 @@ export default function EvaNavbar() {
           <div
             className={`hidden items-center gap-1 rounded-full px-3 py-2 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 lg:flex ${
               scrolled
-                ? "border border-[var(--color-accent-primary)]/40 bg-[var(--color-void)]/90 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-xl"
+                ? "border border-[var(--color-accent-primary)]/40 bg-[var(--color-void)]/70 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-xl"
                 : "border border-transparent bg-transparent"
             }`}
           >
