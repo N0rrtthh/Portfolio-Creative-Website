@@ -368,7 +368,7 @@ export default function EvaProjects() {
                    momentum), which plain `overflow-y-auto scrollbar-none` lacks.
                    `mt-16` is dropped: combined with max-h it pushed the panel
                    off-centre and clipped the bottom on short viewports. */
-                className="scroll-panel relative max-h-[85vh] w-full max-w-3xl rounded-3xl border-2 border-[var(--color-accent-warm)] bg-[#070913] p-6 text-white shadow-[0_0_50px_rgba(57,255,20,0.3)] sm:p-8"
+                className="scroll-panel relative max-h-[85svh] w-full max-w-3xl rounded-3xl border-2 border-[var(--color-accent-warm)] bg-[#070913] p-6 text-white shadow-[0_0_50px_rgba(57,255,20,0.3)] sm:p-8"
               >
                 <button
                   onClick={closeModal}

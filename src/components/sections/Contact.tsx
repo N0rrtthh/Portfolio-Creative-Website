@@ -168,7 +168,6 @@ export default function Contact() {
             <GlobeField
               still={still}
               active={closeUp}
-              scrim={false}
               hud={false}
               className="inset-0"
             >

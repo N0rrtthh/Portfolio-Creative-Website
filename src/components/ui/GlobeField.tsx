@@ -15,9 +15,11 @@ import { motion } from "framer-motion";
    · still  — skip the moving overlays (scan sweep, tracking roll)
    · active — fade the whole CRT sheet in/out (classic close-up
               toggle); the globe itself stays mounted throughout
-   · scrim  — mobile contrast scrim (EVA only: there the content
-              column overlaps the globe)
    · hud    — the ORBITAL RELAY / LIVE UPLINK captions (EVA only)
+
+   The old mobile contrast scrim is gone: the EVA pane and the
+   content lane no longer overlap at any width, so nothing needs
+   the extra contrast layer.
    ══════════════════════════════════════════════════════════ */
 
 /* Analog grain — inline SVG turbulence tiled over the globe. */
@@ -32,14 +34,12 @@ export default function GlobeField({
   className = "",
   still,
   active = true,
-  scrim = true,
   hud = true,
 }: {
   children?: React.ReactNode;
   className?: string;
   still: boolean;
   active?: boolean;
-  scrim?: boolean;
   hud?: boolean;
 }) {
   return (
@@ -124,12 +124,6 @@ export default function GlobeField({
               "linear-gradient(to right, transparent 44%, var(--color-void) 97%), radial-gradient(ellipse at 28% 50%, transparent 52%, rgba(0,0,0,0.55) 100%)",
           }}
         />
-
-        {/* Mobile scrim — where the globe sits behind the content
-            column, the text needs the extra contrast */}
-        {scrim && (
-          <div className="absolute inset-0 bg-[var(--color-void)]/60 lg:hidden" />
-        )}
 
         {/* HUD captions */}
         {hud && (

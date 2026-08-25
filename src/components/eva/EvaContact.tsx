@@ -13,20 +13,24 @@ import { GLOBE_CONFIG, MANILA_ARCS } from "@/lib/globeData";
 /* ══════════════════════════════════════════════════════════
    EVA // Comms uplink — GOBOLD-reference composition
    ──────────────────────────────────────────────────────────
-   The globe is the left-dominant visual; the content column is
-   pushed right so the two read as one asymmetric composition
-   instead of a centred stack.
+   Two lanes that never overlap: the globe pane is the left
+   visual, the bay deck is the right column. The content used
+   to sit ON the pane (`container-narrow` + `lg:ml-[40%]`),
+   which covered the globe — the grid now keeps them side by
+   side at `lg+` and stacks them (globe first) below `lg`, so
+   the globe is never blocked at any width.
 
    Globe: the same `World` component the classic contact section
    renders (config + flights shared from `lib/globeData`), but the
-   canvas is oversized 190% × 150% and shifted (-95% / -25%) so
-   the globe's centre sits on the pane's left edge — only the
-   right hemisphere enters frame, cropped and zoomed. Over it sits
-   the CRT/VHS stack (GlobeField): scanlines, tiled grain, bloom,
-   side fade, vignette, plus the scan sweep and VHS tracking roll
-   (both skipped under reduced motion). The canvas itself takes a
-   blur + saturation/contrast boost so the render reads as footage
-   through a degraded monitor.
+   canvas is oversized 190% × 150%. Desktop shifts it -95% so the
+   globe's centre sits on the pane's left edge — only the right
+   hemisphere enters frame, cropped and zoomed; mobile shifts it
+   -55% so the globe sits centre-right and reads clearly in the
+   narrower pane. Over it sits the CRT/VHS stack (GlobeField):
+   scanlines, tiled grain, bloom, side fade, vignette, plus the
+   scan sweep and VHS tracking roll (both skipped under reduced
+   motion). The canvas itself takes a blur + saturation/contrast
+   boost so the render reads as footage through a degraded monitor.
 
    The pane is decorative: pointer-events stay off it entirely, so
    OrbitControls never engages and the canvas never captures a
@@ -37,8 +41,10 @@ import { GLOBE_CONFIG, MANILA_ARCS } from "@/lib/globeData";
    aria-hidden keeps it out of the accessibility tree.
 
    Content: "Comms // Uplink Terminal" heading + click-to-open bay
-   deck (banner over composer, single grid cell, no runway). On
-   mobile the globe becomes a backdrop layer behind a void scrim.
+   deck (banner over composer, single grid cell, no runway) in the
+   right lane with its own padding; a max-w keeps the measure sane
+   on wide screens. On mobile the deck simply stacks under the
+   globe pane.
 
    Bay deck mechanics (banner over composer):
    The banner is the trigger, and the two panels are a deck of two
@@ -171,81 +177,99 @@ export default function EvaContact() {
       id="contact"
       className="relative overflow-hidden pt-24 pb-12 lg:pt-32 lg:pb-16"
     >
-      {/* Globe pane — left-dominant, decorative, full-bleed.
-          GlobeField carries the CRT/VHS stack; its mobile contrast
-          scrim and the ORBITAL RELAY / LIVE UPLINK captions stay on
-          (their defaults), which is what this pane wants. */}
-      <GlobeField still={still} className="inset-0">
-        {/* Canvas oversized 190% × 150% and shifted so the globe's
-            centre sits on the pane's left edge — only the right
-            hemisphere enters frame. The filter makes the render read
-            as footage through a degraded monitor. interactive={false}
-            kills the hover reticle + surface peel raycast, so no
-            reticle sits stuck on the decorative pane. */}
-        <div
-          className="absolute -left-[95%] -top-[25%] h-[150%] w-[190%]"
-          style={{
-            filter: "blur(1.1px) saturate(1.3) contrast(1.12) brightness(0.9)",
-          }}
-        >
-          <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} interactive={false} />
-        </div>
-      </GlobeField>
-
-      {/* Content column — pushed right of the globe's mass */}
-      <div className="container-narrow relative z-10 lg:ml-[40%]">
-        <Heading />
-
-        {reduced ? (
-          /* Reduced motion: both panels, stacked, no swap at all. */
-          <div className="space-y-8">
-            <Banner onOpen={() => undefined} />
-            <Composer />
-          </div>
-        ) : (
-          /* Single cell — the two panels swap inside it, so the section
-             height is whichever panel is currently mounted and nothing
-             scrolls past it. min-h is the banner's height, kept on the
-             wrapper rather than only on the banner: without it the
-             section was banner-tall while closed and composer-tall
-             (shorter) once open, so finishing the animation yanked the
-             layout. Now the box never changes size, only its contents
-             move. */
-          <div className="relative grid min-h-[60svh] w-full overflow-hidden">
-            {/* Bottom card: always mounted, top-aligned, uncovered rather
-                than introduced. It only eases its last 1.5% of
-                scale/opacity so the reveal has something of its own. */}
-            <motion.div
-              className="[grid-area:1/1] self-start"
-              initial={false}
-              animate={{ opacity: open ? 1 : 0.9, scale: open ? 1 : 0.985 }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: open ? 0.1 : 0 }}
+      {/* Two lanes that never overlap: below `lg` the globe pane is
+          its own block with the deck stacked under it; at `lg+` they
+          sit side by side — globe left, bay deck right. The content
+          never covers the globe at any width. */}
+      <div className="lg:grid lg:grid-cols-[1.2fr_1fr]">
+        {/* Globe pane — decorative. GlobeField carries the CRT/VHS
+            stack; the ORBITAL RELAY / LIVE UPLINK captions stay on
+            (their default). Mobile: own 52svh block, globe shifted
+            centre-right so it reads clearly. Desktop: stretches to
+            the row height the content lane sets (grid stretch), with
+            a 72svh floor so it stays monumental. */}
+        <div className="relative h-[52svh] lg:h-auto lg:min-h-[72svh]">
+          <GlobeField still={still} className="inset-0">
+            {/* Canvas oversized 190% × 150%. Desktop: -95% puts the
+                globe's centre on the pane's left edge — only the
+                right hemisphere enters frame, cropped and zoomed.
+                Mobile: -55% keeps the globe centre-right of the
+                narrower pane instead of half off-screen. The filter
+                makes the render read as footage through a degraded
+                monitor. interactive={false} kills the hover reticle +
+                surface peel raycast, so no reticle sits stuck on the
+                decorative pane. */}
+            <div
+              className="absolute -left-[55%] -top-[25%] h-[150%] w-[190%] lg:-left-[95%]"
+              style={{
+                filter: "blur(1.1px) saturate(1.3) contrast(1.12) brightness(0.9)",
+              }}
             >
-              <Composer />
-            </motion.div>
+              <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} interactive={false} />
+            </div>
+          </GlobeField>
+        </div>
 
-            {/* Top card. It is lifted off, not flown away: -7% and out
-                over 0.55s. It stretches to the full cell height (no
-                self-start) so its h-full always covers the whole
-                composer: the form is taller than the banner's 60svh
-                minimum, and with self-start the banner stayed 60svh
-                while the cell grew to the composer's height — the
-                message textarea and Transmit button poked out under
-                the banner while the bay was closed. */}
-            <AnimatePresence initial={false}>
-              {!open && (
+        {/* Content lane — beside the globe, never over it. Own
+            padding replaces the old container-narrow + ml overlap;
+            the max-w keeps the deck's measure sane on wide screens,
+            and the lane vertically centres it against the pane. */}
+        <div className="relative z-10 px-5 pt-10 sm:px-8 lg:flex lg:flex-col lg:justify-center lg:px-12 lg:pt-0 xl:px-16">
+          <div className="mx-auto w-full max-w-[40rem] lg:mx-0">
+            <Heading />
+
+            {reduced ? (
+              /* Reduced motion: both panels, stacked, no swap at all. */
+              <div className="space-y-8">
+                <Banner onOpen={() => undefined} />
+                <Composer />
+              </div>
+            ) : (
+              /* Single cell — the two panels swap inside it, so the section
+                 height is whichever panel is currently mounted and nothing
+                 scrolls past it. min-h is the banner's height, kept on the
+                 wrapper rather than only on the banner: without it the
+                 section was banner-tall while closed and composer-tall
+                 (shorter) once open, so finishing the animation yanked the
+                 layout. Now the box never changes size, only its contents
+                 move. */
+              <div className="relative grid min-h-[60svh] w-full overflow-hidden">
+                {/* Bottom card: always mounted, top-aligned, uncovered rather
+                    than introduced. It only eases its last 1.5% of
+                    scale/opacity so the reveal has something of its own. */}
                 <motion.div
-                  key="banner"
-                  exit={{ y: "-7%", opacity: 0, scale: 1.015 }}
-                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                  className="z-10 [grid-area:1/1]"
+                  className="[grid-area:1/1] self-start"
+                  initial={false}
+                  animate={{ opacity: open ? 1 : 0.9, scale: open ? 1 : 0.985 }}
+                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: open ? 0.1 : 0 }}
                 >
-                  <Banner onOpen={() => setOpen(true)} />
+                  <Composer />
                 </motion.div>
-              )}
-            </AnimatePresence>
+
+                {/* Top card. It is lifted off, not flown away: -7% and out
+                    over 0.55s. It stretches to the full cell height (no
+                    self-start) so its h-full always covers the whole
+                    composer: the form is taller than the banner's 60svh
+                    minimum, and with self-start the banner stayed 60svh
+                    while the cell grew to the composer's height — the
+                    message textarea and Transmit button poked out under
+                    the banner while the bay was closed. */}
+                <AnimatePresence initial={false}>
+                  {!open && (
+                    <motion.div
+                      key="banner"
+                      exit={{ y: "-7%", opacity: 0, scale: 1.015 }}
+                      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                      className="z-10 [grid-area:1/1]"
+                    >
+                      <Banner onOpen={() => setOpen(true)} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </section>
   );

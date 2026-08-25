@@ -54,7 +54,7 @@ const DossierModal = memo(function DossierModal({
            header and an inner `.scroll-panel` body (below), the same shape
            as the Projects modal. `data-lenis-prevent` on that body keeps
            Lenis from hijacking wheel events that start inside the panel. */
-        className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
+        className="relative flex max-h-[88svh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
       >
         {/* Header — identity + close, pinned above the scroll area */}
         <div className="flex items-start justify-between gap-4 border-b border-[var(--color-glass-border)] px-6 pb-5 pt-6 sm:px-8">

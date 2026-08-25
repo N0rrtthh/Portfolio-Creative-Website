@@ -381,7 +381,7 @@ export default function Projects() {
                   exit={{ scale: 0.97, opacity: 0, y: 8, transition: { duration: DUR.fast, ease: EASE.in } }}
                   transition={SPRING.panel}
                   onClick={(e) => e.stopPropagation()}
-                  className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
+                  className="relative flex max-h-[88svh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
                 >
                   {/* Header — meta, title, close */}
                   <div className="flex items-start justify-between gap-4 border-b border-[var(--color-glass-border)] px-6 pb-5 pt-6 sm:px-8">

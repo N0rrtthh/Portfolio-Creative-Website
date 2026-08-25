@@ -119,8 +119,10 @@ export default function ExperienceTimeline() {
           document.body
         )}
 
-      {/* Sticky viewport frame */}
-      <div className="sticky top-0 left-0 h-screen w-full overflow-hidden">
+      {/* Sticky viewport frame — `h-svh`, not `h-screen`: on mobile
+          browsers 100vh includes the area behind the expanded URL
+          bar, which clipped the frame's bottom edge. */}
+      <div className="sticky top-0 left-0 h-svh w-full overflow-hidden">
         {/* Header overlay */}
         <div className="pointer-events-none absolute top-16 left-0 z-20 w-full px-6 md:top-20 md:px-12">
           <div className="mx-auto max-w-7xl">

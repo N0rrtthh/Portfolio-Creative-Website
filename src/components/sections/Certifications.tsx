@@ -1387,7 +1387,7 @@ export default function Certifications() {
                   role="dialog"
                   aria-modal="true"
                   aria-label={`${selectedCert.title} credential inspector`}
-                  className="relative w-full max-w-6xl my-auto rounded-[1.75rem] p-4 sm:p-5 border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.55)] text-white flex flex-col max-h-[calc(100vh-3rem)] overflow-hidden bg-[#0a0a0a] z-[100000]"
+                  className="relative w-full max-w-6xl my-auto rounded-[1.75rem] p-4 sm:p-5 border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.55)] text-white flex flex-col max-h-[calc(100svh-3rem)] overflow-hidden bg-[#0a0a0a] z-[100000]"
                 >
                   {/* ── Header: identity only ──────────────────────
                       Priority order in this panel is deliberate:
