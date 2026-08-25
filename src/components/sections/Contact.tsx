@@ -46,6 +46,16 @@ import { DUR, EASE } from "@/lib/motion";
        instead of one lonely card
      · the form sits in a gradient hairline ring (a 1px gradient wrapper,
        not a blurred glow) with its own header row
+
+   Layout switch (headline band, right side): the section can flip
+   between two stagings. "Band" is the classic staging — the framed
+   globe band full-width above the facts | form columns. "Side" is the
+   EVA comms staging — the globe as a tall pane in the left lane with
+   the facts + form stacked beside it in the right lane. One DOM tree
+   serves both (only class sets change), so the globe canvas and the
+   form's typed state survive the flip; the side staging forces the
+   close-up framing, because that crop + CRT stack IS the EVA look.
+   The choice persists in localStorage.
    ══════════════════════════════════════════════════════════ */
 
 const ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
@@ -71,6 +81,20 @@ const FACTS = [
   },
 ];
 
+/* Section layout switch — "band" is the classic staging (globe as a
+   full-width band above the columns), "side" is the EVA comms staging
+   (globe as a tall pane beside the facts + form). Persisted under
+   CONTACT_LAYOUT_KEY; the lazy state initializer reads it during
+   render (the ThemeProvider pattern — safe here because HomeClient
+   only mounts the layout client-side, after the boot loader, so there
+   is no SSR markup to disagree with). */
+type ContactLayout = "band" | "side";
+const CONTACT_LAYOUT_KEY = "eq-contact-layout";
+
+const LAYOUT_OPTIONS: { value: ContactLayout; label: string; hint: string }[] = [
+  { value: "band", label: "Band", hint: "Globe as a full-width band above the form" },
+  { value: "side", label: "Side", hint: "Globe as a tall pane beside the form" },
+];
 
 export default function Contact() {
   const reduced = useReducedMotion();
@@ -82,6 +106,34 @@ export default function Contact() {
      two class sets, CSS-transitioned: the change reads as a camera zoom
      and the canvas never remounts. */
   const [closeUp, setCloseUp] = useState(false);
+
+  /* Section staging. Band: headline → globe band → facts | form.
+     Side: the container becomes a two-lane grid — globe pane left,
+     facts + form stacked right (the EVA comms composition). Only
+     classes change, never the tree, so the WebGL canvas and the form
+     inputs survive the flip. The side staging forces the close-up
+     framing (`closeUpActive`), and the choice persists. */
+  const [layout, setLayout] = useState<ContactLayout>(() => {
+    if (typeof window === "undefined") return "band";
+    try {
+      const stored = window.localStorage.getItem(CONTACT_LAYOUT_KEY);
+      return stored === "band" || stored === "side" ? stored : "band";
+    } catch {
+      return "band";
+    }
+  });
+
+  const chooseLayout = (next: ContactLayout) => {
+    setLayout(next);
+    try {
+      window.localStorage.setItem(CONTACT_LAYOUT_KEY, next);
+    } catch {
+      /* storage unavailable — the choice just won't persist */
+    }
+  };
+
+  const side = layout === "side";
+  const closeUpActive = side || closeUp;
 
   /* Fields, validation and submission live in `ui/ContactForm` so EVA's
      uplink panel renders the same form instead of a second copy of it. */
@@ -102,9 +154,22 @@ export default function Contact() {
       </div>
 
 
-      <div className="container-narrow relative z-10">
+      {/* Side staging turns the container itself into the two-lane
+          grid: headline, trace line and signal field span both lanes,
+          the globe card takes the left lane and the facts + form
+          column takes the right. Band staging stays block flow — no
+          wrapper div needed either way. */}
+      <div
+        className={`container-narrow relative z-10 ${
+          side ? "lg:grid lg:grid-cols-[1fr_1.15fr] lg:gap-x-12" : ""
+        }`}
+      >
         {/* ── Headline band ─────────────────────────────────── */}
-        <div className="pb-2">
+        <div
+          className={`flex flex-wrap items-start justify-between gap-x-8 gap-y-6 pb-2 ${
+            side ? "lg:col-span-2" : ""
+          }`}
+        >
 
           <div className="max-w-2xl">
 
@@ -128,27 +193,85 @@ export default function Contact() {
               transmission and I&apos;ll get back to you.
             </p>
           </div>
-          {/* The "Available for new work" pill was removed on request. With it
-              gone the band no longer needs to be a two-column flex row. */}
+          {/* Layout switch — flips the section between the classic band
+              staging (globe as a full-width band above the columns) and
+              the EVA-style side staging (globe as a tall pane beside the
+              facts + form). The "Available for new work" pill used to
+              occupy this corner; the switch takes its place. */}
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--color-ash)]">
+              Globe layout
+            </span>
+            <div
+              role="group"
+              aria-label="Contact section layout"
+              className="relative grid w-44 grid-cols-2 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-void)]/70 p-1 backdrop-blur-sm"
+            >
+              {/* Sliding thumb — the options sit on equal grid tracks,
+                  so left:50% lands it on the second option exactly. */}
+              <span
+                aria-hidden="true"
+                className={`absolute inset-y-1 w-[calc(50%-4px)] rounded-full border border-[var(--color-accent-primary)]/50 bg-[var(--color-accent-primary)]/15 transition-[left] duration-300 ease-out ${
+                  side ? "left-[50%]" : "left-1"
+                }`}
+              />
+              {LAYOUT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  title={opt.hint}
+                  aria-pressed={layout === opt.value}
+                  onClick={() => chooseLayout(opt.value)}
+                  className={`relative z-10 rounded-full py-1.5 text-center font-mono text-[10px] font-bold uppercase tracking-[0.2em] transition-colors duration-300 ${
+                    layout === opt.value
+                      ? "text-[var(--color-starlight)]"
+                      : "text-[var(--color-ash)] hover:text-[var(--color-silver)]"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Divider — the static 1px rule is now a self-drawing trace with a
             node riding it. Same job, and it replaces dead border space with
             motion rather than adding a new element to the page. */}
-        <AnimeTraceLine className="mb-6 md:mb-8" height={24} />
+        <AnimeTraceLine
+          className={side ? "mb-6 md:mb-8 lg:col-span-2" : "mb-6 md:mb-8"}
+          height={24}
+        />
 
-        {/* ── Interactive globe — full-width band ── */}
+        {/* ── Interactive globe — band staging or side pane ──
+            The same framed card in both stagings. Band: a full-width
+            band between the headline and the columns. Side: the left
+            lane of the container grid, stretched to the row height the
+            facts + form lane sets (with a 620px floor). The card
+            classes live on this motion.div itself so the grid stretch
+            sizes it directly — no nested h-full to resolve. */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: DUR.reveal * 1.4, ease: EASE.out }}
-          className="relative mb-10 md:mb-14"
+          className={`relative h-[420px] w-full overflow-hidden rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-void)]/60 sm:h-[500px] ${
+            side
+              ? /* max-lg: below the grid the card stacks over the facts,
+                   so it keeps the band's bottom spacing; at lg the grid
+                   gap owns the spacing and a bottom margin would stretch
+                   the row instead. */
+                "max-lg:mb-10 lg:h-auto lg:min-h-[620px]"
+              : "mb-10 md:mb-14 lg:h-[560px]"
+          }`}
         >
-          <div className="relative h-[420px] w-full overflow-hidden rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-void)]/60 sm:h-[500px] lg:h-[560px]">
             {/* Framing toggle — swaps between the framed orbit and the
                 EVA-style close-up (zoomed, left-cropped, CRT stack).
-                Bottom-right so it never collides with the hint label. */}
+                Bottom-right so it never collides with the hint label.
+                Band staging only: the side staging forces the close-up
+                (that crop + CRT stack IS the EVA look), so there is
+                nothing to toggle there. */}
+            {!side && (
             <button
               type="button"
               onClick={() => setCloseUp((v) => !v)}
@@ -164,10 +287,11 @@ export default function Contact() {
               />
               {closeUp ? "Orbit view" : "Close-up"}
             </button>
+            )}
 
             <GlobeField
               still={still}
-              active={closeUp}
+              active={closeUpActive}
               hud={false}
               className="inset-0"
             >
@@ -178,12 +302,12 @@ export default function Contact() {
                   the card's left edge. */}
               <div
                 className={`absolute pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                  closeUp
+                  closeUpActive
                     ? "-left-[95%] -top-[25%] h-[150%] w-[190%]"
                     : "left-0 top-0 h-full w-full"
                 }`}
                 style={{
-                  filter: closeUp
+                  filter: closeUpActive
                     ? "blur(1.1px) saturate(1.3) contrast(1.12) brightness(0.9)"
                     : "blur(0px) saturate(1) contrast(1) brightness(1)",
                 }}
@@ -194,7 +318,7 @@ export default function Contact() {
             {/* Single hint label — no location text */}
             <div
               className={`pointer-events-none absolute inset-x-0 top-0 flex justify-end p-5 transition-opacity duration-500 ${
-                closeUp ? "opacity-0" : "opacity-100"
+                closeUpActive ? "opacity-0" : "opacity-100"
               }`}
             >
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--color-ash)]">
@@ -204,17 +328,24 @@ export default function Contact() {
             {/* Gradient vignette for depth */}
             <div
               className={`pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,var(--color-void)_100%)] transition-opacity duration-500 ${
-                closeUp ? "opacity-0" : "opacity-100"
+                closeUpActive ? "opacity-0" : "opacity-100"
               }`}
             />
-          </div>
         </motion.div>
 
 
 
-        {/* ── Columns — both start at the same line ─────────── */}
-        <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
+        {/* ── Columns — band staging: facts | form side by side;
+            side staging: stacked inside the container's right grid
+            lane ─────────────────────────────────────────────── */}
+        <div
+          className={
+            side
+              ? "flex min-w-0 flex-col gap-10"
+              : "grid items-start gap-10 lg:grid-cols-12 lg:gap-12"
+          }
+        >
+          <div className={side ? "" : "lg:col-span-5"}>
             {/* Facts — one rhythm, dividers instead of three separate cards */}
             <div className="divide-y divide-[var(--color-glass-border)] overflow-hidden rounded-2xl border border-[var(--color-glass-border)] glass">
               {FACTS.map(({ icon: Icon, label, value, href }) => {
@@ -282,7 +413,7 @@ export default function Contact() {
           </div>
 
           {/* ── The form, in a ringed card ────────────────────── */}
-          <div className="lg:col-span-7">
+          <div className={side ? "" : "lg:col-span-7"}>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -325,7 +456,7 @@ export default function Contact() {
             Also: an early 4×36 version was a one-line strip with no room
             for the cursor to travel, which is why the band is tall. */}
 
-        <div className="mt-10 md:mt-12">
+        <div className={side ? "mt-10 md:mt-12 lg:col-span-2" : "mt-10 md:mt-12"}>
           <div className="mb-3 flex items-baseline justify-between gap-4">
 
             <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-ash)]">
