@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { TECH_STACK, type TechItem } from "@/lib/data";
 import { categoryColor } from "@/lib/techMeta";
 import TechMark from "@/components/ui/TechMark";
-import { useReducedMotionPref } from "@/lib/hooks/useClientFlag";
+import { useReducedMotionPref, useCoarsePointer } from "@/lib/hooks/useClientFlag";
 
 /**
  * Tech arsenal as two counter-scrolling conveyors of 3D flip cards.
@@ -16,6 +16,10 @@ import { useReducedMotionPref } from "@/lib/hooks/useClientFlag";
  *    quick dossier, and every OTHER card smoothly dims + recedes so the
  *    focused tile commands attention. Uses GPU-composited opacity/scale only
  *    (no `filter: blur()`) so it stays smooth while the marquee scrolls.
+ *  - Touch has no hover, so there is no pause and no flip: tapping a card
+ *    pauses its row and flips it; tapping it again (or another card)
+ *    resumes/swaps. Scrolling never flips — browsers suppress `click`
+ *    after a drag, and flip state only changes on `click` for touch.
  *  - Category tabs filter the conveyors.
  *  - Reduced-motion users get a static grid that shows everything at once.
  */
@@ -35,10 +39,13 @@ const FlipCard = memo(function FlipCard({
   isDimmed,
   onActivate,
   onDeactivate,
+  touch,
 }: {
   tech: TechItem;
   /** Unique per rendered copy (the marquee duplicates each card). */
   instanceId: string;
+  /** Touch-first device: flip on tap instead of hover. */
+  touch: boolean;
   /** This card is hovered/focused → flip it. */
   isActive: boolean;
   /** A different card is active → dim + recede this one. */
@@ -62,6 +69,15 @@ const FlipCard = memo(function FlipCard({
     [onDeactivate, instanceId]
   );
 
+  /* Touch: a tap is a toggle. Uses `click` (not `pointerdown`) on purpose —
+     the browser only fires `click` for stationary taps, never after a
+     scroll-drag, so flicking the conveyor never flips a card mid-gesture. */
+  const handleTap = useCallback(() => {
+    if (!touch) return;
+    if (isActive) onDeactivate(instanceId);
+    else onActivate(instanceId);
+  }, [touch, isActive, onActivate, onDeactivate, instanceId]);
+
   /* The OUTER wrapper is the stable hit-area: it never rotates on hover, so
      the pointer can't "fall off" a moving card and re-trigger the flip.
 
@@ -78,6 +94,7 @@ const FlipCard = memo(function FlipCard({
       data-cursor-hover
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
+      onClick={handleTap}
       onFocus={() => onActivate(instanceId)}
       onBlur={() => onDeactivate(instanceId)}
       animate={{
@@ -119,7 +136,7 @@ const FlipCard = memo(function FlipCard({
             {tech.category}
           </span>
           <span className="absolute bottom-2.5 font-mono text-[8px] uppercase tracking-widest text-[var(--color-ash)] opacity-50">
-            hover to peek
+            {touch ? "tap to peek" : "hover to peek"}
           </span>
         </div>
 
@@ -194,12 +211,18 @@ function ConveyorRow({
   activeId,
   onActivate,
   onDeactivate,
+  touch,
+  paused,
 }: {
   items: TechItem[];
   reverse: boolean;
   activeId: string | null;
   onActivate: (id: string) => void;
   onDeactivate: (id: string) => void;
+  touch: boolean;
+  /** A card somewhere is flipped → freeze the belt so the flipped target
+   *  stays under the finger (touch has no hover-pause to do this). */
+  paused: boolean;
 }) {
   // Keep linear speed roughly constant regardless of how many cards are shown.
   const duration = Math.max(18, items.length * 4);
@@ -224,6 +247,7 @@ function ConveyorRow({
             isDimmed={activeId !== null && activeId !== instanceId}
             onActivate={onActivate}
             onDeactivate={onDeactivate}
+            touch={touch}
           />
         );
       })}
@@ -246,7 +270,12 @@ function ConveyorRow({
     >
       <div
         className={`flex w-max ${reverse ? "animate-marquee-reverse" : "animate-marquee"}`}
-        style={{ animationDuration: `${duration}s` }}
+        style={{
+          animationDuration: `${duration}s`,
+          // Inline play-state would override (and kill) the CSS `.group:hover`
+          // pause, so it is only set when a flip actually needs the freeze.
+          ...(paused ? { animationPlayState: "paused" as const } : null),
+        }}
       >
         {half(false)}
         {half(true)}
@@ -258,6 +287,7 @@ function ConveyorRow({
 /* ─── Main component ─────────────────────────────────────── */
 export default function TechFlipGrid() {
   const reduced = useReducedMotionPref();
+  const touch = useCoarsePointer();
   const [activeCategory, setActiveCategory] = useState("All");
 
   // instanceId of the card currently flipped (hovered/focused), or null.
@@ -349,7 +379,7 @@ export default function TechFlipGrid() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="space-y-4"
           role="region"
-          aria-label="Technology showcase. The cards scroll continuously; hover to pause and flip a card, which dims the rest out."
+          aria-label="Technology showcase. The cards scroll continuously; hover or tap a card to pause and flip it, which dims the rest out."
         >
           <ConveyorRow
             items={rowA}
@@ -357,6 +387,8 @@ export default function TechFlipGrid() {
             activeId={activeId}
             onActivate={handleActivate}
             onDeactivate={handleDeactivate}
+            touch={touch}
+            paused={activeId !== null}
           />
           {rowB.length > 0 && (
             <ConveyorRow
@@ -365,6 +397,8 @@ export default function TechFlipGrid() {
               activeId={activeId}
               onActivate={handleActivate}
               onDeactivate={handleDeactivate}
+              touch={touch}
+              paused={activeId !== null}
             />
           )}
         </motion.div>

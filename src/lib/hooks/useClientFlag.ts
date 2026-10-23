@@ -50,6 +50,34 @@ export function useReducedMotionPref(): boolean {
   );
 }
 
+const COARSE_QUERY = "(pointer: coarse)";
+
+function subscribeCoarsePointer(onChange: () => void) {
+  if (typeof window === "undefined" || !window.matchMedia) return () => {};
+  const mql = window.matchMedia(COARSE_QUERY);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+}
+
+function getCoarsePointer() {
+  return (
+    typeof window !== "undefined" &&
+    !!window.matchMedia &&
+    window.matchMedia(COARSE_QUERY).matches
+  );
+}
+
+/** True on touch-first devices (phones/tablets) — gates tap-to-flip and
+ *  similar "no hover here" interactions. False during SSR, corrected on
+ *  the first client render without a cascading repaint. */
+export function useCoarsePointer(): boolean {
+  return useSyncExternalStore(
+    subscribeCoarsePointer,
+    getCoarsePointer,
+    () => false
+  );
+}
+
 /** Device tier never changes for the lifetime of the page. */
 const noopSubscribe = () => () => {};
 

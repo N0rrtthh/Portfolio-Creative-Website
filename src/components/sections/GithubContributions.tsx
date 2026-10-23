@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { GitCommit, WifiOff } from "lucide-react";
 import ChapterLabel from "@/components/ui/ChapterLabel";
@@ -26,8 +26,48 @@ import staticDataRaw from "@/data/github-data.json";
 const staticData = staticDataRaw as unknown as {
   source: string;
   error: string | null;
-  years: Record<string, { totalContributions: number; weeks: WeekData[] }>;
+  years: Record<string, YearData>;
 };
+
+type YearData = { totalContributions: number; weeks: WeekData[] };
+type JogDay = { date: string; count: number; level: number };
+
+/* Token-free live fallback. github-data.json is generated at build time via
+   the GraphQL API, which needs a token — without one it ships as
+   `{ source: "error", years: {} }` and the heatmap is dead for every
+   visitor, desktop included. The public jogruber mirror serves the same
+   per-day calendar ({ date, count, level 0–4 }) with CORS and no auth, so
+   the browser fetches whichever year is selected and caches it in state. */
+const CONTRIBUTIONS_API = "https://github-contributions-api.jogruber.de/v4";
+
+/* jogruber returns one flat list of days. The grid is one column per week
+   with 7 rows, and GitHub's calendar starts weeks on Sunday — so pad the
+   head (before Jan 1) and tail (after Dec 31) with level -1 spacer cells. */
+function buildWeeks(days: JogDay[]): WeekData[] {
+  const weeks: WeekData[] = [];
+  let week: DayData[] = [];
+
+  const leading = days.length
+    ? new Date(`${days[0].date}T00:00:00Z`).getUTCDay()
+    : 0;
+  for (let i = 0; i < leading; i++) {
+    week.push({ date: "", count: 0, level: -1 });
+  }
+
+  for (const day of days) {
+    const dow = new Date(`${day.date}T00:00:00Z`).getUTCDay();
+    if (dow === 0 && week.length > leading) {
+      weeks.push({ contributionDays: week });
+      week = [];
+    }
+    week.push({ date: day.date, count: day.count, level: day.level });
+  }
+  if (week.length) {
+    while (week.length < 7) week.push({ date: "", count: 0, level: -1 });
+    weeks.push({ contributionDays: week });
+  }
+  return weeks;
+}
 
 /* One palette, both modes.
    The old version keyed every cell off Tailwind's `dark:` variant, which
@@ -68,11 +108,52 @@ export default function GithubContributions() {
   const springX = useSpring(mouseX, { stiffness: 300, damping: 30 });
   const springY = useSpring(mouseY, { stiffness: 300, damping: 30 });
 
-  const error = staticData.error;
-  const isLive = staticData.source === "build_graphql";
-  const data = staticData.years[String(selectedYear)];
+  /* Live-fetched years (client-side fallback), keyed "2026" etc. */
+  const [liveYears, setLiveYears] = useState<Record<string, YearData>>({});
+  const [liveError, setLiveError] = useState<string | null>(null);
+
+  const yearKey = String(selectedYear);
+  const data = liveYears[yearKey] ?? staticData.years[yearKey];
+  const isLive = staticData.source === "build_graphql" || Boolean(liveYears[yearKey]);
+  /* Build-time errors never surface — they just trigger the live fetch.
+     Only a FAILED live fetch produces a visible error, and only when no
+     data could be shown at all. */
+  const error = data ? null : liveError;
 
   const totalCommits = data?.totalContributions || 0;
+
+  useEffect(() => {
+    if (staticData.years[yearKey]) return; // real build data already covers it
+    let cancelled = false;
+    // Year is a `?y=` query param, not a path segment — the path form 404s.
+    fetch(`${CONTRIBUTIONS_API}/${GITHUB_USERNAME}?y=${yearKey}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`contributions API responded ${r.status}`);
+        return r.json() as Promise<{ contributions?: JogDay[] }>;
+      })
+      .then((json) => {
+        if (cancelled || !Array.isArray(json.contributions)) return;
+        const days = json.contributions;
+        setLiveYears((prev) => ({
+          ...prev,
+          [yearKey]: {
+            totalContributions: days.reduce((sum, d) => sum + (d.count || 0), 0),
+            weeks: buildWeeks(days),
+          },
+        }));
+        setLiveError(null);
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setLiveError(
+            err instanceof Error ? err.message : "Live fetch failed"
+          );
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [yearKey]);
 
   return (
     <motion.section
@@ -141,7 +222,7 @@ export default function GithubContributions() {
                     setSelectedYear(year);
                     setPinnedDay(null);
                   }}
-                  className="relative px-3 py-1.5 text-xs font-mono rounded-lg text-[var(--color-silver)] hover:text-[var(--color-starlight)] transition-colors cursor-pointer"
+                  className="relative px-3.5 py-2 text-xs font-mono rounded-lg text-[var(--color-silver)] hover:text-[var(--color-starlight)] transition-colors cursor-pointer"
                 >
                   {selectedYear === year && (
                     <motion.span
@@ -205,7 +286,21 @@ export default function GithubContributions() {
                 <WifiOff className="w-10 h-10 text-red-500/50 mb-3" />
                 <p className="text-red-400 font-mono text-sm">{error}</p>
                 <p className="text-[var(--color-ash)] text-xs mt-2 max-w-sm">
-                  The GitHub API is currently unreachable or rate-limited. Please try again later or provide a personal access token.
+                  Couldn’t reach the live contributions feed. Check your
+                  connection and refresh the page.
+                </p>
+              </motion.div>
+            ) : !data ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center text-center p-8"
+              >
+                <span className="mb-3 h-6 w-6 animate-spin rounded-full border-2 border-emerald-500/30 border-t-emerald-400" />
+                <p className="font-mono text-sm text-[var(--color-silver)]">
+                  Fetching {selectedYear} contributions live…
                 </p>
               </motion.div>
             ) : (
@@ -277,6 +372,42 @@ export default function GithubContributions() {
                     ))}
                   </div>
                 </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Tapped day, spelled out in text. The floating tooltip follows the
+              cursor (mouse-only), so on touch a tap would pin a cell with no
+              way to read it — this line makes the pin readable everywhere,
+              and doubles as a persistent readout on desktop. */}
+          <AnimatePresence>
+            {pinnedDay && pinnedDay.level !== -1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                transition={{ duration: 0.18 }}
+                className="mt-2 flex items-center justify-center gap-3 font-mono text-xs text-[var(--color-silver)]"
+              >
+                <GitCommit className="w-3.5 h-3.5 text-emerald-500" />
+                <span>
+                  <span className="font-bold text-[var(--color-starlight)]">
+                    {pinnedDay.count}
+                  </span>{" "}
+                  contribution{pinnedDay.count === 1 ? "" : "s"} ·{" "}
+                  {new Date(pinnedDay.date).toLocaleDateString(undefined, {
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPinnedDay(null)}
+                  className="cursor-pointer rounded-md border border-[var(--color-glass-border)] px-2 py-1 text-[10px] uppercase tracking-wider text-[var(--color-ash)] transition-colors hover:border-[var(--color-silver)]/40 hover:text-[var(--color-starlight)]"
+                >
+                  Clear
+                </button>
               </motion.div>
             )}
           </AnimatePresence>

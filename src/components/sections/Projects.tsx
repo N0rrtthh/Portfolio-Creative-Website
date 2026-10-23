@@ -92,15 +92,19 @@ function MobileProjectCarousel({ onSelect }: { onSelect: (p: Project) => void })
         </AnimatePresence>
 
         <div className="mt-6 flex items-center justify-between">
-          <button onClick={prev} className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-silver)]" aria-label="Previous">
+          <button onClick={prev} className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-silver)]" aria-label="Previous project">
             <ChevronLeft size={18} />
           </button>
           <div className="flex items-center gap-2">
             {all.map((_, i) => (
-              <button key={i} onClick={() => setIdx(i)} className={`rounded-full transition-all duration-300 ${i === idx ? "w-5 h-2 bg-[var(--color-accent-primary)]" : "w-2 h-2 bg-[var(--color-ash)]"}`} aria-label={`Project ${i + 1}`} />
+              /* Padding + negative margin: the visible dot stays the same
+                 size, but the tappable area is ~32px instead of 8–20px. */
+              <button key={i} onClick={() => setIdx(i)} className="cursor-pointer rounded-full p-2 -m-2" aria-label={`Go to project ${i + 1}`}>
+                <span className={`block rounded-full transition-all duration-300 ${i === idx ? "w-5 h-2 bg-[var(--color-accent-primary)]" : "w-2 h-2 bg-[var(--color-ash)]"}`} />
+              </button>
             ))}
           </div>
-          <button onClick={next} className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-silver)]" aria-label="Next">
+          <button onClick={next} className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-silver)]" aria-label="Next project">
             <ChevronRight size={18} />
           </button>
         </div>

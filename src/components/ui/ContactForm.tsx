@@ -49,7 +49,7 @@ const SKIN: Record<
       "font-mono text-[10px] uppercase tracking-widest text-[var(--color-ash)]",
     icon: "text-[var(--color-accent-primary)]",
     field:
-      "w-full rounded-xl glass border border-[var(--color-glass-border)] px-4 py-3.5 font-body text-sm text-[var(--color-starlight)] placeholder-[var(--color-ash)] shadow-[0_0_0_0_transparent] transition-[border-color,box-shadow,background-color] duration-[260ms] ease-out hover:border-[var(--color-silver)]/30 focus:border-[var(--color-accent-primary)]/70 focus:shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-accent-primary)_55%,transparent)] focus:outline-none",
+      "w-full rounded-xl glass border border-[var(--color-glass-border)] px-4 py-3.5 font-body text-base sm:text-sm text-[var(--color-starlight)] placeholder-[var(--color-ash)] shadow-[0_0_0_0_transparent] transition-[border-color,box-shadow,background-color] duration-[260ms] ease-out hover:border-[var(--color-silver)]/30 focus:border-[var(--color-accent-primary)]/70 focus:shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-accent-primary)_55%,transparent)] focus:outline-none",
     submit:
       "w-full flex items-center justify-center gap-2.5 rounded-full bg-[var(--color-accent-primary)] px-8 py-3.5 font-body text-sm font-semibold text-white transition-[background-color,box-shadow,transform] duration-[250ms] ease-out will-change-transform transform-gpu hover:-translate-y-0.5 hover:shadow-[0_10px_34px_color-mix(in_srgb,var(--color-accent-primary)_42%,transparent)] active:scale-[0.97] disabled:opacity-50 disabled:hover:translate-y-0",
     note: "text-[var(--color-accent-primary)]",
@@ -62,7 +62,7 @@ const SKIN: Record<
        slab in one frame. Now the border thickness never changes — only its
        colour, plus a hairline ring that eases in over 260ms. */
     field:
-      "w-full rounded-none border border-black/45 bg-white/85 px-4 py-3 font-mono text-sm text-black placeholder-black/40 shadow-[0_0_0_0_rgba(0,0,0,0)] transition-[border-color,box-shadow,background-color] duration-[260ms] ease-out hover:border-black/70 focus:border-black focus:bg-white focus:shadow-[0_0_0_1px_rgba(0,0,0,0.75)] focus:outline-none",
+      "w-full rounded-none border border-black/45 bg-white/85 px-4 py-3 font-mono text-base sm:text-sm text-black placeholder-black/40 shadow-[0_0_0_0_rgba(0,0,0,0)] transition-[border-color,box-shadow,background-color] duration-[260ms] ease-out hover:border-black/70 focus:border-black focus:bg-white focus:shadow-[0_0_0_1px_rgba(0,0,0,0.75)] focus:outline-none",
 
     submit:
       "w-full flex items-center justify-center gap-3 border-2 border-black bg-black px-8 py-4 font-mono text-xs font-black uppercase tracking-[0.2em] text-[var(--color-accent-warm)] transition-[background-color,color,transform] duration-200 ease-out active:scale-[0.98] hover:bg-[var(--color-accent-warm)] hover:text-black disabled:opacity-50",
@@ -241,7 +241,7 @@ export default function ContactForm({ variant = "classic" }: { variant?: Variant
           role="alert"
           className={
             variant === "eva"
-              ? "rounded-none border border-black/50 bg-white/70 px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-black"
+              ? "rounded-none border border-black/50 bg-white/70 px-3 py-2 font-mono text-xs sm:text-[11px] uppercase tracking-wider text-black"
               : "rounded-lg border border-red-400/40 bg-red-500/10 px-3 py-2 font-mono text-xs text-red-300"
           }
         >
@@ -268,7 +268,7 @@ export default function ContactForm({ variant = "classic" }: { variant?: Variant
           className={skin.field}
         />
         {errors.name ? (
-          <p id={`cf-name-error-${variant}`} className="mt-1.5 font-mono text-[11px] text-red-400" role="alert">
+          <p id={`cf-name-error-${variant}`} className="mt-1.5 font-mono text-xs sm:text-[11px] text-red-400" role="alert">
             {errors.name}
           </p>
         ) : null}
@@ -294,7 +294,7 @@ export default function ContactForm({ variant = "classic" }: { variant?: Variant
           className={skin.field}
         />
         {errors.email ? (
-          <p id={`cf-email-error-${variant}`} className="mt-1.5 font-mono text-[11px] text-red-400" role="alert">
+          <p id={`cf-email-error-${variant}`} className="mt-1.5 font-mono text-xs sm:text-[11px] text-red-400" role="alert">
             {errors.email}
           </p>
         ) : null}
@@ -318,11 +318,11 @@ export default function ContactForm({ variant = "classic" }: { variant?: Variant
           className={`${skin.field} resize-none`}
         />
         {errors.message ? (
-          <p id={`cf-message-error-${variant}`} className="mt-1.5 font-mono text-[11px] text-red-400" role="alert">
+          <p id={`cf-message-error-${variant}`} className="mt-1.5 font-mono text-xs sm:text-[11px] text-red-400" role="alert">
             {errors.message}
           </p>
         ) : (
-          <p id={`cf-message-help-${variant}`} className="mt-1.5 font-mono text-[10px] text-[var(--color-ash)]">
+          <p id={`cf-message-help-${variant}`} className="mt-1.5 font-mono text-[11px] sm:text-[10px] text-[var(--color-ash)]">
             {formData.message.length}/{MESSAGE_MAX}
           </p>
         )}

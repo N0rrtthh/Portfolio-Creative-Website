@@ -149,7 +149,7 @@ export default function Navbar() {
             aria-label={open ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={open}
             aria-controls="classic-mobile-nav"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-starlight)] backdrop-blur-md transition-transform duration-200 active:scale-95 md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-starlight)] backdrop-blur-md transition-transform duration-200 active:scale-95 md:hidden"
             data-cursor-hover
           >
             {open ? <X size={18} /> : <Menu size={18} />}
@@ -176,7 +176,7 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
                     activeSection === item.href
                       ? "bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)] font-bold"
                       : "text-[var(--color-silver)] hover:bg-[var(--color-glass-bg)] hover:text-[var(--color-starlight)]"

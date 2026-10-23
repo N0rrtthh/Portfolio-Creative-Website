@@ -543,7 +543,17 @@ function FoxTrio({
       mainY.get() + floatY,
       0
     );
-    const mScale = mainS.get() * easePop;
+    /* ── Compact (portrait) viewport ──
+       A phone shows only ~1.6 world units of width at this camera, so the
+       edge-clamped side models would land ON the main model instead of
+       flanking it, and the choreographed main scale overflows the frame.
+       Compact viewports drop the trio down to the main model, shrunk to fit
+       the width (floor 0.55 keeps ultra-narrow folds from vanishing). */
+    const compact = viewport.width / viewport.height < 0.9;
+    const fit = compact
+      ? Math.max(0.55, Math.min(1, viewport.width / 3.1))
+      : 1;
+    const mScale = mainS.get() * easePop * fit;
     main.scale.set(mScale, mScale, mScale);
 
     /* Continuous accumulated spin. */
@@ -627,8 +637,10 @@ function FoxTrio({
         sideGlitchUniforms.current.uGlitchAmp.value;
     }
 
-    /* Hide side models entirely once faded for perf. */
-    const sideVisible = sideOpacity > 0.005;
+    /* Hide side models once faded for perf — and always on compact
+       (portrait) viewports, where their edge clamp piles them onto the
+       main model instead of flanking it (see `compact` above). */
+    const sideVisible = sideOpacity > 0.005 && !compact;
     left.visible = sideVisible;
     right.visible = sideVisible;
   });

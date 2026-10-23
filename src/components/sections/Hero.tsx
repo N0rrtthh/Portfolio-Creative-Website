@@ -115,7 +115,7 @@ function MagneticSocial({
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={{ x: sx, y: sy }}
-      className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-silver)] backdrop-blur-md transition-[color,border-color,box-shadow] duration-200 hover:text-[var(--color-starlight)] hover:border-[var(--color-accent-primary)] hover:shadow-[0_0_18px_rgba(67,97,238,0.25)] will-change-transform"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] text-[var(--color-silver)] backdrop-blur-md transition-[color,border-color,box-shadow] duration-200 hover:text-[var(--color-starlight)] hover:border-[var(--color-accent-primary)] hover:shadow-[0_0_18px_rgba(67,97,238,0.25)] will-change-transform"
       aria-label={label}
       data-cursor-hover
     >
@@ -417,7 +417,7 @@ export default function Hero() {
                 ))}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="hover:text-[var(--color-starlight)] transition-colors p-1 font-mono text-xs break-all"
+                  className="hover:text-[var(--color-starlight)] transition-colors p-2 -m-1 font-mono text-xs break-all"
                 >
                   {CONTACT_EMAIL}
                 </a>

@@ -1124,7 +1124,7 @@ export default function Certifications() {
                 setExpanded(false);
               }}
               placeholder="Search title or issuer…"
-              className="w-full min-w-0 pl-10 pr-3 py-2.5 rounded-xl bg-[var(--color-glass-highlight)] border border-[var(--color-glass-border)] font-mono text-[11px] text-[var(--color-starlight)] text-ellipsis placeholder:text-[var(--color-ash)] focus:outline-none focus:border-[var(--color-accent-primary)]/60 transition-colors"
+              className="w-full min-w-0 pl-10 pr-3 py-2.5 rounded-xl bg-[var(--color-glass-highlight)] border border-[var(--color-glass-border)] font-mono text-[16px] sm:text-[11px] text-[var(--color-starlight)] text-ellipsis placeholder:text-[var(--color-ash)] focus:outline-none focus:border-[var(--color-accent-primary)]/60 transition-colors"
             />
           </div>
 

@@ -161,6 +161,11 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scrollbar-width: none;
+  /* `clip`, not `hidden`: decorative glows wider than the viewport (hero,
+     contact) must be cut off without turning the root into a scroll
+     container — and unlike `hidden`, `clip` never breaks position:sticky,
+     which the experience timeline depends on. */
+  overflow-x: clip;
 }
 
 html::-webkit-scrollbar {
@@ -171,7 +176,7 @@ body {
   background-color: var(--color-void);
   color: var(--color-pearl);
   font-family: var(--font-body);
-  overflow-x: hidden;
+  overflow-x: clip;
   cursor: none;
 }
 

@@ -25,7 +25,9 @@ const WaypointNav = memo(function WaypointNav({
             onClick={() => onSelect(idx)}
             title={`Go to ${item.company}`}
             aria-current={isActive ? "true" : undefined}
-            className={`group flex cursor-pointer items-center justify-end gap-3 text-left transition-[transform,opacity] duration-[250ms] ease-out will-change-transform ${
+            /* Padding + negative margin: layout unchanged, but the 16px dot
+               becomes a ~36px touch target. */
+            className={`group flex cursor-pointer items-center justify-end gap-3 p-2.5 -m-2.5 text-left transition-[transform,opacity] duration-[250ms] ease-out will-change-transform ${
               isActive ? "scale-110 opacity-100" : "opacity-40 hover:opacity-90"
             }`}
           >

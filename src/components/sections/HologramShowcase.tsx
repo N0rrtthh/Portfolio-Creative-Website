@@ -1753,6 +1753,10 @@ export default function HologramShowcase() {
               border: `1px solid ${hovered ? `${color}55` : `${color}18`}`,
               transition: "border-color 0.4s ease",
               cursor: "grab",
+              /* pan-y: vertical touches scroll the page as usual; horizontal
+                 drags rotate the hologram. Without this the canvas eats
+                 every touch and mobile visitors get stuck on the section. */
+              touchAction: "pan-y",
               background: "#000",
             }}
           >
@@ -2020,32 +2024,48 @@ export default function HologramShowcase() {
                     key={p.hex}
                     onClick={() => setColor(p.hex)}
                     aria-label={`Set hologram color to ${p.name}`}
-                    className="transition-transform duration-200"
+                    /* 36px hit-area button; the swatch itself stays a 16px
+                       dot so the visual is unchanged but the target meets
+                       the touch minimum. */
+                    className="flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-200"
                     style={{
-                      width: 16,
-                      height: 16,
-                      background: p.hex,
-                      boxShadow: p.hex === color ? `0 0 8px 2px ${p.hex}99` : "none",
                       transform: p.hex === color ? "scale(1.15)" : "scale(1)",
-                      outline: p.hex === color ? `1px solid ${p.hex}` : "1px solid transparent",
-                      outlineOffset: 2,
                     }}
-                  />
+                  >
+                    <span
+                      className="h-4 w-4 rounded-full"
+                      style={{
+                        background: p.hex,
+                        boxShadow: p.hex === color ? `0 0 8px 2px ${p.hex}99` : "none",
+                        outline: p.hex === color ? `1px solid ${p.hex}` : "1px solid transparent",
+                        outlineOffset: 2,
+                      }}
+                    />
+                  </button>
                 ))}
               </div>
             </div>
 
             <div className="flex gap-2 pt-1">
               {SLOTS.map((s, i) => (
+                /* Same trick as the color swatches: 32px hit-area around an
+                   8px visual dot. */
                 <button
                   key={s.id}
                   onClick={() => selectSlot(i)}
-                  className="w-2 h-2 rounded-full transition-all duration-300"
+                  aria-label={`Select hologram slot ${s.label}`}
+                  className="flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-300"
                   style={{
-                    backgroundColor: i === active ? color : "var(--color-smoke)",
                     transform: i === active ? "scale(1.5)" : "scale(1)",
                   }}
-                />
+                >
+                  <span
+                    className="h-2 w-2 rounded-full transition-colors duration-300"
+                    style={{
+                      backgroundColor: i === active ? color : "var(--color-smoke)",
+                    }}
+                  />
+                </button>
               ))}
             </div>
           </div>
