@@ -23,6 +23,12 @@ import {
 } from "lucide-react";
 import ChapterLabel from "@/components/ui/ChapterLabel";
 import RevealText from "@/components/ui/RevealText";
+import { asset } from "@/lib/assets";
+import certPreviews from "@/data/certPreviews.json";
+
+/* Pre-rendered certificate images (scripts/build-cert-previews.mjs):
+   variant id → [width, height]. */
+const CERT_PREVIEWS = certPreviews as unknown as Record<string, [number, number]>;
 
 /* Subject → drawn icon. The badges used to be emoji glyphs — a
    placeholder standing in for an icon system. One lucide set now:
@@ -124,6 +130,58 @@ function ScaledFrame({ src, title }: { src: string; title: string }) {
         />
       )}
     </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   CertPreview — the whole certificate, no scrolling
+   ──────────────────────────────────────────────────────────
+   pdfhost's viewer (ScaledFrame below) draws the page at 100% under its
+   own toolbars, so a landscape certificate never fit and visitors had to
+   scroll inside the frame to read it. The pre-rendered image is sized to
+   the space the inspector actually has: full width, unless that would
+   make it taller than the viewport minus the pinned header/actions/tabs —
+   then it shrinks by height instead, keeping its own aspect ratio.
+   Clicking it opens the full pdfhost page, same as the button above.
+   ══════════════════════════════════════════════════════════ */
+function CertPreview({ variant, title }: { variant: CertVariant; title: string }) {
+  const dims = CERT_PREVIEWS[variant.id];
+  if (!dims) {
+    return (
+      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl border border-white/10 bg-black/20 overflow-hidden">
+        <ScaledFrame src={variant.viewWebUrl} title={title} />
+      </div>
+    );
+  }
+  const [w, h] = dims;
+  const ratio = w / h;
+  return (
+    <a
+      href={variant.viewWebUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${title} — open the full certificate in a new tab`}
+      className="group/cert relative mx-auto block cursor-zoom-in overflow-hidden rounded-xl border border-white/10 bg-white shadow-[0_18px_50px_-20px_rgba(0,0,0,0.8)]"
+      style={{
+        aspectRatio: `${w} / ${h}`,
+        width: `min(100%, calc(max(11rem, 100svh - 30rem) * ${ratio.toFixed(4)}))`,
+      }}
+    >
+      {/* Remote-free, pre-sized static asset; next/image adds nothing with
+          images.unoptimized. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={asset(`/certs/${variant.id}.webp`)}
+        alt={title}
+        width={w}
+        height={h}
+        decoding="async"
+        className="h-full w-full object-contain"
+      />
+      <span className="pointer-events-none absolute bottom-2 right-2 rounded-full bg-black/70 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-white opacity-0 transition-opacity duration-200 group-hover/cert:opacity-100">
+        Open full certificate ↗
+      </span>
+    </a>
   );
 }
 
@@ -1445,7 +1503,7 @@ export default function Certifications() {
                       The two links used to sit UNDER a 42rem-tall preview,
                       i.e. a full screen of scrolling away on a phone, which
                       buried the one thing a recruiter opens this for. */}
-                  <div className="flex items-start justify-between gap-4 pb-4 mb-4 border-b border-white/10">
+                  <div className="flex items-start justify-between gap-4 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-white/10">
                     <div className="min-w-0 pr-2">
                       <span className="font-mono text-[9px] uppercase tracking-widest text-amber-300 font-bold bg-amber-950/40 px-2.5 py-0.5 rounded-full border border-amber-500/25 inline-flex items-center gap-1 mb-2">
                         <CheckCircle2 size={10} />
@@ -1473,29 +1531,32 @@ export default function Certifications() {
                   {/* ── Actions: pinned above the scroll area ──────
                       Outside the scroll container on purpose, so they stay
                       reachable no matter how far down the preview is. */}
-                  <div className="shrink-0 flex flex-col sm:flex-row items-stretch gap-2.5 pb-4 mb-4 border-b border-white/10">
+                  <div className="shrink-0 flex flex-row items-stretch gap-2 sm:gap-2.5 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-white/10">
                     <a
                       href={currentVariant.viewWebUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-white/10 px-5 py-3.5 font-mono text-[12px] sm:text-[13px] font-bold uppercase tracking-wide text-white transition-[background-color,border-color,transform,box-shadow] duration-200 ease-out hover:bg-white/20 hover:border-white/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]"
+                      className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 sm:gap-2.5 rounded-xl border border-white/15 bg-white/10 px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-[11px] sm:text-[13px] font-bold uppercase tracking-wide text-white transition-[background-color,border-color,transform,box-shadow] duration-200 ease-out hover:bg-white/20 hover:border-white/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]"
                     >
                       <Globe size={17} className="text-cyan-400 shrink-0" />
-                      Visit certificate page
+                      <span className="sm:hidden">Certificate</span>
+                      <span className="hidden sm:inline">Visit certificate page</span>
                     </a>
                     {currentVariant.credlyPublicUrl ? (
                       <a
                         href={currentVariant.credlyPublicUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 inline-flex items-center justify-center gap-2.5 rounded-xl border border-amber-400/40 bg-amber-400 px-5 py-3.5 font-mono text-[12px] sm:text-[13px] font-bold uppercase tracking-wide text-black shadow-[0_8px_24px_rgba(251,191,36,0.25)] transition-[background-color,border-color,transform,box-shadow] duration-200 ease-out hover:bg-amber-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(251,191,36,0.4)] active:translate-y-0 active:scale-[0.97]"
+                        className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 sm:gap-2.5 rounded-xl border border-amber-400/40 bg-amber-400 px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-[11px] sm:text-[13px] font-bold uppercase tracking-wide text-black shadow-[0_8px_24px_rgba(251,191,36,0.25)] transition-[background-color,border-color,transform,box-shadow] duration-200 ease-out hover:bg-amber-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(251,191,36,0.4)] active:translate-y-0 active:scale-[0.97]"
                       >
                         <BadgeCheck size={17} className="shrink-0" />
-                        Verify on Credly
+                        <span className="sm:hidden">Credly</span>
+                        <span className="hidden sm:inline">Verify on Credly</span>
                       </a>
                     ) : (
-                      <div className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3.5 font-mono text-[11px] uppercase tracking-wide text-slate-500">
-                        No Credly badge for this issuer
+                      <div className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-wide text-slate-500 text-center">
+                        <span className="sm:hidden">No Credly badge</span>
+                        <span className="hidden sm:inline">No Credly badge for this issuer</span>
                       </div>
                     )}
                   </div>
@@ -1510,8 +1571,8 @@ export default function Certifications() {
                       reflow entirely, so the pill only ever animates between
                       stable tab positions. */}
                   {selectedCert.variants.length > 1 && (
-                    <div className="shrink-0 px-1 pb-4 mb-4 border-b border-white/10">
-                      <div className="flex items-center justify-between gap-3 mb-3">
+                    <div className="shrink-0 px-1 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-white/10">
+                      <div className="flex items-center justify-between gap-3 mb-2 sm:mb-3">
                         <span className="font-mono text-[10px] uppercase tracking-[0.32em] text-slate-400">
                           Issued by
                         </span>
@@ -1568,16 +1629,10 @@ export default function Certifications() {
                           Certificate Preview
                         </span>
 
-                        {/* Aspect-ratio box, not a 42rem min-height: a landscape
-                            certificate in a 672px-tall frame left most of the
-                            panel empty on phones and pushed everything else off
-                            screen. `ScaledFrame` fills this exactly. */}
-                        <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl border border-white/10 bg-black/20 overflow-hidden">
-                          <ScaledFrame
-                            src={currentVariant.viewWebUrl}
-                            title={`${currentVariant.name} certificate preview`}
-                          />
-                        </div>
+                        <CertPreview
+                          variant={currentVariant}
+                          title={`${selectedCert.title} — ${currentVariant.name} certificate`}
+                        />
 
                         <p className="font-body text-sm text-slate-300 leading-relaxed">
                           {selectedCert.description}

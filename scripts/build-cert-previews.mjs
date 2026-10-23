@@ -82,11 +82,13 @@ for (const v of todo) {
       let res;
       for (const wait of [0, 4000, 9000, 20000]) {
         if (wait) await new Promise((r) => setTimeout(r, wait));
-        res = await ctx.request.get(pdfUrl);
-        if (res.ok()) break;
+        // Node's own fetch: Playwright's request client got persistent
+        // 502s from pdfhost for some files that plain HTTP serves fine.
+        res = await fetch(pdfUrl, { headers: { "User-Agent": "Mozilla/5.0", Referer: v.url } });
+        if (res.ok) break;
       }
-      if (!res.ok()) throw new Error(`PDF ${res.status()}`);
-      const b64 = (await res.body()).toString("base64");
+      if (!res.ok) throw new Error(`PDF ${res.status}`);
+      const b64 = Buffer.from(await res.arrayBuffer()).toString("base64");
       rendered = await renderer.evaluate(
         async ({ b64, TARGET_WIDTH }) => {
           const data = Uint8Array.from(atob(b64), (ch) => ch.charCodeAt(0));

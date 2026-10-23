@@ -23,6 +23,10 @@
     1600,
     1236
   ],
+  "v-cisco-vision": [
+    1600,
+    1236
+  ],
   "v-cpp-adv-cisco": [
     1600,
     1236
@@ -55,15 +59,39 @@
     1600,
     1084
   ],
+  "v-da-ess-cisco": [
+    1600,
+    1236
+  ],
+  "v-da-ess-dict": [
+    1600,
+    1084
+  ],
   "v-datasense": [
     1600,
     1132
+  ],
+  "v-dict-foundations": [
+    1600,
+    1084
+  ],
+  "v-dict-vision": [
+    1600,
+    1084
   ],
   "v-digital-safety": [
     1600,
     1084
   ],
   "v-digital-safety-cisco": [
+    1600,
+    1084
+  ],
+  "v-ds-py-cisco": [
+    1600,
+    1236
+  ],
+  "v-ds-py-dict": [
     1600,
     1084
   ],
@@ -78,6 +106,10 @@
   "v-eth-hacker-cisco": [
     1600,
     1236
+  ],
+  "v-eth-hacker-dict": [
+    1600,
+    1084
   ],
   "v-hardware-cisco": [
     1600,
@@ -103,6 +135,10 @@
     1600,
     1236
   ],
+  "v-ibm-vision": [
+    1600,
+    1236
+  ],
   "v-ilcdb-apply-ai": [
     1600,
     1131
@@ -111,11 +147,23 @@
     1600,
     1131
   ],
+  "v-ilcdb-vision": [
+    1600,
+    1131
+  ],
   "v-intro-cs-cisco": [
     1600,
     1236
   ],
   "v-intro-cs-dict": [
+    1600,
+    1084
+  ],
+  "v-intro-ds-cisco": [
+    1600,
+    1236
+  ],
+  "v-intro-ds-dict": [
     1600,
     1084
   ],
@@ -146,6 +194,10 @@
   "v-modern-ai-cisco": [
     1600,
     1236
+  ],
+  "v-modern-ai-dict": [
+    1600,
+    1084
   ],
   "v-os-support-cisco": [
     1600,
