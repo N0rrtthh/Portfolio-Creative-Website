@@ -267,7 +267,7 @@ export default function GithubContributions() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative p-4 sm:p-6 rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] backdrop-blur-xl min-h-[220px] flex flex-col justify-center"
+          className="relative p-4 sm:p-6 rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-obsidian)] min-h-[220px] flex flex-col justify-center"
           onMouseMove={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             mouseX.set(e.clientX - rect.left);
@@ -351,17 +351,18 @@ export default function GithubContributions() {
                           const style = lvl === -1 ? null : CELL_COLORS[lvl];
                           const isPinned = pinnedDay?.date === day.date;
                           return (
-                            <motion.div
+                            /* Plain div + CSS hover: ~370 cells used to be
+                               framer components, and every hover re-rendered
+                               all of them. Same 1.4× lift, same tap dip. */
+                            <div
                               key={`${wIdx}-${dIdx}`}
-                              whileHover={lvl !== -1 ? { scale: 1.4, zIndex: 20 } : undefined}
-                              whileTap={lvl !== -1 ? { scale: 1.15 } : undefined}
                               onMouseEnter={() => lvl !== -1 && setHoveredDay(day)}
                               onMouseLeave={() => setHoveredDay(null)}
                               onClick={() => lvl !== -1 && setPinnedDay(isPinned ? null : day)}
-                              className={`h-3 w-3 rounded-[3px] border transition-colors cursor-pointer ${
+                              className={`h-3 w-3 rounded-[3px] border transition-[transform,background-color,border-color] duration-150 ease-out cursor-pointer ${
                                 lvl === -1
                                   ? "opacity-0 pointer-events-none"
-                                  : `${style?.border} ${style?.bg} ${style?.glow ?? ""} ${
+                                  : `hover:z-20 hover:scale-[1.4] active:scale-[1.15] ${style?.border} ${style?.bg} ${style?.glow ?? ""} ${
                                       isPinned ? "ring-2 ring-emerald-400 ring-offset-1 ring-offset-[var(--color-obsidian)]" : ""
                                     }`
                               }`}

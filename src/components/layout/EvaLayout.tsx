@@ -13,6 +13,7 @@ import EvaExperience from "@/components/eva/EvaExperience";
 import EvaContact from "@/components/eva/EvaContact";
 import { observeVisibility } from "@/lib/performance";
 import { asset } from "@/lib/assets";
+import SceneBoundary from "@/components/ui/SceneBoundary";
 
 // Heavy below-fold sections — defer parse until after first paint
 const GithubContributions = dynamic(
@@ -77,7 +78,9 @@ export default function EvaLayout() {
         {/* Persistent holographic fox — fixed canvas behind the opening acts.
             DOM order puts it above the z-0 hex grid; the z-[2] scan line and
             border frame plus the z-10 main content all stay on top of it. */}
-        <JourneyModel progress={scrollYProgress} active={journeyActive} />
+        <SceneBoundary>
+          <JourneyModel progress={scrollYProgress} active={journeyActive} />
+        </SceneBoundary>
 
         {/* Vertical Tactical Scanning Line — top-0 anchors it for the
             transform-based scan-down sweep (see globals.css). */}

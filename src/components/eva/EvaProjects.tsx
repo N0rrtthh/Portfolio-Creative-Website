@@ -17,7 +17,8 @@ import {
   Filter,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/BrandIcons";
-import { getProjectImage } from "@/data/projectImages";
+import { getProjectImage, getProjectScreens } from "@/data/projectImages";
+import PhoneMockupStage from "@/components/ui/PhoneMockup";
 import { useScrollLock } from "@/lib/hooks/useScrollLock";
 import { useLenis } from "@/components/providers/SmoothScrollProvider";
 import { useLowEndDevice } from "@/lib/hooks/useClientFlag";
@@ -87,6 +88,7 @@ const ProjectCard = memo(function ProjectCard({
   onSelect,
 }: CardProps) {
   const img = getProjectImage(project.id);
+  const screens = getProjectScreens(project.id);
 
   return (
     /* No `layout`. Closing the schematic modal restores the scroll offset the
@@ -113,17 +115,27 @@ const ProjectCard = memo(function ProjectCard({
 
       {/* Preview */}
       <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-xl border border-[var(--color-accent-primary)]/30 bg-black transition-colors group-hover:border-[var(--color-accent-warm)]/70">
-        {img ? (
+        {img || screens ? (
           <div className="relative h-full w-full overflow-hidden">
-            <Image
-              src={img}
-              alt={project.title}
-              width={800}
-              height={450}
-              loading="lazy"
-              sizes="(min-width: 1024px) 40vw, 90vw"
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+            {img ? (
+              <Image
+                src={img}
+                alt={project.title}
+                width={800}
+                height={450}
+                loading="lazy"
+                sizes="(min-width: 1024px) 40vw, 90vw"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <PhoneMockupStage
+                screens={screens!}
+                alt={`${project.title} app`}
+                color={project.color}
+                sizes="(min-width: 1024px) 12vw, 30vw"
+                className="transition-transform duration-500 group-hover:scale-105"
+              />
+            )}
             <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-[var(--color-obsidian)] via-transparent to-transparent opacity-70 transition-opacity group-hover:opacity-40" />
 
             {/* Static blur value; only opacity transitions. */}
@@ -268,6 +280,9 @@ export default function EvaProjects() {
   const modalImg = selectedProject
     ? getProjectImage(selectedProject.id)
     : undefined;
+  const modalScreens = selectedProject
+    ? getProjectScreens(selectedProject.id)
+    : undefined;
 
   return (
     <section id="projects" className="relative py-24">
@@ -395,7 +410,14 @@ export default function EvaProjects() {
                 </div>
 
                 <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black">
-                  {modalImg ? (
+                  {modalScreens ? (
+                    <PhoneMockupStage
+                      screens={modalScreens}
+                      alt={`${selectedProject.title} app screens`}
+                      color={selectedProject.color}
+                      sizes="(max-width: 768px) 35vw, 240px"
+                    />
+                  ) : modalImg ? (
                     <Image
                       src={modalImg}
                       alt={selectedProject.title}

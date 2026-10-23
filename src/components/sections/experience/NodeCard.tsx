@@ -39,7 +39,7 @@ const NodeCard = memo(function NodeCard({
       /* Width, not font size, does the heavy lifting here. The card sits
          dead-centre of the viewport, so `min(92vw, …)` lets it grow into
          the space it actually has and still fit a 360px phone. */
-      className="group/card relative w-[min(92vw,22rem)] cursor-pointer rounded-2xl border border-white/10 bg-[#0b0c14]/85 p-6 text-left backdrop-blur-xl transition-colors duration-300 outline-none hover:border-white/25 focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]/70 sm:w-[min(90vw,26rem)] sm:p-7 md:w-[min(80vw,30rem)] lg:w-[32rem]"
+      className="group/card relative w-[min(calc(100vw-5.5rem),22rem)] cursor-pointer rounded-2xl border border-white/10 bg-[#0b0c14]/85 p-6 text-left backdrop-blur-xl transition-colors duration-300 outline-none hover:border-white/25 focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]/70 sm:w-[min(90vw,26rem)] sm:p-7 md:w-[min(80vw,30rem)] lg:w-[32rem]"
     >
       {/* Index — one quiet line */}
       <span className="mb-5 block font-mono text-[11px] font-bold tracking-[0.35em] text-[var(--color-accent-primary)]">

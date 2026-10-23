@@ -15,7 +15,13 @@ export default function TechStack() {
        cards with nothing between them, so it needs a tighter vertical rhythm
        than the narrative sections. Values are real padding, not negative
        margins undoing the old layout. */
-    <section id="techstack" className="relative overflow-hidden py-12 md:py-16">
+    <section
+      id="techstack"
+      className="relative overflow-hidden py-12 md:py-16"
+      /* The belts of flip cards run continuous marquees: skip rendering
+         them entirely while the section is off-screen. */
+      style={{ contentVisibility: "auto", containIntrinsicSize: "auto 760px" }}
+    >
       <div id="tech-stack" className="scroll-mt-24" />
       <div className="container-narrow">
         <ChapterLabel index={4} classic="Tech Stack" eva="EQUIPMENT MANIFEST" className="mb-4" />

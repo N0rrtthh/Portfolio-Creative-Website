@@ -151,13 +151,13 @@ export interface RealCertification {
   credlyVerified: boolean;
 }
 
-export const ALL_28_CERTIFICATIONS: RealCertification[] = [
+export const ALL_CERTIFICATIONS: RealCertification[] = [
   // --- 1-4. AI & MACHINE LEARNING ---
   {
     id: "cert-01",
     title: "AI Fundamentals: Foundations for Understanding AI",
     subject: "AI",
-    issuer: "Cisco Academy x IBM SkillsBuild x DICT-ITU",
+    issuer: "Cisco Academy x IBM SkillsBuild x DICT-ITU x DICT ILCDB",
     issueDate: "2026",
     skills: ["Generative AI", "Neural Networks", "Ethics in AI", "Prompt Engineering"],
     description: "Foundational mastery in artificial intelligence architecture, machine learning concepts, ethical AI deployment, and neural model mechanics. Issued across 3 official partner credentials.",
@@ -191,13 +191,18 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
         credlyPublicUrl: "https://www.credly.com/badges/d2b7b343-2d60-404d-961e-7d238aa0ceaf/public_url",
         credlyBadgeImageUrl: "https://images.credly.com/size/340x340/images/fa29f782-3029-44f9-9fb1-631c3278a68a/blob",
       },
+      {
+        id: "v-ilcdb-foundations",
+        name: "DICT ILCDB",
+        viewWebUrl: "https://pdfhost.io/v/UQKHrWvqEt_AI_Fundamentals_Foundations_for_Understanding_AI",
+      },
     ],
   },
   {
     id: "cert-02",
     title: "AI Fundamentals: Language and Vision in AI",
     subject: "AI",
-    issuer: "Cisco Networking Academy x Credly",
+    issuer: "Cisco Academy x IBM SkillsBuild x DICT-ITU x DICT ILCDB",
     issueDate: "2026",
     skills: ["Computer Vision", "NLP", "Transformer Models", "Image Processing"],
     description: "Specialized certification in Natural Language Processing (NLP), Computer Vision algorithms, LLM transformers, and multimodal AI systems.",
@@ -232,6 +237,11 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
         credlyPublicUrl: "https://www.credly.com/badges/f6227f46-2986-4896-a3da-e31fec9ae83b/public_url",
         credlyBadgeImageUrl: "https://images.credly.com/size/340x340/images/1c760850-837a-4ffd-bf17-83dee11b1c77/BadgeEmblem_AIFundamentalsLanguageAndVisionInAI.png",
       },
+      {
+        id: "v-ilcdb-vision",
+        name: "DICT ILCDB",
+        viewWebUrl: "https://pdfhost.io/v/VRmhzh2pCS_AI_Fundamentals_Language_and_Vision_in_AI",
+      },
     ],
   },
   {
@@ -265,7 +275,7 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
     id: "cert-04",
     title: "Apply AI: Update Your Resume",
     subject: "AI",
-    issuer: "Cisco Networking Academy x Credly",
+    issuer: "Cisco Networking Academy x DICT-ITU x DICT ILCDB",
     issueDate: "2026",
     skills: ["AI Productivity", "Career Automation", "Workflow Optimization"],
     description: "Practical application of AI productivity tools for career optimization, automated review pipelines, and executive branding.",
@@ -284,6 +294,11 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
         credlyBadgeId: "e0cc3f70-ed75-40fb-af86-7f20d0348efa",
         credlyPublicUrl: "https://www.credly.com/badges/e0cc3f70-ed75-40fb-af86-7f20d0348efa/public_url",
         credlyBadgeImageUrl: "https://images.credly.com/images/33ba62e4-b26d-4b95-9121-1ad01b754224/linkedin_thumb_blob",
+      },
+      {
+        id: "v-ilcdb-apply-ai",
+        name: "DICT ILCDB",
+        viewWebUrl: "https://pdfhost.io/v/ST8RGEd6nW_Apply_AI_Update_Your_Resume",
       },
     ],
   },
@@ -776,6 +791,27 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
 
   // --- 23-28. BUSINESS & PROFESSIONAL ---
   {
+    id: "cert-29",
+    title: "Enterprise Design Thinking Practitioner",
+    subject: "Business & Professional",
+    issuer: "IBM SkillsBuild x Credly",
+    issueDate: "2026",
+    skills: ["Design Thinking", "Enterprise Design Thinking", "Collaboration", "User Outcomes"],
+    description: "IBM's Enterprise Design Thinking framework in practice: framing work around user outcomes, the observe–reflect–make Loop, and aligning diverse teams with Hills, Playbacks and Sponsor Users.",
+    badgeBgColor: "from-blue-600 via-indigo-700 to-slate-900",
+    credlyVerified: true,
+    variants: [
+      {
+        id: "v-ibm-edt",
+        name: "IBM SkillsBuild",
+        viewWebUrl: "https://pdfhost.io/v/KmTzKRrzW6_Enterprise_Design_Thinking_Practitioner",
+        credlyBadgeId: "0cfc014b-0986-48e3-892c-54c639a9ab0e",
+        credlyPublicUrl: "https://www.credly.com/badges/0cfc014b-0986-48e3-892c-54c639a9ab0e/public_url",
+        credlyBadgeImageUrl: "https://images.credly.com/images/520b12b6-dac0-4731-a4f6-e41427201422/linkedin_thumb_BadgeEmblem_EnterpriseDesignThinkingPractitioner.png",
+      },
+    ],
+  },
+  {
     id: "cert-23",
     title: "Discovering Entrepreneurship",
     subject: "Business & Professional",
@@ -893,8 +929,11 @@ export const ALL_28_CERTIFICATIONS: RealCertification[] = [
   },
 ];
 
+const CERT_COUNT = ALL_CERTIFICATIONS.length;
+const ALL_SUBJECTS = `ALL SUBJECTS (${CERT_COUNT})`;
+
 const SUBJECT_CATEGORIES = [
-  "ALL SUBJECTS (28)",
+  ALL_SUBJECTS,
   "AI",
   "DATA SCIENCE",
   "CYBERSECURITY",
@@ -926,6 +965,7 @@ const CERT_ARTWORK_BY_ID: Partial<Record<string, string | string[]>> = {
   "cert-21": "https://images.credly.com/images/94cbdf0d-3e44-44b2-b213-866fe22aa7d5/linkedin_thumb_blob",
   "cert-22": "https://images.credly.com/images/70cc28ef-542c-4ce2-8bad-e8d95daf5138/linkedin_thumb_blob",
   "cert-23": "https://images.credly.com/images/0c77c11b-e3cf-4734-8fd4-2d920151ae0b/linkedin_thumb_image.png",
+  "cert-29": "https://images.credly.com/images/520b12b6-dac0-4731-a4f6-e41427201422/linkedin_thumb_BadgeEmblem_EnterpriseDesignThinkingPractitioner.png",
   "cert-24": "https://play-lh.googleusercontent.com/GlLhzUqFThey7irbBznTNIEo67kCe6ArkmGFlngWnLXsVypm60OJqdpIZdNkQZ5qs18=w600-h300-pc0xffffff-pd",
   "cert-25": "https://i.imgur.com/B1pn3na.png",
   "cert-26": "https://i.imgur.com/hZm8xlh.png",
@@ -1005,8 +1045,18 @@ function CredentialCardBody({ cert, badge }: { cert: RealCertification; badge: R
 
 const INITIAL_VISIBLE = 6;
 
+/* Compact issuer labels for the inspector tabs below `lg`: with up to four
+   issuers sharing one row, "CISCO NETWORKING ACADEMY" truncated to "CIS…"
+   on phones and the tabs became unreadable. */
+const SHORT_ISSUER: Record<string, string> = {
+  "Cisco Networking Academy": "Cisco",
+  "IBM SkillsBuild": "IBM",
+  "DICT-ITU DTC Initiative": "DICT-ITU",
+  "DICT ILCDB": "DICT ILCDB",
+};
+
 export default function Certifications() {
-  const [activeSubject, setActiveSubject] = useState<string>("ALL SUBJECTS (28)");
+  const [activeSubject, setActiveSubject] = useState<string>(ALL_SUBJECTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCert, setSelectedCert] = useState<RealCertification | null>(null);
   const [activeVariantId, setActiveVariantId] = useState<string>("");
@@ -1071,11 +1121,11 @@ export default function Certifications() {
     );
   }, [selectedCert, activeVariantId]);
 
-  // Filtered certifications calculation across ALL 28
+  // Filtered certifications calculation across every credential
   const filteredCerts = useMemo(() => {
-    return ALL_28_CERTIFICATIONS.filter((cert) => {
+    return ALL_CERTIFICATIONS.filter((cert) => {
       const matchesSubject =
-        activeSubject === "ALL SUBJECTS (28)" ||
+        activeSubject === ALL_SUBJECTS ||
         cert.subject.toUpperCase() === activeSubject;
       const matchesSearch =
         cert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -1091,7 +1141,7 @@ export default function Certifications() {
       <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[160px] bg-[var(--color-accent-primary)]/10 z-0" />
 
       <div className="container-narrow relative z-10">
-        <ChapterLabel index={5} classic="Credential Vault (28 Certs)" eva="CREDENTIAL VAULT" className="mb-8" />
+        <ChapterLabel index={5} classic={`Credential Vault (${CERT_COUNT} Certs)`} eva="CREDENTIAL VAULT" className="mb-8" />
 
         <div className="mb-8">
           <div>
@@ -1099,10 +1149,10 @@ export default function Certifications() {
               as="h2"
               className="text-section-title mb-4 font-display text-[var(--color-starlight)]"
             >
-              28 Official Verified Credentials.
+              {`${CERT_COUNT} Official Verified Credentials.`}
             </RevealText>
             <p className="font-body text-base text-[var(--color-silver)] max-w-prose">
-              Browse 28 verified professional certifications. Click any tile to inspect multi-issuer credentials (Cisco, IBM, DICT-ITU), view web certificate links, and verify official Credly badges.
+              Browse {CERT_COUNT} verified professional certifications. Click any tile to inspect multi-issuer credentials (Cisco, IBM, DICT-ITU, DICT ILCDB), view web certificate links, and verify official Credly badges.
             </p>
           </div>
 
@@ -1156,7 +1206,7 @@ export default function Certifications() {
         </div>
 
         {/* Credential Grid */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 hover-focus-container">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 hover-focus-container">
           <AnimatePresence initial={false}>
             {(expanded ? filteredCerts : filteredCerts.slice(0, INITIAL_VISIBLE)).map((cert) => {
               const defaultVariant = cert.variants.find((variant) => variant.credlyBadgeId) ?? cert.variants[0];
@@ -1283,7 +1333,7 @@ export default function Certifications() {
                   onClick={() => handleOpenInspector(cert)}
                   data-hoverable
                   data-cursor-hover
-                  className="group relative rounded-2xl glass border border-[var(--color-glass-border)] hover:border-[var(--color-accent-primary)]/70 transition-[border-color,box-shadow] duration-500 ease-out flex flex-col overflow-visible cursor-pointer pt-12 hover:z-30 hover:shadow-[0_32px_75px_-16px_rgba(67,97,238,0.55)]"
+                  className="group relative min-w-0 rounded-2xl glass [backdrop-filter:none]! [-webkit-backdrop-filter:none]! border border-[var(--color-glass-border)] hover:border-[var(--color-accent-primary)]/70 transition-[border-color,box-shadow] duration-500 ease-out flex flex-col overflow-visible cursor-pointer pt-12 hover:z-30 hover:shadow-[0_32px_75px_-16px_rgba(67,97,238,0.55)]"
                 >
                   <CredentialCardBody cert={cert} badge={badgeNode} />
                 </motion.div>
@@ -1480,7 +1530,7 @@ export default function Certifications() {
                               key={variant.id}
                               type="button"
                               onClick={() => setActiveVariantId(variant.id)}
-                              className="relative z-10 flex-1 min-w-0 whitespace-nowrap px-3 sm:px-5 py-2.5 rounded-full font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider cursor-pointer"
+                              className="relative z-10 flex-1 min-w-0 whitespace-nowrap px-1 sm:px-5 py-2.5 rounded-full font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-normal sm:tracking-wider cursor-pointer"
                             >
                               {isTabActive && (
                                 <motion.span
@@ -1494,7 +1544,8 @@ export default function Certifications() {
                                   isTabActive ? "text-white" : "text-slate-400 hover:text-slate-100"
                                 }`}
                               >
-                                {variant.name}
+                                <span className="lg:hidden">{SHORT_ISSUER[variant.name] ?? variant.name}</span>
+                                <span className="hidden lg:inline">{variant.name}</span>
                               </span>
                             </button>
                           );

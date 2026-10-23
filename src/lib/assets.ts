@@ -11,8 +11,12 @@
    file is known at build time (see data/projectImages.ts).
    ══════════════════════════════════════════════════════════ */
 
-export const BASE_PATH =
-  process.env.NODE_ENV === "production" ? "/Portfolio-Website" : "";
+/* Same source as next.config's `basePath`: the GitHub Pages workflow sets
+   NEXT_PUBLIC_BASE_PATH=/Portfolio-Website, every other host (Vercel,
+   custom domain, local preview) serves from the root. Hard-coding the
+   Pages prefix for every production build made root-hosted deploys
+   request /Portfolio-Website/3d/*.glb, 404, and crash the whole page. */
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /** Prefix a /public path with the deployment basePath. */
 export function asset(path: string): string {

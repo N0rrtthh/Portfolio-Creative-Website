@@ -55,6 +55,15 @@ const FlipCard = memo(function FlipCard({
 }) {
   const color = categoryColor(tech.category);
 
+  /* 3D only while it is needed. A resting card is a flat 2D tile; the
+     perspective / preserve-3d / backface stack (four compositor layers per
+     card, ~160 across both belts) switches on the moment the card activates
+     and drops again once the flip back to 0° has finished. Visually
+     identical — a card at 0° only ever shows its front — but the belts no
+     longer drag 160 3D layers through every frame. */
+  const [settling, setSettling] = useState(false);
+  const deep = isActive || settling;
+
   const handlePointerEnter = useCallback(
     (e: React.PointerEvent) => {
       if (e.pointerType === "mouse") onActivate(instanceId);
@@ -102,17 +111,21 @@ const FlipCard = memo(function FlipCard({
         scale: isDimmed ? 0.94 : isActive ? 1.04 : 1,
       }}
       transition={{ duration: 0.35, ease: EASE }}
-      className="relative h-52 w-44 shrink-0 cursor-pointer outline-none [perspective:1100px] focus-visible:ring-2 focus-visible:ring-white/50 rounded-2xl sm:w-48"
+      className={`relative h-52 w-44 shrink-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-2xl sm:w-48 ${deep ? "[perspective:1100px]" : ""}`}
     >
       {/* Rotating inner — flip only. */}
       <motion.div
         animate={{ rotateY: isActive ? 180 : 0 }}
         transition={FLIP_TRANSITION}
-        className="relative h-full w-full [transform-style:preserve-3d]"
+        onAnimationStart={() => setSettling(true)}
+        onAnimationComplete={() => {
+          if (!isActive) setSettling(false);
+        }}
+        className={`relative h-full w-full ${deep ? "[transform-style:preserve-3d]" : ""}`}
       >
         {/* ── FRONT — identity ─────────────────────────────── */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--color-glass-border)] px-4 [backface-visibility:hidden]"
+          className={`absolute inset-0 flex flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--color-glass-border)] px-4 ${deep ? "[backface-visibility:hidden]" : ""}`}
           style={{
             background: `linear-gradient(165deg, ${color}1c, rgba(255,255,255,0.03) 55%, rgba(255,255,255,0.015))`,
             boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
@@ -140,7 +153,8 @@ const FlipCard = memo(function FlipCard({
           </span>
         </div>
 
-        {/* ── BACK — dossier ───────────────────────────────── */}
+        {/* ── BACK — dossier (mounted only while the card is 3D) ── */}
+        {deep && (
         <div
           className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border p-4 [backface-visibility:hidden] [transform:rotateY(180deg)]"
           style={{
@@ -164,6 +178,7 @@ const FlipCard = memo(function FlipCard({
             {tech.note}
           </p>
         </div>
+        )}
       </motion.div>
     </motion.div>
   );

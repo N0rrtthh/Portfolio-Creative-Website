@@ -116,15 +116,10 @@ const DossierModal = memo(function DossierModal({
             </ul>
           </div>
 
-          {/* Architecture & impact — same definition-list pattern as the
+          {/* Labelled facts — same definition-list pattern as the
               Projects modal's Problem / Solution / Outcome block. */}
           <dl className="mt-7 divide-y divide-[var(--color-glass-border)] border-y border-[var(--color-glass-border)]">
-            {(
-              [
-                ["Architecture", item.details.architecture],
-                ["Impact", item.details.impact],
-              ] as const
-            ).map(([label, text]) => (
+            {item.details.map(({ label, value: text }) => (
               <div
                 key={label}
                 className="grid grid-cols-[5.5rem_1fr] gap-4 py-3.5 sm:grid-cols-[7rem_1fr]"
@@ -142,7 +137,7 @@ const DossierModal = memo(function DossierModal({
           {/* Stack */}
           <div className="mt-7 pb-1">
             <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-ash)]">
-              Stack
+              {item.techLabel ?? "Stack"}
             </p>
             <div className="flex flex-wrap gap-2">
               {item.tech.map((t) => (

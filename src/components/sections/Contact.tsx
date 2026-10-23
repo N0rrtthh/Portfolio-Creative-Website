@@ -9,6 +9,7 @@ import ContactForm from "@/components/ui/ContactForm";
 import ChapterLabel from "@/components/ui/ChapterLabel";
 import ContactField from "@/components/ui/ContactField";
 import GlobeField from "@/components/ui/GlobeField";
+import { useNearViewport } from "@/lib/hooks/useNearViewport";
 import AnimeTraceLine from "@/components/ui/AnimeTraceLine";
 import { Magnetic, GlowTrail } from "@/components/ui/anime/AnimeInteractions";
 import { GLOBE_CONFIG, MANILA_ARCS } from "@/lib/globeData";
@@ -22,7 +23,7 @@ const World = dynamic(
 
 
 import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/lib/data";
-import { GitHubIcon, XIcon } from "@/components/ui/BrandIcons";
+import { SOCIAL_ICONS } from "@/components/ui/BrandIcons";
 import { DUR, EASE } from "@/lib/motion";
 
 /* ══════════════════════════════════════════════════════════
@@ -60,11 +61,6 @@ import { DUR, EASE } from "@/lib/motion";
    close-up framing, because that crop + CRT stack IS the EVA look.
    The choice persists in localStorage.
    ══════════════════════════════════════════════════════════ */
-
-const ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
-  github: GitHubIcon,
-  twitter: XIcon,
-};
 
 /* Globe config + flight data live in `lib/globeData` — the EVA comms
    pane renders the same globe, so both consumers share one source. */
@@ -137,11 +133,16 @@ export default function Contact() {
 
   const side = layout === "side";
   const closeUpActive = side || closeUp;
+  /* The globe (three-globe + country GeoJSON, ~1.6MB of JS) mounts only
+     once Contact is about a screen away — it used to download and boot at
+     page load, before the visitor had seen the hero. */
+  const [sectionRef, globeNear] = useNearViewport<HTMLElement>("120% 0px", 6500);
 
   /* Fields, validation and submission live in `ui/ContactForm` so EVA's
      uplink panel renders the same form instead of a second copy of it. */
   return (
     <section
+      ref={sectionRef}
       id="contact"
       className="section-padding relative flex flex-col justify-center"
     >
@@ -315,12 +316,15 @@ export default function Contact() {
                     : "left-0 top-0 h-full w-full"
                 }`}
                 style={{
+                  /* `none`, not an identity filter list: blur(0px) etc. still
+                     forced a full-canvas filter pass on every globe frame.
+                     CSS interpolates `none` ⇄ list, so the toggle still eases. */
                   filter: closeUpActive
                     ? "blur(1.1px) saturate(1.3) contrast(1.12) brightness(0.9)"
-                    : "blur(0px) saturate(1) contrast(1) brightness(1)",
+                    : "none",
                 }}
               >
-                <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} />
+                {globeNear && <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} />}
               </div>
             </GlobeField>
             {/* Single hint label — no location text */}
@@ -397,7 +401,7 @@ export default function Contact() {
                 Connect:
               </span>
               {SOCIAL_LINKS.map((link) => {
-                const Icon = ICONS[link.icon];
+                const Icon = SOCIAL_ICONS[link.icon];
                 return (
                   /* Magnetic: the icon leans ~8px toward the cursor and springs
                      back. Kept under the tile's own padding so the visual and

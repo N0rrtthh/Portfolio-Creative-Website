@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { asset } from "@/lib/assets";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
@@ -77,7 +78,7 @@ export default function EvaNavbar() {
             className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl p-1.5 sm:h-13 sm:w-13"
           >
             <Image
-              src={`${process.env.NODE_ENV === "production" ? "/Portfolio-Website" : ""}/Favicon.png`}
+              src={asset("/Favicon.png")}
               alt=""
               width={44}
               height={44}

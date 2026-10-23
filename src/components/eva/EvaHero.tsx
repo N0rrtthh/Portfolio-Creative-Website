@@ -69,8 +69,10 @@ function useTypingEffect(lines: string[], charDelay = 18, lineDelay = 400) {
 const ATFieldBackdrop = memo(function ATFieldBackdrop({ still }: { still: boolean }) {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      {/* Drifting grid field */}
-      <motion.div
+      {/* Drifting grid field. All five layers loop in CSS keyframes
+          (globals.css) — framer drove them from JS and rewrote inline
+          styles every frame; the compositor now does it for free. */}
+      <div
         className="absolute -inset-[20%] opacity-[0.18]"
         style={{
           backgroundImage:
@@ -78,36 +80,37 @@ const ATFieldBackdrop = memo(function ATFieldBackdrop({ still }: { still: boolea
           backgroundSize: "56px 56px",
           maskImage: "radial-gradient(ellipse at 50% 45%, black 20%, transparent 72%)",
           WebkitMaskImage: "radial-gradient(ellipse at 50% 45%, black 20%, transparent 72%)",
+          animation: still ? undefined : "eva-grid-drift 12s linear infinite",
         }}
-        animate={still ? undefined : { x: [0, 56], y: [0, 56] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
       />
 
       {/* Breathing accent bloom */}
-      <motion.div
+      <div
         className="absolute left-1/2 top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]"
-        style={{ background: "var(--color-accent-primary)", opacity: 0.14 }}
-        animate={still ? undefined : { scale: [1, 1.18, 1], opacity: [0.1, 0.2, 0.1] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          background: "var(--color-accent-primary)",
+          opacity: 0.14,
+          animation: still ? undefined : "eva-bloom 7s ease-in-out infinite",
+        }}
       />
 
       {/* Counter-rotating reticle rings */}
-      <motion.div
+      <div
         className="absolute left-1/2 top-1/2 h-[62vmin] w-[62vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[var(--color-accent-warm)]/25"
-        animate={still ? undefined : { rotate: 360 }}
-        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+        style={{ animation: still ? undefined : "loop-spin 60s linear infinite" }}
       />
-      <motion.div
+      <div
         className="absolute left-1/2 top-1/2 h-[44vmin] w-[44vmin] -translate-x-1/2 -translate-y-1/2 border border-[var(--color-accent-primary)]/25"
-        animate={still ? undefined : { rotate: -360 }}
-        transition={{ duration: 42, repeat: Infinity, ease: "linear" }}
+        style={{ animation: still ? undefined : "loop-spin-reverse 42s linear infinite" }}
       />
 
       {/* Scan sweep */}
-      <motion.div
-        className="absolute inset-x-0 h-24 bg-gradient-to-b from-transparent via-[var(--color-accent-warm)]/12 to-transparent"
-        animate={still ? undefined : { y: ["-10vh", "110vh"] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", repeatDelay: 2.5 }}
+      <div
+        className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-[var(--color-accent-warm)]/12 to-transparent"
+        style={{
+          transform: "translateY(-10vh)",
+          animation: still ? undefined : "eva-scan 8.5s linear infinite",
+        }}
       />
     </div>
   );
@@ -178,7 +181,7 @@ export default function EvaHero() {
                 <motion.span
                   key={i}
                   initial={{ opacity: 0, y: 24, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
                   transition={{ duration: 0.5, delay: 0.15 + i * 0.045, ease: EASE.out }}
                   className="inline-block"
                 >

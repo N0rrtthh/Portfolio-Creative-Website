@@ -27,7 +27,11 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 const MODE_KEY = "eq-color-mode";
-const DESIGN_KEY = "eq-design-theme";
+/* v2: the design key used to be written on every first visit while EVA was
+   the default, so nearly every returning visitor has "eva" stored without
+   ever choosing it. A fresh key lets Classic become the real default; an
+   explicit toggle is still remembered from here on. */
+const DESIGN_KEY = "eq-design-theme-v2";
 const EVA_LOADER_KEY = "eq-eva-loader-style";
 
 /**
@@ -61,7 +65,7 @@ function getInitialFromDOM(): { mode: ColorMode; design: DesignTheme; evaLoaderS
   }
   const root = document.documentElement;
   const mode = (root.getAttribute("data-mode") as ColorMode) || "dark";
-  const design = (root.getAttribute("data-design") as DesignTheme) || "eva";
+  const design = (root.getAttribute("data-design") as DesignTheme) || "classic";
   const evaLoaderStyle = (localStorage.getItem(EVA_LOADER_KEY) as EvaLoaderStyle) || "side";
   return { mode, design, evaLoaderStyle };
 }
@@ -183,7 +187,7 @@ export const NO_FLASH_THEME_SCRIPT = `
 (function () {
   try {
     var mode = localStorage.getItem("${MODE_KEY}") || "dark";
-    var design = localStorage.getItem("${DESIGN_KEY}") || "eva";
+    var design = localStorage.getItem("${DESIGN_KEY}") || "classic";
     document.documentElement.setAttribute("data-mode", mode);
     document.documentElement.setAttribute("data-design", design);
   } catch (e) {}

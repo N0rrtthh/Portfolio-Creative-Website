@@ -12,6 +12,9 @@ import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
 import { TIMELINE_SCROLL_VH } from "@/data/experience";
 import { observeVisibility } from "@/lib/performance";
+import { asset } from "@/lib/assets";
+import SceneBoundary from "@/components/ui/SceneBoundary";
+import { useNearViewport } from "@/lib/hooks/useNearViewport";
 import { useChapterSnap } from "@/lib/hooks/useChapterSnap";
 
 /* ══════════════════════════════════════════════════════════
@@ -30,17 +33,29 @@ import { useChapterSnap } from "@/lib/hooks/useChapterSnap";
 // Heavy / below-fold sections: defer JS parse+eval until after first paint.
 // The placeholder reserves the section's *real* height so resolving the chunk
 // doesn't shift ~280vh of layout out from under an in-progress scroll.
-const Experience = dynamic(() => import("@/components/sections/Experience"), {
-  ssr: false,
-  loading: () => (
+function ExperiencePlaceholder({ ref }: { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
+      ref={ref}
       id="experience"
       className="relative w-full bg-[#05060b]"
       style={{ height: `${TIMELINE_SCROLL_VH}vh` }}
       aria-hidden
     />
-  ),
+  );
+}
+const Experience = dynamic(() => import("@/components/sections/Experience"), {
+  ssr: false,
+  loading: () => <ExperiencePlaceholder />,
 });
+
+/* The 3D flight-path timeline is mounted only when the reader is about a
+   screen and a half away. Rendering it at page load meant its chunk and
+   WebGL context booted during the hero, competing with the intro. */
+function DeferredExperience() {
+  const [ref, near] = useNearViewport<HTMLDivElement>("150% 0px");
+  return near ? <Experience /> : <ExperiencePlaceholder ref={ref} />;
+}
 const GithubContributions = dynamic(
   () => import("@/components/sections/GithubContributions"),
   { ssr: false }
@@ -65,9 +80,8 @@ const JourneyModel = dynamic(() => import("@/components/three/JourneyModel"), {
 // Preload the GLB model so it's cached before the canvas mounts.
 // Must match the exact filename used by JourneyModel: model_c.glb (the fox).
 if (typeof window !== "undefined") {
-  const BASE = process.env.NODE_ENV === "production" ? "/Portfolio-Website" : "";
   import("@react-three/drei").then(({ useGLTF }) => {
-    useGLTF.preload(`${BASE}/3d/model_c.glb`);
+    useGLTF.preload(asset("/3d/model_c.glb"));
   });
 }
 
@@ -117,7 +131,9 @@ export default function ClassicLayout() {
       <Navbar />
 
       {/* Persistent holographic fox — fixed canvas behind the opening acts. */}
-      <JourneyModel progress={scrollYProgress} active={journeyActive} />
+      <SceneBoundary>
+        <JourneyModel progress={scrollYProgress} active={journeyActive} />
+      </SceneBoundary>
 
       <main>
         {/* ── ACT I — INTRO ──────────────────────────────── */}
@@ -137,10 +153,12 @@ export default function ClassicLayout() {
 
         {/* ── ACT III — PROJECTS ─────────────────────────── */}
         <Projects />
-        <HologramShowcase />
+        <SceneBoundary>
+          <HologramShowcase />
+        </SceneBoundary>
 
         {/* ── ACT IV — EXPERIENCE ────────────────────────── */}
-        <Experience />
+        <DeferredExperience />
 
         {/* ── ACT V — CONTACT ────────────────────────────── */}
         <Contact />

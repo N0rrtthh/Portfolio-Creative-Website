@@ -19,7 +19,8 @@
  * can satisfy that at any scroll position, so there is nothing left to race.
  *
  * Everything runs in one rAF-throttled scroll pass — one listener for both
- * outputs, rather than a listener plus N observers.
+ * outputs, rather than a listener plus N observers — and that pass is pure
+ * arithmetic on cached offsets, never a layout read.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -56,43 +57,58 @@ export function useActiveSection(hrefs: string[]) {
     let ticking = false;
     let lastScrolled: boolean | null = null;
 
-    const pick = () => {
-      const line = window.innerHeight * LINE;
+    /* Document-relative section tops, measured in one batch and reused.
+       The pick used to call querySelector + getBoundingClientRect for every
+       section on every scroll frame — a forced layout per section, per
+       frame, while Lenis and the scroll-linked transforms had already
+       dirtied the layout. Tops only change when the page's geometry does
+       (resize, or a section growing/shrinking as lazy content mounts), and
+       the ResizeObserver below re-measures exactly then. */
+    let tops: number[] | null = null;
+    let docHeight = 0;
+
+    const measure = () => {
       const list = hrefsRef.current;
-
-      // At the very top of the page, always use the first section.
-      if (window.scrollY < 10) return list[0] ?? "";
-
+      const els = list.map((href) => document.querySelector(href));
       // If any expected section hasn't mounted yet, don't guess. A partial
       // DOM makes the "last section past the line" check land on the wrong
       // item — this was the load-time "starts at Projects" bug: the sections
       // above Projects are dynamic and were not yet in the DOM, so Projects
       // was the first element found past the reading line.
-      for (const href of list) {
-        if (!document.querySelector(href)) return list[0] ?? "";
+      if (els.some((el) => !el)) {
+        tops = null;
+        return;
       }
+      const y = window.scrollY;
+      tops = els.map((el) => (el as Element).getBoundingClientRect().top + y);
+      docHeight = document.documentElement.scrollHeight;
+    };
 
+    const pick = () => {
+      const list = hrefsRef.current;
+
+      // At the very top of the page, always use the first section.
+      if (window.scrollY < 10 || !tops) return list[0] ?? "";
+
+      const line = window.innerHeight * LINE;
+      const y = window.scrollY;
       let best = list[0] ?? "";
       let bestTop = -Infinity;
 
-      for (const href of list) {
-        const el = document.querySelector(href);
-        if (!el) continue;
-        const top = el.getBoundingClientRect().top;
+      list.forEach((href, i) => {
+        const top = (tops as number[])[i] - y;
         // Closest section that has already crossed the line.
         if (top <= line && top > bestTop) {
           bestTop = top;
           best = href;
         }
-      }
+      });
 
       /* At the document's end a short final section may never reach the line
          — the page runs out of scroll first. Without this, Contact can never
          be highlighted, and that is the item a visitor is most likely to be
          looking at when they get there. */
-      const atEnd =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 4;
+      const atEnd = window.innerHeight + y >= docHeight - 4;
       if (atEnd && list.length) best = list[list.length - 1];
 
       return best;
@@ -117,8 +133,19 @@ export function useActiveSection(hrefs: string[]) {
       requestAnimationFrame(update);
     };
 
+    const remeasure = () => {
+      measure();
+      onScroll();
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+
+    // Any change in the page's height means some section above or below
+    // moved — the one signal that cached tops are stale.
+    const ro =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(remeasure) : null;
+    ro?.observe(document.body);
 
     // Run the first pick only once every section has mounted. Dynamic
     // sections (github-activity, techstack, certifications) render after
@@ -129,15 +156,16 @@ export function useActiveSection(hrefs: string[]) {
       const ready = hrefsRef.current.every((href) =>
         document.querySelector(href)
       );
-      if (ready) update();
+      if (ready) remeasure();
       else pollFrame = requestAnimationFrame(waitForSections);
     };
     pollFrame = requestAnimationFrame(waitForSections);
 
     return () => {
       cancelAnimationFrame(pollFrame);
+      ro?.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", remeasure);
     };
   }, []);
 

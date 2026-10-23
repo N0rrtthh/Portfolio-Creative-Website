@@ -7,6 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ChevronsUp } from "lucide-react";
 import ContactForm from "@/components/ui/ContactForm";
 import GlobeField from "@/components/ui/GlobeField";
+import { useNearViewport } from "@/lib/hooks/useNearViewport";
 import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/lib/data";
 import { GLOBE_CONFIG, MANILA_ARCS } from "@/lib/globeData";
 
@@ -171,9 +172,12 @@ export default function EvaContact() {
   const [open, setOpen] = useState(false);
   const reduced = useReducedMotion();
   const still = reduced ?? false;
+  // Same deferral as the classic Contact globe — see useNearViewport.
+  const [sectionRef, globeNear] = useNearViewport<HTMLElement>("120% 0px", 6500);
 
   return (
     <section
+      ref={sectionRef}
       id="contact"
       /* One-screen fit at lg: the section floors at the viewport and
          the grid fills whatever the paddings leave over, so the pane
@@ -213,7 +217,7 @@ export default function EvaContact() {
                 filter: "blur(1.1px) saturate(1.3) contrast(1.12) brightness(0.9)",
               }}
             >
-              <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} interactive={false} />
+              {globeNear && <World data={MANILA_ARCS} globeConfig={GLOBE_CONFIG} interactive={false} />}
             </div>
           </GlobeField>
         </div>

@@ -113,7 +113,7 @@ export default function EvaAbout() {
                 </p>
                 <p>
                   <span className="text-[var(--color-accent-primary)]">&gt;</span> Deployed production systems at{" "}
-                  <span className="text-[var(--color-accent-warm)] font-bold">BidaBoss Inc.</span> — React portals, Flutter mobile applications, Firebase real-time architectures.
+                  <span className="text-[var(--color-accent-warm)] font-bold">BidaBoss Inc.</span> — React + Node.js franchise order portal (live in production) and a Flutter e-commerce app.
                 </p>
                 <p>
                   <span className="text-[var(--color-accent-primary)]">&gt;</span> Independent operator: Godot game production, Blender 3D, interactive web experiences. Interface obsession meets engineering rigor.
@@ -126,7 +126,7 @@ export default function EvaAbout() {
               {[
                 { label: "PROJECTS DEPLOYED", value: "12+", icon: "◆" },
                 { label: "YEARS ACTIVE", value: "4+", icon: "◈" },
-                { label: "RELIABILITY", value: "99.9%", icon: "◇" },
+                { label: "CERTIFICATIONS", value: "29", icon: "◇" },
                 { label: "TECH MODULES", value: "20+", icon: "◆" },
               ].map((stat, i) => (
                 <motion.div

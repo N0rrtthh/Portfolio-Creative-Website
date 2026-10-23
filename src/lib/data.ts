@@ -47,16 +47,16 @@ export const PROJECTS: Project[] = [
   {
     id: "bidaboss-portal",
     title: "BidaBoss Portal",
-    subtitle: "Enterprise operations platform",
+    subtitle: "Franchise order management portal",
     description:
-      "A full-stack web portal built for BidaBoss Inc. to streamline internal operations, manage workflows, and provide real-time analytics for decision-making.",
+      "The BidaBoss Agent Portal — a centralized, web-based franchise order management system I built for BidaBoss Inc. during my internship.",
     problem:
-      "BidaBoss needed a centralized system to manage growing operational complexity across teams.",
+      "Franchise agents and branches needed one place to sign in, place and manage their orders instead of scattered manual coordination.",
     solution:
-      "Built a production React + Node.js portal with real-time data syncing, role-based access control, and an intuitive dashboard interface.",
+      "Built a React front end and Node.js back end on MySQL, with agent sign-in and order management in one web portal.",
     outcome:
-      "Deployed to production, serving the entire operations team with measurable efficiency improvements.",
-    technologies: ["React", "Node.js", "Firebase", "TypeScript"],
+      "Shipped to production — the portal is live and in active use by BidaBoss Inc.",
+    technologies: ["React", "Node.js", "MySQL"],
     type: "Web Application",
     year: "2025",
     color: "#3b82f6",
@@ -65,16 +65,16 @@ export const PROJECTS: Project[] = [
   {
     id: "bidaboss-mobile",
     title: "BidaBoss Mobile",
-    subtitle: "Mobile-first business companion",
+    subtitle: "E-commerce mobile app",
     description:
-      "The mobile extension of the BidaBoss ecosystem — giving team members access to critical business functions on the go.",
+      "The BidaBoss e-commerce mobile application, built in Flutter during my internship at BidaBoss Inc.",
     problem:
-      "Field teams needed mobile access to the BidaBoss system without sacrificing functionality.",
+      "Agents needed their sales, orders and stock on their phones, not only at a desk.",
     solution:
-      "Developed a cross-platform Flutter application with offline-first architecture and push notifications.",
+      "Built a Flutter app on a MySQL backend: an overall-sales overview, order statuses (to approve, to pick up, out for delivery), shop assessment, inventory, store and orders.",
     outcome:
-      "Enabled real-time field operations with seamless sync to the web portal.",
-    technologies: ["Flutter", "Dart", "Firebase", "REST APIs"],
+      "Built and tested on Android (Pixel 9 Pro XL emulator) as part of the BidaBoss internship deliverables.",
+    technologies: ["Flutter", "Dart", "MySQL"],
     type: "Mobile Application",
     year: "2025",
     color: "#06b6d4",
@@ -83,16 +83,16 @@ export const PROJECTS: Project[] = [
   {
     id: "waterwise",
     title: "WaterWise",
-    subtitle: "Thesis capstone eco-adventure",
+    subtitle: "Undergraduate thesis game",
     description:
-      "A full-length narrative game built in Godot for an undergraduate thesis — story-driven cutscenes, minigames, and multiplayer mechanics built around teaching water conservation.",
+      "An educational 2D Android game on water conservation and reuse, built in Godot for our undergraduate thesis at Cavite State University.",
     problem:
-      "Environmental education tools rarely combine a compelling narrative with mechanics that reinforce the lesson.",
+      "Adaptive difficulty and co-op play are hardest to deliver on the older, low-spec Android phones and unreliable internet many Filipino learners have.",
     solution:
-      "Built a complete Godot project spanning cutscenes, character dialogue, minigames, multiplayer, localization, and mobile support — backed by algorithm and thesis-alignment documentation.",
+      "A rule-based rolling-window adaptive difficulty algorithm (no trained model, no internet) plus an integer-only G-Counter CRDT that syncs the shared score over a phone's Wi-Fi hotspot.",
     outcome:
-      "Delivered as an academic thesis project demonstrating end-to-end game production: narrative design, systems, multiplayer networking, and cross-platform testing.",
-    technologies: ["Godot", "GDScript", "GDShader", "Game Design"],
+      "On a Motorola Moto E5 Plus it averaged 28.2–29.6 FPS with 0.59–0.66 ms difficulty updates; CRDT replicas converged in all 180 trials at up to 90% packet loss.",
+    technologies: ["Godot", "GDScript", "Android", "CRDT"],
     type: "Game",
     year: "2026",
     color: "#8b5cf6",
@@ -166,16 +166,16 @@ export const PROJECTS: Project[] = [
     title: "Quick Attend",
     subtitle: "QR-powered attendance system",
     description:
-      "A dual-platform attendance system using QR codes — a web admin dashboard paired with a mobile scanning app.",
+      "A dual-platform attendance system using QR codes — a web app that generates the codes and manages attendance, paired with a mobile scanning app.",
     problem:
       "Manual attendance tracking is slow, error-prone, and creates bottlenecks.",
     solution:
-      "Built companion mobile and web apps in Flutter with QR scanning and a real-time attendance dashboard backed by Firebase.",
+      "Built the web and mobile apps in FlutterFlow (Dart): Google sign-in on the web, a QR code per session, and a mobile scanner that uses face recognition as a second factor.",
     outcome:
-      "Two linked Flutter apps (mobile + web) for rapid attendance tracking with real-time sync.",
-    technologies: ["Flutter", "Dart", "Firebase", "QR Scanning"],
+      "Two linked apps (web + mobile) for fast attendance taking, later rebuilt as a React Native version.",
+    technologies: ["FlutterFlow", "Dart", "Firebase", "QR Scanning"],
     type: "Full Stack",
-    year: "2025",
+    year: "2024",
     color: "#06b6d4",
     github: "https://github.com/N0rrtthh/Quick-Attend-Mobile",
     featured: false,
@@ -238,15 +238,15 @@ export const TECH_STACK: TechItem[] = [
   { name: "React Native", category: "Frontend", icon: "📱", level: 72, note: "Cross-platform UI experiments & prototypes" },
   // Backend
   { name: "Node.js", category: "Backend", icon: "⬢", level: 86, note: "REST APIs, scripts & real-time services" },
-  { name: "Firebase", category: "Backend", icon: "🔥", level: 84, note: "Auth, Firestore & realtime sync in production" },
+  { name: "Firebase", category: "Backend", icon: "🔥", level: 84, note: "Auth & Firestore for app prototypes like Quick Attend" },
   { name: "Supabase", category: "Backend", icon: "⚡", level: 78, note: "Postgres + realtime channels for side projects" },
   { name: "MongoDB", category: "Backend", icon: "🍃", level: 74, note: "Document models & aggregation pipelines" },
-  { name: "MySQL", category: "Backend", icon: "🐬", level: 76, note: "Relational schemas for coursework & tools" },
+  { name: "MySQL", category: "Backend", icon: "🐬", level: 76, note: "Backend for the BidaBoss portal & mobile app" },
   // Mobile
-  { name: "Flutter", category: "Mobile", icon: "💎", level: 82, note: "Shipped BidaBoss Mobile & Quick Attend" },
+  { name: "Flutter", category: "Mobile", icon: "💎", level: 82, note: "Built the BidaBoss e-commerce mobile app" },
   { name: "Dart", category: "Mobile", icon: "🎯", level: 80, note: "State management, isolates & platform channels" },
   // Creative
-  { name: "Godot", category: "Creative", icon: "🎮", level: 87, note: "WaterWise thesis game — systems, shaders, multiplayer" },
+  { name: "Godot", category: "Creative", icon: "🎮", level: 87, note: "WaterWise thesis game — adaptive difficulty & offline co-op" },
   { name: "Blender", category: "Creative", icon: "🧊", level: 68, note: "3D modeling & assets for web and games" },
   { name: "Figma", category: "Creative", icon: "🖼", level: 88, note: "Design systems, prototypes & handoff" },
   { name: "After Effects", category: "Creative", icon: "🎬", level: 65, note: "Motion graphics & UI animation studies" },
@@ -256,37 +256,60 @@ export const TECH_STACK: TechItem[] = [
   { name: "Vercel", category: "Tools", icon: "▲", level: 83, note: "Deployments, previews & edge config" },
 ];
 
+/* EVA "service record". Mirrors data/experience.ts (classic timeline) —
+   same facts, flatter shape. */
 export const EXPERIENCES: Experience[] = [
   {
-    id: "bidaboss",
-    role: "Software Engineer Intern",
-    company: "BidaBoss Inc.",
-    period: "2025",
-    description:
-      "Built production-grade web and mobile applications using React, Node.js, and Flutter. Contributed to full-stack systems serving real users.",
+    id: "csso",
+    role: "VP for Public Relations & Information",
+    company: "Computer Science Student Organization",
+    period: "2022 — 2024",
+    description: "Officer of the Computer Science Student Organization at CvSU – Indang.",
     highlights: [
-      "Developed the BidaBoss Portal — a React + Node.js operations platform",
-      "Built the companion Flutter mobile application",
-      "Implemented real-time data synchronization with Firebase",
-      "Collaborated with the team on UI/UX design decisions",
+      "VP for Public Relations and Information (2023 – 2024)",
+      "Encrypt Member (2022 – 2023)",
+    ],
+    type: "education",
+  },
+  {
+    id: "communities",
+    role: "Member · Tech Communities",
+    company: "AWS Learning Club · JPCS",
+    period: "2023 — 2025",
+    description: "Campus developer communities at Cavite State University – Indang.",
+    highlights: [
+      "Spade Member, Amazon Web Services Learning Club (2024 – 2025)",
+      "Member, JPCS – CvSU Chapter (2023 – 2024)",
+    ],
+    type: "education",
+  },
+  {
+    id: "bidaboss",
+    role: "Software Engineer & Application Developer Intern",
+    company: "BidaBoss Inc.",
+    period: "Jul 2025 — Dec 2025",
+    description:
+      "On-the-job training in Pasig City. Built the BidaBoss Agent Portal, a franchise order management system that is live and in use by the company, and the BidaBoss e-commerce mobile app.",
+    highlights: [
+      "Developed the BidaBoss Agent Portal with React and Node.js on MySQL",
+      "Shipped the portal to production — in active use by BidaBoss Inc.",
+      "Built the BidaBoss e-commerce mobile app in Flutter with MySQL",
     ],
     type: "work",
   },
   {
-    id: "creative-dev",
-    role: "Creative Developer",
-    company: "Independent",
-    period: "2023 — Present",
+    id: "waterwise",
+    role: "Thesis Developer & Co-Proponent",
+    company: "WaterWise · Cavite State University",
+    period: "2025 — 2026",
     description:
-      "Self-directed exploration of game development, motion graphics, and interactive web experiences.",
+      "Three-person undergraduate thesis: a Godot educational game on water conservation for low-spec Android phones, with rule-based adaptive difficulty and CRDT-synced offline multiplayer.",
     highlights: [
-      "Built and shipped WaterWise, a full Godot thesis capstone game",
-      "Prototyping Shape Shift and Quest Adventure Land, two Godot concepts",
-      "Created interactive web experiments and animations",
-      "Designed UI/UX systems in Figma",
-      "Explored 3D modeling in Blender",
+      "Weighted Proficiency Index over a five-game window — no trained model, no internet",
+      "Integer-only G-Counter CRDT score sync over a Wi-Fi hotspot",
+      "28.2–29.6 FPS average on a Motorola Moto E5 Plus",
     ],
-    type: "project",
+    type: "education",
   },
 ];
 
@@ -344,6 +367,11 @@ export const SOCIAL_LINKS = [
     label: "GitHub",
     href: "https://github.com/N0rrtthh",
     icon: "github",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/elroni-quinones",
+    icon: "linkedin",
   },
   {
     label: "X / Twitter",

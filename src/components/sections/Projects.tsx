@@ -10,7 +10,8 @@ import RevealText from "@/components/ui/RevealText";
 import TiltPanel from "@/components/ui/TiltPanel";
 import ChapterLabel from "@/components/ui/ChapterLabel";
 import { PROJECTS, type Project } from "@/lib/data";
-import { getProjectImage } from "@/data/projectImages";
+import { getProjectImage, getProjectScreens } from "@/data/projectImages";
+import PhoneMockupStage from "@/components/ui/PhoneMockup";
 import { useScrollLock } from "@/lib/hooks/useScrollLock";
 import { useLenis } from "@/components/providers/SmoothScrollProvider";
 import { DUR, EASE, SPRING } from "@/lib/motion";
@@ -26,6 +27,7 @@ function MobileProjectCarousel({ onSelect }: { onSelect: (p: Project) => void })
   const all = PROJECTS;
   const project = all[idx];
   const projectImg = getProjectImage(project.id);
+  const projectScreens = getProjectScreens(project.id);
 
   const prev = () => setIdx((i) => (i - 1 + all.length) % all.length);
   const next = () => setIdx((i) => (i + 1) % all.length);
@@ -68,8 +70,13 @@ function MobileProjectCarousel({ onSelect }: { onSelect: (p: Project) => void })
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-obsidian)] via-[var(--color-obsidian)]/60 to-transparent" />
               </div>
             )}
-            {!projectImg && (
-
+            {projectScreens && (
+              <div className="absolute inset-0 opacity-70">
+                <PhoneMockupStage screens={projectScreens} alt={`${project.title} app`} color={project.color} align="right" sizes="30vw" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-obsidian)] via-[var(--color-obsidian)]/50 to-transparent" />
+              </div>
+            )}
+            {!projectImg && !projectScreens && (
               <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 40% 60%, ${project.color}20, transparent 70%)` }} />
             )}
             <div className="relative z-10 p-6">
@@ -122,6 +129,7 @@ export default function Projects() {
   const [mounted, setMounted] = useState(false);
   const lenis = useLenis();
   const modalImg = selectedProject ? getProjectImage(selectedProject.id) : undefined;
+  const modalScreens = selectedProject ? getProjectScreens(selectedProject.id) : undefined;
 
   // Page must not scroll behind the dossier — Lenis included.
   useScrollLock(!!selectedProject, lenis);
@@ -203,6 +211,7 @@ export default function Projects() {
 
           {featured.map((project) => {
             const cardImg = getProjectImage(project.id);
+            const cardScreens = getProjectScreens(project.id);
             return (
             /* The card is a 3D panel: TiltPanel owns the perspective and the
                rotation, the article keeps its own hover scale. The track's
@@ -251,6 +260,12 @@ export default function Projects() {
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-obsidian)] via-[var(--color-obsidian)]/80 to-transparent" />
+                </div>
+              )}
+              {cardScreens && (
+                <div className="absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity duration-700">
+                  <PhoneMockupStage screens={cardScreens} alt={`${project.title} app`} color={project.color} align="right" sizes="(max-width: 1280px) 22vw, 260px" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-obsidian)] via-[var(--color-obsidian)]/35 to-transparent" />
                 </div>
               )}
 
@@ -418,7 +433,15 @@ export default function Projects() {
                   >
                     {/* Screenshot */}
                     <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-[var(--color-glass-border)] bg-[var(--color-void)]">
-                      {modalImg ? (
+                      {modalScreens ? (
+                        <PhoneMockupStage
+                          screens={modalScreens}
+                          alt={`${selectedProject.title} app screens`}
+                          color={selectedProject.color}
+                          sizes="(max-width: 768px) 35vw, 240px"
+                          priority
+                        />
+                      ) : modalImg ? (
                         <Image
                           src={modalImg}
                           alt={`${selectedProject.title} screenshot`}

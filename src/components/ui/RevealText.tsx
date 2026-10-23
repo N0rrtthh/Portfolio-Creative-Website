@@ -32,7 +32,7 @@ export default function RevealText({
           <motion.span
             className="inline-block"
             initial={{ y: "120%", opacity: 0, filter: "blur(6px)" }}
-            whileInView={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
+            whileInView={{ y: "0%", opacity: 1, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{
               duration: 1.0,

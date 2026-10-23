@@ -67,13 +67,13 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/Favicon.png",
+        url: `${ASSET_PREFIX}/Favicon.png`,
         sizes: "512x512",
         type: "image/png",
       },
     ],
-    shortcut: "/Favicon.png",
-    apple: "/Favicon.png",
+    shortcut: `${ASSET_PREFIX}/Favicon.png`,
+    apple: `${ASSET_PREFIX}/Favicon.png`,
   },
   metadataBase: new URL("https://elroniquinones.dev"),
   openGraph: {
@@ -117,9 +117,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href={`${ASSET_PREFIX}/Favicon.png`} type="image/png" />
-        <link rel="shortcut icon" href={`${ASSET_PREFIX}/Favicon.png`} />
-        <link rel="apple-touch-icon" href={`${ASSET_PREFIX}/Favicon.png`} />
         <script
           id="no-flash-theme-script"
           suppressHydrationWarning

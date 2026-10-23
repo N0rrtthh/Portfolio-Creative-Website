@@ -543,6 +543,83 @@ div[style*="overflow: auto"] { -ms-overflow-style: none !important; scrollbar-wi
   100% { transform: translateY(100vh); opacity: 0; }
 }
 
+/* Hero dot matrix (AnimeStaggerGrid). Two animations so transform and
+   opacity keep their own keyframe timings, exactly as the anime.js
+   timeline had them (shrink+lift 500ms easeOutSine → settle 1200ms
+   easeInOutQuad; fade 400ms → 1000ms). Per-dot delay is set inline. */
+@keyframes stagger-dot-move {
+  0% { transform: translateY(0) scale(1); animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1); }
+  29.4% { transform: translateY(-12px) scale(0.2); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes stagger-dot-fade {
+  0% { opacity: 0.3; }
+  23.5% { opacity: 0.1; }
+  82.4%, 100% { opacity: 0.4; }
+}
+
+.stagger-dot {
+  animation:
+    stagger-dot-move 1700ms infinite alternate both,
+    stagger-dot-fade 1700ms ease-out infinite alternate both;
+}
+
+/* ── Ambient loops ported from framer-motion `repeat: Infinity` ──
+   framer drives rotate/scale/x/y from JS, writing inline styles on every
+   frame for the whole visit (even off-screen). These keyframes reproduce
+   the same values, durations and curves on the compositor. Durations and
+   repeat-delays are folded into the percentages noted beside each. */
+@keyframes loop-spin { to { transform: rotate(360deg); } }
+@keyframes loop-spin-reverse { to { transform: rotate(-360deg); } }
+
+@keyframes loop-pulse-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* Classic hero profile-card halo (6s). */
+@keyframes hero-halo {
+  0%, 100% { opacity: 0.45; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.75; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+/* Classic hero scroll cue dot (1.8s). */
+@keyframes scroll-cue-dot {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 0.2; transform: translateY(10px); }
+}
+
+/* GlobeField CRT sweep (7.5s linear). */
+@keyframes crt-sweep {
+  from { transform: translateY(-110%); }
+  to { transform: translateY(720%); }
+}
+
+/* GlobeField VHS tracking roll: 2.4s move + 6.5s rest = 8.9s cycle. */
+@keyframes vhs-roll {
+  0% { transform: translateY(-160%); opacity: 0; animation-timing-function: ease-in-out; }
+  9% { opacity: 1; }
+  18% { opacity: 1; }
+  26.97% { transform: translateY(1560%); opacity: 0; }
+  100% { transform: translateY(1560%); opacity: 0; }
+}
+
+/* EVA hero backdrop. */
+@keyframes eva-grid-drift {
+  from { transform: translate(0, 0); }
+  to { transform: translate(56px, 56px); }
+}
+@keyframes eva-bloom {
+  0%, 100% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.18); opacity: 0.2; }
+}
+/* 6s sweep + 2.5s rest = 8.5s cycle. */
+@keyframes eva-scan {
+  0% { transform: translateY(-10vh); animation-timing-function: ease-in-out; }
+  70.59%, 100% { transform: translateY(110vh); }
+}
+
 .animate-float { animation: float 7s var(--ease-cinematic) infinite; }
 .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
 .animate-spin-slow { animation: spin-slow 25s linear infinite; }

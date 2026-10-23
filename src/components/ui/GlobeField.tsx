@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 
 /* ══════════════════════════════════════════════════════════
    GlobeField — CRT/VHS degradation stack laid over a globe
@@ -87,31 +86,24 @@ export default function GlobeField({
 
         {/* Slow scan sweep */}
         {!still && (
-          <motion.div
+          <div
             className="absolute inset-x-0 top-0 h-[16%]"
             style={{
               background:
                 "linear-gradient(to bottom, transparent, rgba(255,255,255,0.055), transparent)",
+              animation: "crt-sweep 7.5s linear infinite",
             }}
-            animate={{ y: ["-110%", "720%"] }}
-            transition={{ duration: 7.5, repeat: Infinity, ease: "linear" }}
           />
         )}
 
         {/* VHS tracking roll — a disturbed band rolling through every ~9s */}
         {!still && (
-          <motion.div
-            className="absolute inset-x-0 top-0 h-[7%]"
+          <div
+            className="absolute inset-x-0 top-0 h-[7%] opacity-0"
             style={{
               background:
                 "linear-gradient(to bottom, transparent, rgba(255,255,255,0.10) 38%, rgba(140,190,255,0.09) 58%, transparent)",
-            }}
-            animate={{ y: ["-160%", "1560%"], opacity: [0, 1, 1, 0] }}
-            transition={{
-              duration: 2.4,
-              repeat: Infinity,
-              repeatDelay: 6.5,
-              ease: "easeInOut",
+              animation: "vhs-roll 8.9s linear infinite",
             }}
           />
         )}

@@ -17,11 +17,11 @@ export interface TimelineEntry {
   description: string;
   highlights: string[];
   tech: string[];
+  /** Heading over `tech` in the dossier — "Stack" unless the entry is not a build. */
+  techLabel?: string;
   icon: TimelineIcon;
-  details: {
-    architecture: string;
-    impact: string;
-  };
+  /** Labelled facts shown in the dossier's definition list. */
+  details: { label: string; value: string }[];
   /** Normalized position (0–1) of this node along the flight path / scroll range. */
   scrollTarget: number;
 }

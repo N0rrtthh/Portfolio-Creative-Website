@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import anime from "animejs";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { getAdaptiveQuality, observeVisibility } from "@/lib/performance";
 
 interface AnimeStaggerGridProps {
@@ -9,6 +8,18 @@ interface AnimeStaggerGridProps {
   columns?: number;
   className?: string;
 }
+
+/* Same choreography the anime.js version ran — a ripple out from the
+   centre: each dot shrinks to 0.2 and lifts 12px (500ms, easeOutSine),
+   then settles back (1200ms, easeInOutQuad), alternating forever, with a
+   60ms-per-cell stagger measured from the grid centre.
+
+   It now lives in CSS keyframes (`stagger-dot-move` / `stagger-dot-fade`
+   in globals.css). The JS loop wrote transform + opacity on every dot on
+   every frame — up to 72 style writes per frame on the main thread, in
+   the hero, for the whole visit. CSS transform/opacity animations run on
+   the compositor and cost the main thread nothing. */
+const STAGGER_MS = 60;
 
 /**
  * Ambient dot grid. Loops only while visible; density scales with device tier
@@ -20,10 +31,9 @@ export default function AnimeStaggerGrid({
   className = "",
 }: AnimeStaggerGridProps) {
   const gridRef = useRef<HTMLDivElement>(null);
-  const animRef = useRef<anime.AnimeInstance | null>(null);
   // Start with medium density for stable hydration, then adapt client-side
   const [dims, setDims] = useState({ rows: Math.min(rows, 6), cols: Math.min(columns, 10) });
-  const [allowHoverFx, setAllowHoverFx] = useState(true);
+  const [running, setRunning] = useState(false);
 
   useEffect(() => {
     const q = getAdaptiveQuality();
@@ -38,7 +48,6 @@ export default function AnimeStaggerGrid({
               ? Math.min(columns, 10)
               : columns,
       });
-      setAllowHoverFx(!q.reduceContinuousFx);
     });
     return () => cancelAnimationFrame(id);
   }, [rows, columns]);
@@ -46,69 +55,12 @@ export default function AnimeStaggerGrid({
   useEffect(() => {
     const el = gridRef.current;
     if (!el) return;
-
-    const start = () => {
-      animRef.current?.pause();
-      animRef.current = anime({
-        targets: el.querySelectorAll(".anime-dot"),
-        scale: [
-          { value: 0.2, easing: "easeOutSine", duration: 500 },
-          { value: 1, easing: "easeInOutQuad", duration: 1200 },
-        ],
-        translateY: [
-          { value: -12, easing: "easeOutSine", duration: 500 },
-          { value: 0, easing: "easeInOutQuad", duration: 1200 },
-        ],
-        opacity: [
-          { value: 0.1, duration: 400 },
-          { value: 0.4, duration: 1000 },
-        ],
-        delay: anime.stagger(60, {
-          grid: [dims.cols, dims.rows],
-          from: "center",
-        }),
-        loop: true,
-        direction: "alternate",
-      });
-    };
-
-    const stop = () => {
-      animRef.current?.pause();
-      animRef.current = null;
-    };
-
-    const unobserve = observeVisibility(
-      el,
-      (visible) => {
-        if (visible) start();
-        else stop();
-      },
-      "10% 0px"
-    );
-
-    return () => {
-      unobserve();
-      stop();
-    };
-  }, [dims.rows, dims.cols]);
-
-  function handleDotHover(index: number) {
-    if (!gridRef.current || !allowHoverFx) return;
-    anime({
-      targets: gridRef.current.querySelectorAll(".anime-dot"),
-      scale: [
-        { value: 2.2, easing: "easeOutExpo", duration: 300 },
-        { value: 1, easing: "spring(1, 80, 10, 0)", duration: 800 },
-      ],
-      opacity: [1, 0.4],
-      delay: anime.stagger(40, {
-        grid: [dims.cols, dims.rows],
-        from: index,
-      }),
-    });
-  }
+    return observeVisibility(el, setRunning, "10% 0px");
+  }, []);
 
   const total = dims.rows * dims.cols;
+  const cx = (dims.cols - 1) / 2;
+  const cy = (dims.rows - 1) / 2;
 
   return (
     <div
@@ -120,13 +72,22 @@ export default function AnimeStaggerGrid({
       }}
       aria-hidden="true"
     >
-      {Array.from({ length: total }, (_, i) => (
-        <div
-          key={i}
-          className="anime-dot h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)] opacity-30 will-change-transform transform-gpu"
-          onMouseEnter={() => handleDotHover(i)}
-        />
-      ))}
+      {Array.from({ length: total }, (_, i) => {
+        const x = i % dims.cols;
+        const y = Math.floor(i / dims.cols);
+        const delay = Math.round(Math.hypot(x - cx, y - cy) * STAGGER_MS);
+        const style: CSSProperties = {
+          animationDelay: `${delay}ms, ${delay}ms`,
+          animationPlayState: running ? "running" : "paused",
+        };
+        return (
+          <div
+            key={i}
+            className="stagger-dot h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)] opacity-30"
+            style={style}
+          />
+        );
+      })}
     </div>
   );
 }

@@ -1,109 +1,110 @@
-import { ShieldCheck, Award, Code2, Gamepad2 } from "lucide-react";
+import { Briefcase, Gamepad2, Users, Megaphone } from "lucide-react";
 import type { TimelineEntry } from "@/types/experience";
 
 /* ══════════════════════════════════════════════════════════
    EXPERIENCE TIMELINE — content source of truth for the
    "My Experience" cinematic flight-path section.
+   ──────────────────────────────────────────────────────────
+   Every line here is something that can be backed up: the
+   internship and org roles come from the résumé, the WaterWise
+   numbers from the defended thesis manuscript. No invented
+   metrics, awards or uptime figures.
+
+   Order is chronological, oldest first, so the flight path ends on
+   the latest chapter: CSSO → tech communities → BidaBoss → WaterWise.
    ══════════════════════════════════════════════════════════ */
 
 export const TIMELINE_DATA: TimelineEntry[] = [
   {
     id: "exp-1",
     number: "01",
-    role: "Software Engineer Intern",
-    company: "BidaBoss Inc.",
-    period: "2025 – Present",
-    location: "Manila, Philippines",
+    role: "VP for Public Relations & Information",
+    company: "Computer Science Student Organization",
+    period: "2022 – 2024",
+    location: "CvSU – Indang",
     description:
-      "Engineered production-grade operations web portal and companion mobile app serving live internal teams with real-time synchronization.",
+      "Officer of the Computer Science Student Organization at Cavite State University, after starting as an Encrypt member in my first year.",
     highlights: [
-      "Engineered React & Node.js internal portal with sub-second response times",
-      "Built cross-platform Flutter companion mobile app for field operations",
-      "Integrated real-time Firebase & WebSockets live telemetry synchronization",
-      "Streamlined internal data workflows, cutting operational manual steps by 40%",
+      "VP for Public Relations and Information — 2023 – 2024",
+      "Encrypt Member — 2022 – 2023",
     ],
-    tech: ["React", "Node.js", "Flutter", "Firebase", "TypeScript", "Tailwind CSS"],
-    icon: ShieldCheck,
-    details: {
-      architecture:
-        "Micro-frontend web client + Flutter mobile app connected to Express REST API & Firebase RTDB.",
-      impact:
-        "Serving daily active operational teams with 99.9% uptime real-time status reporting.",
-    },
+    tech: ["Public Relations", "Communications", "Leadership"],
+    techLabel: "Skills",
+    icon: Megaphone,
+    details: [
+      { label: "Roles", value: "VP for Public Relations and Information (2023 – 2024); Encrypt Member (2022 – 2023)." },
+    ],
     scrollTarget: 0.14,
   },
   {
     id: "exp-2",
     number: "02",
-    role: "Undergraduate Capstone Lead",
-    company: "WaterWise Thesis Project",
-    period: "2024 – 2025",
-    location: "Calapan, Philippines",
+    role: "Member · Tech Communities",
+    company: "AWS Learning Club · JPCS",
+    period: "2023 – 2025",
+    location: "CvSU – Indang",
     description:
-      "Award-winning 2D/3D Godot game engine thesis project featuring custom shader pipeline, fluid dynamics, and environmental networking.",
+      "Active in the campus developer communities: Spade Member of the Amazon Web Services Learning Club and a member of the Junior Philippine Computer Society, Cavite State University chapter.",
     highlights: [
-      "Awarded top honors & 1st Place for Undergraduate Capstone Excellence",
-      "Designed custom HLSL/GDShader fluid physics and environmental shader graph",
-      "Built low-latency multiplayer networking mechanics for interactive simulation",
-      "Optimized 3D asset pipeline in Blender to maintain 60 FPS on low-tier hardware",
+      "Spade Member, Amazon Web Services Learning Club — 2024 – 2025",
+      "Member, JPCS – Cavite State University Chapter — 2023 – 2024",
     ],
-    tech: ["Godot 4", "GDShader", "HLSL", "C#", "Blender 3D", "Multiplayer Netcode"],
-    icon: Award,
-    details: {
-      architecture:
-        "Godot Engine 4.x custom GDExtension pipeline with custom vertex/fragment shaders.",
-      impact:
-        "Honored with Best Technical Capstone Project for eco-simulation gameplay.",
-    },
+    tech: ["AWS", "Cloud", "Community"],
+    techLabel: "Focus",
+    icon: Users,
+    details: [
+      { label: "Clubs", value: "Amazon Web Services Learning Club; Junior Philippine Computer Society (JPCS)." },
+    ],
     scrollTarget: 0.38,
   },
   {
     id: "exp-3",
     number: "03",
-    role: "Open Source Maintainer",
-    company: "GitHub Community",
-    period: "2024 – Present",
-    location: "Global / Remote",
+    role: "Software Engineer & Application Developer Intern",
+    company: "BidaBoss Inc. · OJT",
+    period: "Jul 2025 – Dec 2025",
+    location: "Pasig City, Philippines",
     description:
-      "Published and maintained developer productivity tools including ResuMaker ATS resume builder and JasFocus Pomodoro applications.",
+      "On-the-job training as a developer at BidaBoss Inc. Built the BidaBoss Agent Portal — a web-based franchise order management system that is live and in use by the company — and the BidaBoss e-commerce mobile app.",
     highlights: [
-      "Published ResuMaker markdown resume tool with real-time PDF generation",
-      "Created JasFocus minimal Pomodoro timer with custom audio ambient engines",
-      "Maintained zero-dependency dev utility libraries downloaded by developer peers",
-      "Fostered open-source documentation, automated CI/CD builds, and release packaging",
+      "Developed the BidaBoss Agent Portal, a centralized franchise order management system, with React and Node.js on MySQL",
+      "Shipped the portal to production — it is in active use by BidaBoss Inc.",
+      "Built the BidaBoss e-commerce mobile application in Flutter with a MySQL backend",
+      "Mobile dashboard covers overall sales, order statuses (to approve, to pick up, out for delivery), inventory, store and orders",
     ],
-    tech: ["Next.js", "Tailwind CSS", "Framer Motion", "TypeScript", "Markdown AST"],
-    icon: Code2,
-    details: {
-      architecture:
-        "Client-side Next.js App Router with offline LocalStorage & Web Workers.",
-      impact: "100+ GitHub stars across developer tools with active community forks.",
-    },
+    tech: ["React", "Node.js", "MySQL", "Flutter", "Dart"],
+    icon: Briefcase,
+    details: [
+      { label: "Built", value: "BidaBoss Agent Portal (web) and the BidaBoss e-commerce mobile app." },
+      { label: "Status", value: "The Agent Portal is live and used by BidaBoss Inc. for franchise order management." },
+    ],
     scrollTarget: 0.64,
   },
   {
     id: "exp-4",
     number: "04",
-    role: "Creative Technologist",
-    company: "Godot 3D & WebGPU R&D",
-    period: "2025 – Future",
-    location: "R&D Lab",
+    role: "Thesis Developer & Co-Proponent",
+    company: "WaterWise · Cavite State University",
+    period: "2025 – 2026",
+    location: "Indang, Cavite",
     description:
-      "Exploring cutting-edge WebGL/WebGPU shaders, procedural mesh generation, real-time lighting physics, and Godot 4 architecture.",
+      "Undergraduate thesis in a three-person team: WaterWise, a Godot educational game on water conservation and reuse, built to run on low-spec Android phones with offline multiplayer over a phone's Wi-Fi hotspot.",
     highlights: [
-      "Real-time volumetric lighting physics & custom post-processing Bloom pipelines",
-      "Procedural terrain generation using Perlin Noise & GPU compute shaders",
-      "Cross-platform WebGPU rendering experiments targeting next-gen browsers",
-      "Hybrid R3F (React Three Fiber) + Anime.js micro-interaction frameworks",
+      "Rule-based rolling-window adaptive difficulty — a Weighted Proficiency Index over the last five games, no trained model or internet needed",
+      "Offline co-op score sync with an integer-only G-Counter CRDT over a Wi-Fi hotspot",
+      "Benchmarked on a Motorola Moto E5 Plus: 28.2–29.6 FPS average, 0.59–0.66 ms per difficulty update",
+      "CRDT replicas converged in all 180 simulated trials at 10–90% packet loss, with updates 76–83% smaller than JSON",
     ],
-    tech: ["Three.js", "WebGPU", "GLSL", "Godot Engine", "Anime.js", "WebGL"],
+    tech: ["Godot", "GDScript", "Android", "CRDT", "Scrum"],
     icon: Gamepad2,
-    details: {
-      architecture:
-        "Experimental WebGPU compute shader pipeline + R3F postprocessing canvas.",
-      impact:
-        "Pioneering immersive 3D web experiences and next-gen browser graphics.",
-    },
+    details: [
+      {
+        label: "Thesis",
+        value:
+          "WaterWise: An Educational Game Using Deterministic Rule-Based Adaptive Difficulty and CRDT Synchronization.",
+      },
+      { label: "Process", value: "Developed in Scrum sprints; evaluated through device benchmarking plus disconnection and packet-loss testing." },
+    ],
     scrollTarget: 0.88,
   },
 ];

@@ -19,7 +19,7 @@ import ChapterLabel from "@/components/ui/ChapterLabel";
 import AnimeText from "@/components/ui/AnimeText";
 import AnimeStaggerGrid from "@/components/ui/AnimeStaggerGrid";
 import TiltCard from "@/components/ui/TiltCard";
-import { GitHubIcon, XIcon } from "@/components/ui/BrandIcons";
+import { SOCIAL_ICONS } from "@/components/ui/BrandIcons";
 import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/lib/data";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import profilePic from "@/../public/profile.jpg";
@@ -40,7 +40,7 @@ const GRAIN_SVG =
 const METRICS = [
   { end: 12, suffix: "+", decimals: 0, label: "Projects Shipped" },
   { end: 4, suffix: "+ Yrs", decimals: 0, label: "Building & Crafting" },
-  { end: 99.9, suffix: "%", decimals: 1, label: "Production Stability" },
+  { end: 29, suffix: "", decimals: 0, label: "Certifications" },
 ];
 
 /** Counts a metric up from 0 the first time it scrolls into view. */
@@ -178,7 +178,6 @@ export default function Hero() {
   // fades/scales during the final stretch as it physically leaves — no empty
   // dark band while the next chapter is still scrolling in.
   const contentOpacity = useTransform(scrollYProgress, [0.7, 1], [1, 0]);
-  const contentBlur = useTransform(scrollYProgress, [0.7, 1], [0, 10]);
   const contentScale = useTransform(scrollYProgress, [0.7, 1], [1, 0.96]);
   const contentY = useTransform(scrollYProgress, [0.7, 1], [0, -50]);
 
@@ -280,7 +279,7 @@ export default function Hero() {
             exit on the inner wrapper so the two never fight over `filter`. */}
         <motion.div
           initial={{ opacity: 0, filter: "blur(16px)", scale: 1.04 }}
-          animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+          animate={{ opacity: 1, filter: "blur(0px)", scale: 1, transitionEnd: { filter: "none" } }}
           transition={{ duration: 1.5, delay: 0.45, ease: EASING }}
           className="relative z-10 flex w-full flex-1 flex-col justify-center will-change-transform transform-gpu"
         >
@@ -289,7 +288,10 @@ export default function Hero() {
               opacity: contentOpacity,
               scale: contentScale,
               y: contentY,
-              filter: useTransform(contentBlur, (v) => v > 0.1 ? `blur(${v}px)` : "none"),
+              /* No scroll-linked blur: re-blurring the whole hero (with a
+                 backdrop-blurred card inside it) every scroll frame was the
+                 single most expensive paint on the page. Fade + scale + lift
+                 carry the exit on the compositor. */
             }}
             className="container-narrow flex flex-col justify-center will-change-transform transform-gpu"
           >
@@ -321,19 +323,15 @@ export default function Hero() {
                     className="relative flex items-center justify-center p-2 rounded-full border border-purple-500/30 bg-purple-950/20 hover:bg-purple-900/40 hover:border-purple-400 transition-[background-color,border-color,box-shadow,transform] duration-[250ms] ease-out active:scale-[0.97] shadow-[0_0_12px_rgba(168,85,247,0.25)] group"
                   >
                     {/* Animated Rotating Outer Ring */}
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    <div
+                      style={{ animation: "loop-spin 8s linear infinite" }}
                       className="absolute inset-0 rounded-full border border-dashed border-purple-400/40 pointer-events-none"
                     />
 
                     {/* Animated Pulsing Icon */}
-                    <motion.div
-                      animate={{ scale: [1, 1.15, 1] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
+                    <div style={{ animation: "loop-pulse-scale 2s ease-in-out infinite" }}>
                       <Cpu size={14} className="text-purple-400 group-hover:text-purple-300 transition-colors" />
-                    </motion.div>
+                    </div>
                   </button>
 
                   {/* Lowkey Secret Tooltip on Hover */}
@@ -359,14 +357,17 @@ export default function Hero() {
               </AnimeText>
 
               {/* Animated Role / Title Sequence */}
-              <div className="h-10 my-4 flex items-center">
+              {/* Own layer + layout containment: the typewriter changes text
+                  every 25–40ms, and without isolation each keystroke re-laid-out
+                  and re-rastered the entire hero column. */}
+              <div className="h-10 my-4 flex items-center will-change-transform [contain:layout_paint]">
                 <TypewriterRole />
               </div>
 
               {/* Concise Personal Introduction */}
               <motion.p
                 initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
                 transition={{ duration: 1.0, delay: 0.6, ease: EASING }}
                 className="mt-4 max-w-prose font-body text-base leading-relaxed text-[var(--color-silver)] md:text-lg"
               >
@@ -410,11 +411,14 @@ export default function Hero() {
                 className="mt-8 flex flex-wrap items-center gap-3 text-xs font-mono text-[var(--color-ash)]"
               >
                 <span className="uppercase tracking-widest text-[10px]">Connect:</span>
-                {SOCIAL_LINKS.map((link) => (
-                  <MagneticSocial key={link.label} href={link.href} label={link.label}>
-                    {link.icon === "github" ? <GitHubIcon size={16} /> : <XIcon size={16} />}
-                  </MagneticSocial>
-                ))}
+                {SOCIAL_LINKS.map((link) => {
+                  const Icon = SOCIAL_ICONS[link.icon];
+                  return (
+                    <MagneticSocial key={link.label} href={link.href} label={link.label}>
+                      {Icon ? <Icon size={16} /> : link.label}
+                    </MagneticSocial>
+                  );
+                })}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
                   className="hover:text-[var(--color-starlight)] transition-colors p-2 -m-1 font-mono text-xs break-all"
@@ -435,15 +439,12 @@ export default function Hero() {
                 {/* Profile card — clean, no orbiting badges. */}
                 <div className="relative w-full max-w-sm">
                   {/* Soft animated glow halo behind the card */}
-                  <motion.div
-                    animate={{ opacity: [0.45, 0.75, 0.45], scale: [1, 1.06, 1] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  <div
                     className="pointer-events-none absolute h-[420px] w-[420px] rounded-full"
                     style={{
                       left: "50%",
                       top: "50%",
-                      x: "-50%",
-                      y: "-50%",
+                      animation: "hero-halo 6s ease-in-out infinite",
                       background:
                         "radial-gradient(circle, rgba(67,97,238,0.28), transparent 70%)",
                     }}
@@ -521,9 +522,8 @@ export default function Hero() {
               Scroll
             </span>
             <div className="flex h-9 w-5 items-start justify-center rounded-full border border-[var(--color-glass-border)] p-1.5">
-              <motion.div
-                animate={{ y: [0, 10, 0], opacity: [1, 0.2, 1] }}
-                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+              <div
+                style={{ animation: "scroll-cue-dot 1.8s ease-in-out infinite" }}
                 className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)]"
               />
             </div>

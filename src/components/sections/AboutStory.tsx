@@ -45,7 +45,7 @@ export default function AboutStory() {
           {/* Portrait Image */}
           <motion.div
             initial={{ opacity: 0, x: -30, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 1.2, ease: EASING }}
             className="w-full max-w-[300px] md:max-w-[340px] mx-auto lg:mx-0"
@@ -64,7 +64,7 @@ export default function AboutStory() {
           {/* Story Narrative */}
           <motion.div
             initial={{ opacity: 0, y: 24, filter: "blur(4px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 1.0, delay: 0.2, ease: EASING }}
             className="space-y-6 font-body text-lg leading-relaxed text-[var(--color-silver)] max-w-prose"
@@ -74,7 +74,7 @@ export default function AboutStory() {
             </p>
             <p>
               As a Software Engineer Intern at{" "}
-              <span className="text-[var(--color-pearl)] font-bold">BidaBoss Inc.</span>, I built production systems in React, Node.js, and Flutter that real internal teams rely on daily. Outside of work, I build games in Godot, model in Blender, and prototype interactive web experiences.
+              <span className="text-[var(--color-pearl)] font-bold">BidaBoss Inc.</span>, I built the company&apos;s Agent Portal in React and Node.js — still live and in use — and its Flutter e-commerce app. Outside of work, I build games in Godot, model in Blender, and prototype interactive web experiences.
             </p>
           </motion.div>
         </div>

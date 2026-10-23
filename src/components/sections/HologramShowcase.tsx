@@ -8,12 +8,12 @@ import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.j
 import { motion, AnimatePresence } from "framer-motion";
 import { getAdaptiveQuality, observeVisibility } from "@/lib/performance";
 import { useReducedMotionPref } from "@/lib/hooks/useClientFlag";
+import { asset } from "@/lib/assets";
 import {
   PointSim, makeRefAttribute, HG_LIB, HG_UNIFORMS, HG_TARGET,
   isGPGPUSupported,
 } from "@/lib/three/hologramSim";
 
-const BASE = process.env.NODE_ENV === "production" ? "/Portfolio-Website" : "";
 
 const SLOTS = [
   {
@@ -21,8 +21,8 @@ const SLOTS = [
     index: "1/03",
     label: "MOBILE",
     title: "MOBILE APPS",
-    body: "Cross-platform Flutter apps with offline-first architecture and real-time sync.",
-    model: `${BASE}/3d/model_b.glb`,
+    body: "Cross-platform Flutter apps — from the BidaBoss e-commerce app to QR attendance.",
+    model: asset("/3d/model_b.glb"),
     footerK: "BRIEF",
     footerV: "SITE / BRAND",
     glass: false,
@@ -33,7 +33,7 @@ const SLOTS = [
     label: "CREATIVE / 3D",
     title: "CREATIVE DEV",
     body: "Godot games, Blender models, motion design — where engineering meets craft.",
-    model: `${BASE}/3d/model_c.glb`,
+    model: asset("/3d/model_c.glb"),
     footerK: "CLIENT",
     footerV: "COMMISSION",
     glass: false,
@@ -44,7 +44,7 @@ const SLOTS = [
     label: "LOGO / NRTH",
     title: "THE LOGO",
     body: "NRTH's logo which is a fox — the only model in here that can leave particle form. You can turn it into a solid form and the original colored glass.",
-    model: `${BASE}/3d/model1.glb`,
+    model: asset("/3d/model1.glb"),
     footerK: "THE LOGO",
     footerV: "NRTH / FOX",
     glass: true,
@@ -1371,8 +1371,17 @@ function CameraRig({
   return null;
 }
 
-/* ─── Preload all models ────────────────────────────────── */
-SLOTS.forEach((s) => useGLTF.preload(s.model));
+/* ─── Preload all models ──────────────────────────────────
+   Deliberately NOT at module scope any more: that fired ~3.7MB of GLB
+   downloads the moment this chunk loaded — i.e. on page load, for a
+   section far below the fold. `preloadModels()` runs once the section is
+   about a screen and a half away (see the effect in HologramShowcase). */
+let modelsPreloaded = false;
+function preloadModels() {
+  if (modelsPreloaded) return;
+  modelsPreloaded = true;
+  SLOTS.forEach((s) => useGLTF.preload(s.model));
+}
 
 /* ─── ScanRig ───────────────────────────────────────────
    ONE component owns the scan, and it works screen-first.
@@ -1588,6 +1597,11 @@ function CardGrid({ color }: { color: string }) {
 export default function HologramShowcase() {
   const [active, setActive]   = useState(0);
   const [visible, setVisible] = useState(false);
+  /* The canvas mounts the first time the section is seen and then stays
+     mounted, paused (frameloop "never") while off-screen. Unmounting on
+     every exit meant re-compiling the hologram shaders and re-building the
+     GPGPU sim each time you scrolled back — a visible hitch. */
+  const [shown, setShown]     = useState(false);
   const [hovered, setHovered] = useState(false);
   const [color, setColor]     = useState(COLOR_PRESETS[0].hex);
   /* Repulsion is off by default — the dither hover reveal is this section's
@@ -1659,7 +1673,35 @@ export default function HologramShowcase() {
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
-    return observeVisibility(el, setVisible, "0px 0px -10% 0px");
+    const stopNear = observeVisibility(
+      el,
+      (near) => {
+        if (near) preloadModels();
+      },
+      "150% 0px"
+    );
+    const stopVisible = observeVisibility(
+      el,
+      (v) => {
+        setVisible(v);
+        if (v) setShown(true);
+      },
+      "0px 0px -10% 0px"
+    );
+    // Or warm the models during idle time once the intro has settled, so
+    // the parse never lands mid-scroll (see useNearViewport for the why).
+    const idle = (window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+    }).requestIdleCallback;
+    const warm = window.setTimeout(() => {
+      if (idle) idle(preloadModels, { timeout: 4000 });
+      else preloadModels();
+    }, 9000);
+    return () => {
+      stopNear();
+      stopVisible();
+      window.clearTimeout(warm);
+    };
   }, []);
 
   /* Selection marks the slot visited in the SAME update as it becomes
@@ -1766,7 +1808,7 @@ export default function HologramShowcase() {
             <HudCorners hovered={hovered} color={color} />
 
             {/* Scan line — only rendered once canvas is visible */}
-            {visible && (
+            {shown && (
               <CssScanLine
                 domRef={scanLineDomRef}
                 hovered={hovered}
@@ -1781,11 +1823,11 @@ export default function HologramShowcase() {
               SCAN {slot.index} — {slot.title}
             </span>
 
-            {visible ? (
+            {shown ? (
               <Canvas
                 camera={{ position: [0, 0.2, 4.2], fov: 40 }}
                 dpr={[1, quality.dpr]}
-                frameloop="always"
+                frameloop={visible ? "always" : "never"}
                 gl={{ antialias: false, alpha: true, powerPreference: "high-performance", stencil: false }}
                 style={{ position: "absolute", inset: 0, zIndex: 1 }}
               >
