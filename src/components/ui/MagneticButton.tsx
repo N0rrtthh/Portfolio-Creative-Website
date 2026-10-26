@@ -7,6 +7,7 @@ interface MagneticButtonProps {
   children: React.ReactNode;
   className?: string;
   href?: string;
+  download?: boolean | string;
   onClick?: () => void;
   strength?: number;
 }
@@ -19,6 +20,7 @@ export default function MagneticButton({
   children,
   className = "",
   href,
+  download,
   onClick,
   strength = 0.3,
 }: MagneticButtonProps) {
@@ -52,7 +54,7 @@ export default function MagneticButton({
 
   if (href) {
     return (
-      <motion.a href={href} {...shared}>
+      <motion.a href={href} download={download} {...shared}>
         {children}
       </motion.a>
     );

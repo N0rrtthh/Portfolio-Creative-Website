@@ -21,6 +21,7 @@ import AnimeStaggerGrid from "@/components/ui/AnimeStaggerGrid";
 import TiltCard from "@/components/ui/TiltCard";
 import { SOCIAL_ICONS } from "@/components/ui/BrandIcons";
 import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/lib/data";
+import { asset } from "@/lib/assets";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import profilePic from "@/../public/profile.jpg";
 
@@ -395,10 +396,11 @@ export default function Hero() {
                   transition={{ duration: 1.0, delay: 0.9, ease: EASING }}
                 >
                   <MagneticButton
-                    href="#contact"
+                    href={asset("/ELRONI_QUIÑONES_Resume.pdf")}
+                    download
                     className="rounded-full border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-7 py-3.5 font-body text-sm font-medium text-[var(--color-silver)] backdrop-blur-md transition-[background-color,border-color,color,box-shadow,transform] duration-[250ms] ease-out hover:border-[var(--color-accent-primary)] hover:text-[var(--color-starlight)] hover:shadow-[0_8px_30px_rgba(67,97,238,0.15)] will-change-transform transform-gpu active:scale-[0.97]"
                   >
-                    Get in touch <ArrowUpRight className="inline-block h-4 w-4 ml-1 opacity-70" />
+                    Download Resume <ArrowUpRight className="inline-block h-4 w-4 ml-1 opacity-70" />
                   </MagneticButton>
                 </motion.div>
               </div>
