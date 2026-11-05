@@ -128,7 +128,9 @@ const FlipCard = memo(function FlipCard({
           className={`absolute inset-0 flex flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--color-glass-border)] px-4 ${deep ? "[backface-visibility:hidden]" : ""}`}
           style={{
             background: `linear-gradient(165deg, ${color}1c, rgba(255,255,255,0.03) 55%, rgba(255,255,255,0.015))`,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+            /* Theme token: dark mode keeps the deep shadow, light mode
+               gets the soft neutral lift instead of a grey smudge. */
+            boxShadow: "var(--shadow-ambient, 0 8px 24px rgba(0,0,0,0.4))",
           }}
         >
           <div
@@ -159,12 +161,16 @@ const FlipCard = memo(function FlipCard({
           className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border p-4 [backface-visibility:hidden] [transform:rotateY(180deg)]"
           style={{
             borderColor: `${color}55`,
-            background: `linear-gradient(165deg, ${color}22, rgba(10,10,20,0.97) 45%, rgba(10,10,20,0.99))`,
-            boxShadow: `0 0 32px ${color}22, 0 16px 40px rgba(0,0,0,0.55)`,
+            /* Surface comes from the theme (--color-obsidian: near-black in
+               dark mode, white in light mode). It used to be a hard-coded
+               near-black, so in light mode the flipped card stayed black and
+               its theme-coloured text became unreadable. */
+            background: `linear-gradient(165deg, ${color}26, var(--color-obsidian) 45%, var(--color-obsidian))`,
+            boxShadow: `0 0 32px ${color}22, var(--shadow-raised, 0 16px 40px rgba(0,0,0,0.55))`,
           }}
         >
           <div className="mb-2 flex items-center justify-between gap-2">
-            <span className="truncate font-display text-sm font-bold text-white">
+            <span className="truncate font-display text-sm font-bold text-[var(--color-starlight)]">
               {tech.name}
             </span>
             <span
@@ -424,4 +430,4 @@ export default function TechFlipGrid() {
       </p>
     </div>
   );
-}
+}
