@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import profilePic from "@/../public/profile.jpg";
+import certificationData from "@/data/certifications.json";
 
 export default function EvaAbout() {
   const ref = useRef<HTMLDivElement>(null);
@@ -126,7 +127,7 @@ export default function EvaAbout() {
               {[
                 { label: "PROJECTS DEPLOYED", value: "12+", icon: "◆" },
                 { label: "YEARS ACTIVE", value: "4+", icon: "◈" },
-                { label: "CERTIFICATIONS", value: "29", icon: "◇" },
+                { label: "CERTIFICATIONS", value: String(certificationData.length), icon: "◇" },
                 { label: "TECH MODULES", value: "20+", icon: "◆" },
               ].map((stat, i) => (
                 <motion.div

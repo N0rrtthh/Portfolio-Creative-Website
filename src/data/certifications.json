@@ -1,0 +1,1182 @@
+[
+  {
+    "id": "cert-01",
+    "title": "AI Fundamentals: Foundations for Understanding AI",
+    "subject": "AI",
+    "issuer": "Cisco Academy x IBM SkillsBuild x DICT-ITU x DICT ILCDB",
+    "issueDate": "2026",
+    "skills": [
+      "Generative AI",
+      "Neural Networks",
+      "Ethics in AI",
+      "Prompt Engineering"
+    ],
+    "description": "Foundational mastery in artificial intelligence architecture, machine learning concepts, ethical AI deployment, and neural model mechanics. Issued across 3 official partner credentials.",
+    "badgeBgColor": "from-blue-500 via-indigo-600 to-blue-800",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-dict-foundations",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/se3wAfNhfT_AI_Fundamentals_-_Foundations_for_Understanding_AI",
+        "previewPdfUrl": "https://pdfhost.io/pdf/c23a864a-470f-40ea-ac15-b484182341f8.pdf",
+        "previewImageUrl": "https://pdfhost.io/thumbnail/a579bcbe-c490-40ea-8f05-19205adec4c4-full.jpg"
+      },
+      {
+        "id": "v-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/xfYmH4DgYj_AI_Fundamentals__Foundations_for_Understanding_AI",
+        "previewPdfUrl": "https://pdfhost.io/pdf/3e62a5a5-96db-461b-af08-6327486990e2.pdf",
+        "previewImageUrl": "https://pdfhost.io/thumbnail/48a6e6e5-51e5-49f3-947b-4e85cea7582e-full.jpg",
+        "credlyBadgeId": "c701bfe8-fd85-476f-ac93-e8d13045da5a",
+        "credlyPublicUrl": "https://www.credly.com/badges/c701bfe8-fd85-476f-ac93-e8d13045da5a/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/size/340x340/images/e0644ccc-dd87-4e27-82e4-0facf461cd1f/AI_20Fundamentals_20Foundations_20for_20Understanding_20AI.png"
+      },
+      {
+        "id": "v-ibm",
+        "name": "IBM SkillsBuild",
+        "viewWebUrl": "https://pdfhost.io/v/63m4yzVg2H_AI_Fundamentals__Foundations_for_Understanding_AI",
+        "previewPdfUrl": "https://pdfhost.io/pdf/933017f7-2623-4247-809b-3c235bc4100a.pdf",
+        "previewImageUrl": "https://pdfhost.io/thumbnail/66bab349-7751-4942-ba2d-0ffd36d082ca-full.jpg",
+        "credlyBadgeId": "d2b7b343-2d60-404d-961e-7d238aa0ceaf",
+        "credlyPublicUrl": "https://www.credly.com/badges/d2b7b343-2d60-404d-961e-7d238aa0ceaf/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/size/340x340/images/fa29f782-3029-44f9-9fb1-631c3278a68a/blob"
+      },
+      {
+        "id": "v-ilcdb-foundations",
+        "name": "DICT ILCDB",
+        "viewWebUrl": "https://pdfhost.io/v/UQKHrWvqEt_AI_Fundamentals_Foundations_for_Understanding_AI"
+      }
+    ],
+    "showAllBadges": true
+  },
+  {
+    "id": "cert-02",
+    "title": "AI Fundamentals: Language and Vision in AI",
+    "subject": "AI",
+    "issuer": "Cisco Academy x IBM SkillsBuild x DICT-ITU x DICT ILCDB",
+    "issueDate": "2026",
+    "skills": [
+      "Computer Vision",
+      "NLP",
+      "Transformer Models",
+      "Image Processing"
+    ],
+    "description": "Specialized certification in Natural Language Processing (NLP), Computer Vision algorithms, LLM transformers, and multimodal AI systems.",
+    "badgeBgColor": "from-blue-600 via-indigo-600 to-violet-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-dict-vision",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/hc6hLJCr3f_AI_Fundamentals_-_Language_and_Vision_in_AI",
+        "previewPdfUrl": "https://pdfhost.io/pdf/9bed9a48-9260-4ed8-ab27-60e0c64cfec1.pdf",
+        "previewImageUrl": "https://pdfhost.io/thumbnail/f3301ae4-a764-4797-88cf-a5327d77502d-full.jpg",
+        "credlyBadgeImageUrl": "https://pdfhost.io/thumbnail/f3301ae4-a764-4797-88cf-a5327d77502d-full.jpg"
+      },
+      {
+        "id": "v-cisco-vision",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/2aBR4pXQR7_AI_Fundamentals_-_Language_and_Vision_in_AI",
+        "previewPdfUrl": "https://pdfhost.io/pdf/9bed9a48-9260-4ed8-ab27-60e0c64cfec1.pdf",
+        "previewImageUrl": "https://pdfhost.io/thumbnail/f3301ae4-a764-4797-88cf-a5327d77502d-full.jpg",
+        "credlyBadgeId": "0ddb7bbf-1c2d-4378-bbc5-c5d373f05d30",
+        "credlyPublicUrl": "https://www.credly.com/badges/0ddb7bbf-1c2d-4378-bbc5-c5d373f05d30/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/size/340x340/images/c4383b39-473a-4fb1-ae0c-c0f4d445191f/blob"
+      },
+      {
+        "id": "v-ibm-vision",
+        "name": "IBM SkillsBuild",
+        "viewWebUrl": "https://pdfhost.io/v/vZCqJRGmbK_AI_Fundamentals_-_Language_and_Vision_in_AI",
+        "previewPdfUrl": "https://pdfhost.io/pdf/6527c6a9-b206-4515-9dc9-62e4523be0e4.pdf",
+        "previewImageUrl": "https://pdfhost.io/thumbnail/b527853e-df2d-42f3-8215-d5163a745441-full.jpg",
+        "credlyBadgeId": "f6227f46-2986-4896-a3da-e31fec9ae83b",
+        "credlyPublicUrl": "https://www.credly.com/badges/f6227f46-2986-4896-a3da-e31fec9ae83b/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/size/340x340/images/1c760850-837a-4ffd-bf17-83dee11b1c77/BadgeEmblem_AIFundamentalsLanguageAndVisionInAI.png"
+      },
+      {
+        "id": "v-ilcdb-vision",
+        "name": "DICT ILCDB",
+        "viewWebUrl": "https://pdfhost.io/v/VRmhzh2pCS_AI_Fundamentals_Language_and_Vision_in_AI"
+      }
+    ],
+    "showAllBadges": true
+  },
+  {
+    "id": "cert-30",
+    "title": "AWS Educate Introduction to Cloud 101",
+    "subject": "Cloud",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Oct 2026",
+    "skills": [
+      "Cloud Computing",
+      "AWS Core Services",
+      "Cloud Foundations"
+    ],
+    "description": "Cloud computing fundamentals, AWS core services and building simple cloud applications in a hands-on virtual lab.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-slate-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/e51a8579-188d-4363-8ed1-12ad164ef57b/blob",
+    "variants": [
+      {
+        "id": "v-aws-cloud101",
+        "name": "AWS Educate",
+        "credlyBadgeId": "e5c0bac3-1554-4d87-85a4-e5f8480cf630",
+        "credlyPublicUrl": "https://www.credly.com/badges/e5c0bac3-1554-4d87-85a4-e5f8480cf630/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/e51a8579-188d-4363-8ed1-12ad164ef57b/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-31",
+    "title": "AWS Educate Introduction to Generative AI",
+    "subject": "AI",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Oct 2026",
+    "skills": [
+      "Artificial Intelligence (AI)",
+      "Generative AI",
+      "Foundation Models"
+    ],
+    "description": "Generative AI concepts, what foundation models are, and practical generative AI use cases on AWS.",
+    "badgeBgColor": "from-orange-500 via-fuchsia-600 to-indigo-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/e50c657a-edd9-4c93-b1cf-2b6634b54abf/blob",
+    "variants": [
+      {
+        "id": "v-aws-genai",
+        "name": "AWS Educate",
+        "credlyBadgeId": "bef87852-4abd-4587-8cbc-4f3028b0da5a",
+        "credlyPublicUrl": "https://www.credly.com/badges/bef87852-4abd-4587-8cbc-4f3028b0da5a/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/e50c657a-edd9-4c93-b1cf-2b6634b54abf/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-32",
+    "title": "AWS Educate Machine Learning Foundations",
+    "subject": "AI",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Oct 2026",
+    "skills": [
+      "Cloud Computing",
+      "Machine Learning",
+      "ML Pipeline"
+    ],
+    "description": "Core machine learning concepts and applying the ML pipeline to a real business problem on AWS.",
+    "badgeBgColor": "from-orange-500 via-fuchsia-600 to-indigo-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/247efe36-9fa6-4209-ad56-0fd522283872/blob",
+    "variants": [
+      {
+        "id": "v-aws-ml",
+        "name": "AWS Educate",
+        "credlyBadgeId": "498a75f1-82c4-459c-9721-04892f7d8898",
+        "credlyPublicUrl": "https://www.credly.com/badges/498a75f1-82c4-459c-9721-04892f7d8898/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/247efe36-9fa6-4209-ad56-0fd522283872/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-33",
+    "title": "AWS Educate Getting Started with Cloud Ops",
+    "subject": "Cloud",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Oct 2026",
+    "skills": [
+      "Cloud Computing",
+      "Cloud Operations",
+      "AWS Well-Architected"
+    ],
+    "description": "The AWS Well-Architected Framework and using AWS services to operate and manage a cloud environment.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-slate-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/4251ab91-6d67-47da-801c-855c0bbc6cc3/blob",
+    "variants": [
+      {
+        "id": "v-aws-cloudops",
+        "name": "AWS Educate",
+        "credlyBadgeId": "6941bc53-1227-4d26-91b5-19360ba51800",
+        "credlyPublicUrl": "https://www.credly.com/badges/6941bc53-1227-4d26-91b5-19360ba51800/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/4251ab91-6d67-47da-801c-855c0bbc6cc3/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-34",
+    "title": "AWS Educate Getting Started with Compute",
+    "subject": "Cloud",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Nov 2026",
+    "skills": [
+      "Cloud Computing",
+      "Amazon EC2",
+      "AWS Compute"
+    ],
+    "description": "The different types of cloud compute and launching an instance with Amazon EC2.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-slate-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/7b08cc0e-064b-407d-b70e-323509c3e474/blob",
+    "variants": [
+      {
+        "id": "v-aws-compute",
+        "name": "AWS Educate",
+        "credlyBadgeId": "84e30449-361b-46de-9ca9-1e1f94e6c043",
+        "credlyPublicUrl": "https://www.credly.com/badges/84e30449-361b-46de-9ca9-1e1f94e6c043/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/7b08cc0e-064b-407d-b70e-323509c3e474/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-35",
+    "title": "AWS Educate Getting Started with Storage",
+    "subject": "Cloud",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Nov 2026",
+    "skills": [
+      "Cloud Computing",
+      "Amazon S3",
+      "AWS Storage Services"
+    ],
+    "description": "Cloud storage options on AWS and using Amazon S3 to store and retrieve objects.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-slate-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/3b1b42e6-dfc2-492b-90df-8058096cb93d/blob",
+    "variants": [
+      {
+        "id": "v-aws-storage",
+        "name": "AWS Educate",
+        "credlyBadgeId": "21c753c3-b7c2-4c90-b25e-7d7e8791e142",
+        "credlyPublicUrl": "https://www.credly.com/badges/21c753c3-b7c2-4c90-b25e-7d7e8791e142/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/3b1b42e6-dfc2-492b-90df-8058096cb93d/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-36",
+    "title": "AWS Educate Getting Started with Databases",
+    "subject": "Cloud",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Nov 2026",
+    "skills": [
+      "Cloud Computing",
+      "Amazon RDS",
+      "SQL"
+    ],
+    "description": "Setting up an Amazon RDS database instance and reading and writing data with SQL.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-slate-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/a08cf90b-9838-4f6c-82bd-8db85fb89dd5/blob",
+    "variants": [
+      {
+        "id": "v-aws-databases",
+        "name": "AWS Educate",
+        "credlyBadgeId": "c0ce1ee0-6214-40f2-ba71-f80acb64838e",
+        "credlyPublicUrl": "https://www.credly.com/badges/c0ce1ee0-6214-40f2-ba71-f80acb64838e/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/a08cf90b-9838-4f6c-82bd-8db85fb89dd5/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-37",
+    "title": "AWS Educate Getting Started with Networking",
+    "subject": "Cloud",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Nov 2026",
+    "skills": [
+      "Amazon CloudWatch",
+      "Amazon VPC",
+      "AWS Networking"
+    ],
+    "description": "Network management approaches on AWS and using an Amazon VPC to build and manage a network.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-slate-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/f5095707-7683-4886-940c-3e8e4a2085ca/blob",
+    "variants": [
+      {
+        "id": "v-aws-networking",
+        "name": "AWS Educate",
+        "credlyBadgeId": "2c24de1f-f2e0-4e16-9076-b577aadd8bf0",
+        "credlyPublicUrl": "https://www.credly.com/badges/2c24de1f-f2e0-4e16-9076-b577aadd8bf0/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/f5095707-7683-4886-940c-3e8e4a2085ca/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-38",
+    "title": "AWS Educate Getting Started with Security",
+    "subject": "Cloud",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Nov 2026",
+    "skills": [
+      "AWS Security",
+      "AWS IAM",
+      "Cloud Security"
+    ],
+    "description": "Securing AWS workloads with AWS Identity and Access Management (IAM) and an overview of the wider AWS security services.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-slate-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/fc6fa322-80f4-45a5-9def-91e9bcfde837/blob",
+    "variants": [
+      {
+        "id": "v-aws-security",
+        "name": "AWS Educate",
+        "credlyBadgeId": "eae34591-dda1-4ac4-93e2-3eeefe280ce4",
+        "credlyPublicUrl": "https://www.credly.com/badges/eae34591-dda1-4ac4-93e2-3eeefe280ce4/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/fc6fa322-80f4-45a5-9def-91e9bcfde837/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-39",
+    "title": "AWS Educate Getting Started with Serverless",
+    "subject": "Cloud",
+    "issuer": "Amazon Web Services (AWS) x Credly",
+    "issueDate": "Nov 2026",
+    "skills": [
+      "Cloud Computing",
+      "AWS Lambda",
+      "Serverless Computing"
+    ],
+    "description": "Setting up AWS Lambda functions and scaling data flows with services such as Amazon SQS, Amazon SNS and API Gateway.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-slate-900",
+    "credlyVerified": true,
+    "artwork": "https://images.credly.com/images/25108813-2dd7-45f7-8158-65689b8526b5/blob",
+    "variants": [
+      {
+        "id": "v-aws-serverless",
+        "name": "AWS Educate",
+        "credlyBadgeId": "8bcfc16e-404c-4fbf-b547-c188cfdb4412",
+        "credlyPublicUrl": "https://www.credly.com/badges/8bcfc16e-404c-4fbf-b547-c188cfdb4412/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/25108813-2dd7-45f7-8158-65689b8526b5/blob"
+      }
+    ]
+  },
+  {
+    "id": "cert-03",
+    "title": "Introduction to Modern AI",
+    "subject": "AI",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Generative AI",
+      "AI Models",
+      "Prompting",
+      "Responsible AI"
+    ],
+    "description": "Foundational overview of modern AI concepts, model behavior, and responsible generative workflows.",
+    "badgeBgColor": "from-cyan-500 via-sky-600 to-blue-700",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-modern-ai-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/BPsATvCXKt_Introduction_to_Modern_AI",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/e2d12302-10f9-40d4-8ff1-066a7008b61d/blob"
+      },
+      {
+        "id": "v-modern-ai-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/VnwNceT4R7_Introduction_to_Modern_AI",
+        "credlyBadgeId": "d7387b6f-148b-421d-9a08-46560784b0cb",
+        "credlyPublicUrl": "https://www.credly.com/badges/d7387b6f-148b-421d-9a08-46560784b0cb/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/e2d12302-10f9-40d4-8ff1-066a7008b61d/blob"
+      }
+    ],
+    "showAllBadges": true
+  },
+  {
+    "id": "cert-04",
+    "title": "Apply AI: Update Your Resume",
+    "subject": "AI",
+    "issuer": "Cisco Networking Academy x DICT-ITU x DICT ILCDB",
+    "issueDate": "2026",
+    "skills": [
+      "AI Productivity",
+      "Career Automation",
+      "Workflow Optimization"
+    ],
+    "description": "Practical application of AI productivity tools for career optimization, automated review pipelines, and executive branding.",
+    "badgeBgColor": "from-amber-500 via-orange-600 to-red-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-apply-ai-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/gfUHYJA5Ug_Apply_AI_-_Update_Your_Resume"
+      },
+      {
+        "id": "v-apply-ai-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/GRUZGmhFXx_Apply_AI_-_Update_Your_Resume",
+        "credlyBadgeId": "e0cc3f70-ed75-40fb-af86-7f20d0348efa",
+        "credlyPublicUrl": "https://www.credly.com/badges/e0cc3f70-ed75-40fb-af86-7f20d0348efa/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/33ba62e4-b26d-4b95-9121-1ad01b754224/linkedin_thumb_blob"
+      },
+      {
+        "id": "v-ilcdb-apply-ai",
+        "name": "DICT ILCDB",
+        "viewWebUrl": "https://pdfhost.io/v/ST8RGEd6nW_Apply_AI_Update_Your_Resume"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/33ba62e4-b26d-4b95-9121-1ad01b754224/linkedin_thumb_blob"
+  },
+  {
+    "id": "cert-05",
+    "title": "Data Science Essentials with Python",
+    "subject": "Data Science",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Pandas",
+      "NumPy",
+      "Matplotlib",
+      "Data Wrangling",
+      "Statistical Modeling"
+    ],
+    "description": "Core data science methodology using Python: exploratory data analysis, data cleaning, statistical modeling, and visualization.",
+    "badgeBgColor": "from-emerald-600 via-teal-600 to-cyan-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-ds-py-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/TYXe7TsX8Z_Data_Science_Essentials_with_Python"
+      },
+      {
+        "id": "v-ds-py-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/e4FP5SB3ds_Data_Science_Essentials_with_Python",
+        "credlyBadgeId": "664f0975-7c01-47fc-8a96-43bba8690442",
+        "credlyPublicUrl": "https://www.credly.com/badges/664f0975-7c01-47fc-8a96-43bba8690442/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/62db59ef-19f9-4652-a00c-7582baee8177/linkedin_thumb_blob"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/62db59ef-19f9-4652-a00c-7582baee8177/linkedin_thumb_blob"
+  },
+  {
+    "id": "cert-06",
+    "title": "Data Analytics Essentials",
+    "subject": "Data Science",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "SQL",
+      "Data Pipelines",
+      "Business Intelligence",
+      "Analytics Dashboards"
+    ],
+    "description": "Comprehensive data analytics principles: querying relational databases, business metrics extraction, data reporting, and trend analysis.",
+    "badgeBgColor": "from-cyan-600 via-blue-600 to-indigo-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-da-ess-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/5gkCuFTd4F_Data_Analytics_Essentials"
+      },
+      {
+        "id": "v-da-ess-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/4fsDGv9WLK_Data_Analytics_Essentials",
+        "credlyBadgeId": "df779424-ba5e-4387-8335-44607c053587",
+        "credlyPublicUrl": "https://www.credly.com/badges/df779424-ba5e-4387-8335-44607c053587/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/1fdfeaeb-e61c-4450-bdfe-a07bd4e715df/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/1fdfeaeb-e61c-4450-bdfe-a07bd4e715df/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-07",
+    "title": "Introduction to Data Science",
+    "subject": "Data Science",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Data Life Cycle",
+      "Big Data",
+      "Predictive Analytics"
+    ],
+    "description": "Overview of the end-to-end data science lifecycle, big data infrastructure, machine learning pipelines, and decision intelligence.",
+    "badgeBgColor": "from-teal-600 via-emerald-600 to-green-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-intro-ds-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/zEquHFz5Bg_Introduction_to_Data_Science"
+      },
+      {
+        "id": "v-intro-ds-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/Vj3GvdJUGa_Introduction_to_Data_Science",
+        "credlyBadgeId": "3b678f36-573e-40f7-b63e-607209028634",
+        "credlyPublicUrl": "https://www.credly.com/badges/3b678f36-573e-40f7-b63e-607209028634/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/b38a42e0-dc58-4ce2-b6c0-28d978e8aaad/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/b38a42e0-dc58-4ce2-b6c0-28d978e8aaad/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-08",
+    "title": "Ethical Hacker",
+    "subject": "Cybersecurity",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Penetration Testing",
+      "Vulnerability Scanning",
+      "Network Hardening",
+      "Metasploit"
+    ],
+    "description": "Professional offensive security training: threat modeling, penetration testing methodologies, exploits, network hardening, and security auditing.",
+    "badgeBgColor": "from-red-600 via-rose-600 to-pink-700",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-eth-hacker-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/gM3UNsMVyf_Ethical_Hacker"
+      },
+      {
+        "id": "v-eth-hacker-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/Pm59qhX3hE_Ethical_Hacker",
+        "credlyBadgeId": "a4a574a4-2c88-43c3-97fa-6d867e815055",
+        "credlyPublicUrl": "https://www.credly.com/badges/a4a574a4-2c88-43c3-97fa-6d867e815055/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/242902b5-f527-42ad-865e-977c9e1b5b58/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/242902b5-f527-42ad-865e-977c9e1b5b58/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-09",
+    "title": "Introduction to Cybersecurity",
+    "subject": "Cybersecurity",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Cyber Hygiene",
+      "Cryptography",
+      "Firewalls",
+      "Incident Response"
+    ],
+    "description": "Foundational security protocols, cryptographic standards, malware analysis basics, firewalls, and enterprise security governance.",
+    "badgeBgColor": "from-rose-600 via-red-700 to-red-900",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-intro-cs-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/AFWLAMF7mf_Introduction_to_Cybersecurity"
+      },
+      {
+        "id": "v-intro-cs-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/5TVttbP4Uy_Introduction_to_Cybersecurity",
+        "credlyBadgeId": "f53ca562-b7a5-4723-817b-d348547b1ab2",
+        "credlyPublicUrl": "https://www.credly.com/badges/f53ca562-b7a5-4723-817b-d348547b1ab2/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/af8c6b4e-fc31-47c4-8dcb-eb7a2065dc5b/linkedin_thumb_I2CS__1_.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/af8c6b4e-fc31-47c4-8dcb-eb7a2065dc5b/linkedin_thumb_I2CS__1_.png"
+  },
+  {
+    "id": "cert-10",
+    "title": "Python Essentials 1",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x OpenEDG",
+    "issueDate": "2026",
+    "skills": [
+      "Control Flow",
+      "Functions",
+      "Lists & Tuples",
+      "Basic Algorithms"
+    ],
+    "description": "Fundamental Python programming certification covering core control structures, data collections, functions, and problem-solving.",
+    "badgeBgColor": "from-yellow-500 via-amber-500 to-green-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-py1-lyn",
+        "name": "Lyn Bloomer (Cisco Networking Academy)",
+        "viewWebUrl": "https://pdfhost.io/v/SHUk8h9tgA_Python_Essentials_1"
+      },
+      {
+        "id": "v-py1-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/hf5Y3htWL3_Python_Essentials_1"
+      },
+      {
+        "id": "v-py1-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/Ltjdam9sT9_Python_Essentials_1",
+        "credlyBadgeId": "fdcaaeb7-c1ee-4b6b-8771-89d6f2e4da00",
+        "credlyPublicUrl": "https://www.credly.com/badges/fdcaaeb7-c1ee-4b6b-8771-89d6f2e4da00/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/68c0b94d-f6ac-40b1-a0e0-921439eb092e/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/68c0b94d-f6ac-40b1-a0e0-921439eb092e/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-11",
+    "title": "Digital Safety and Security Awareness",
+    "subject": "Cybersecurity",
+    "issuer": "DICT-ITU DTC Initiative",
+    "issueDate": "2026",
+    "skills": [
+      "Digital Hygiene",
+      "Threat Awareness",
+      "Online Safety"
+    ],
+    "description": "Practical awareness training for digital safety, secure habits, and online risk reduction.",
+    "badgeBgColor": "from-rose-500 via-orange-500 to-amber-500",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-digital-safety",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/7S2b2RW7WH_Digital_Safety_and_Security_Awareness"
+      },
+      {
+        "id": "v-digital-safety-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/7S2b2RW7WH_Digital_Safety_and_Security_Awareness",
+        "credlyBadgeId": "4f4c6e8e-1659-4ea3-aa28-df59e2235a10",
+        "credlyPublicUrl": "https://www.credly.com/badges/4f4c6e8e-1659-4ea3-aa28-df59e2235a10/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/92d90000-9c96-4dbd-a37d-8c47bf338bca/linkedin_thumb_blob"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/92d90000-9c96-4dbd-a37d-8c47bf338bca/linkedin_thumb_blob"
+  },
+  {
+    "id": "cert-12",
+    "title": "Python Essentials 2",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x OpenEDG",
+    "issueDate": "2026",
+    "skills": [
+      "OOP",
+      "Modules & Packages",
+      "File Streams",
+      "Exceptions"
+    ],
+    "description": "Advanced Python development certification covering Object-Oriented Programming, custom packages, data streams, and exception handling.",
+    "badgeBgColor": "from-green-600 via-emerald-600 to-teal-700",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-py2-lyn",
+        "name": "Lyn Bloomer (Cisco Networking Academy)",
+        "viewWebUrl": "https://pdfhost.io/v/tGHD66b8Gb_Python_Essentials_2"
+      },
+      {
+        "id": "v-py2-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/JxheMKdFun_Python_Essentials_2"
+      },
+      {
+        "id": "v-py2-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/JLX6nbvQb6_Python_Essentials_2",
+        "credlyBadgeId": "c7a050c7-62e9-4220-84c2-88fbc1afdf85",
+        "credlyPublicUrl": "https://www.credly.com/badges/c7a050c7-62e9-4220-84c2-88fbc1afdf85/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/3f802526-7274-4230-91ab-f6d1a35340e6/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/3f802526-7274-4230-91ab-f6d1a35340e6/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-13",
+    "title": "C++ Essentials 1",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x C++ Institute",
+    "issueDate": "2026",
+    "skills": [
+      "Variables",
+      "Operators",
+      "Functions",
+      "Pointers Intro"
+    ],
+    "description": "Fundamental C++ system programming: syntax, functions, memory pointers, and compilation mechanics.",
+    "badgeBgColor": "from-blue-600 via-indigo-600 to-slate-800",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-cpp1-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/DwrUewfePp_C___Essentials_1"
+      },
+      {
+        "id": "v-cpp1-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/UAnjahJCVw_C___Essentials_1",
+        "credlyBadgeId": "eed4b2be-12c7-4a58-b480-a13e9277273c",
+        "credlyPublicUrl": "https://www.credly.com/badges/eed4b2be-12c7-4a58-b480-a13e9277273c/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/fd262680-b0e1-41e0-bd03-6f9ea2b0c4e8/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/fd262680-b0e1-41e0-bd03-6f9ea2b0c4e8/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-14",
+    "title": "C++ Essentials 2",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x C++ Institute",
+    "issueDate": "2026",
+    "skills": [
+      "Pointers",
+      "Dynamic Memory",
+      "Classes & Structs",
+      "Overloading"
+    ],
+    "description": "Intermediate C++ development: dynamic memory allocation, class inheritance, operator overloading, and reference management.",
+    "badgeBgColor": "from-indigo-600 via-blue-700 to-sky-800",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-cpp2-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/JKrTBMTKGU_C___Essentials_2"
+      },
+      {
+        "id": "v-cpp2-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/rrcFN7uv49_C___Essentials_2",
+        "credlyBadgeId": "58418359-fd28-4e2f-a0eb-37b9d9f5e978",
+        "credlyPublicUrl": "https://www.credly.com/badges/58418359-fd28-4e2f-a0eb-37b9d9f5e978/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/f1f94d14-e573-4013-9386-62d417d5a3fb/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/f1f94d14-e573-4013-9386-62d417d5a3fb/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-15",
+    "title": "C++ Advanced",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x C++ Institute",
+    "issueDate": "2026",
+    "skills": [
+      "STL Containers",
+      "Templates",
+      "Exception Safety",
+      "Performance"
+    ],
+    "description": "Advanced C++ specialization: Standard Template Library (STL), generic templates, memory safety, and high-performance algorithms.",
+    "badgeBgColor": "from-sky-500 via-blue-600 to-indigo-800",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-cpp-adv-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/9VeutnSTay_C___Advanced"
+      },
+      {
+        "id": "v-cpp-adv-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/pZeh6w9yb4_C___Advanced",
+        "credlyBadgeId": "d5e9426a-1029-4ed6-b1fd-51f8a0c6a41c",
+        "credlyPublicUrl": "https://www.credly.com/badges/d5e9426a-1029-4ed6-b1fd-51f8a0c6a41c/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/dc2d1946-7275-47a8-8f98-acc1da4fd73d/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/dc2d1946-7275-47a8-8f98-acc1da4fd73d/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-16",
+    "title": "JavaScript Essentials 1",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "ES6 Syntax",
+      "DOM Controls",
+      "Events",
+      "Functions"
+    ],
+    "description": "Core JavaScript web engine development: variables, control flow, functions, DOM events, and browser APIs.",
+    "badgeBgColor": "from-yellow-400 via-amber-500 to-orange-500",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-js1-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/g4a3wmPn4t_JavaScript_Essentials_1"
+      },
+      {
+        "id": "v-js1-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/xkNK4bh7F9_JavaScript_Essentials_1",
+        "credlyBadgeId": "c4666247-e181-4ddd-b471-edae5c987e62",
+        "credlyPublicUrl": "https://www.credly.com/badges/c4666247-e181-4ddd-b471-edae5c987e62/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/b93bf373-3da6-4ada-9879-a0c39d6a11f8/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/b93bf373-3da6-4ada-9879-a0c39d6a11f8/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-17",
+    "title": "JavaScript Essentials 2",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Async/Await",
+      "Promises",
+      "Prototypes",
+      "Web APIs"
+    ],
+    "description": "Advanced JavaScript engineering: asynchronous Event Loop, Promises, Fetch API, class prototypes, and error handling.",
+    "badgeBgColor": "from-amber-500 via-yellow-600 to-orange-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-js2-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/AmBJ4dyRKZ_JavaScript_Essentials_2"
+      },
+      {
+        "id": "v-js2-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/WYXZ9DGfn4_JavaScript_Essentials_2",
+        "credlyBadgeId": "f103bf83-5b0e-41fe-a99b-0d79489d62e3",
+        "credlyPublicUrl": "https://www.credly.com/badges/f103bf83-5b0e-41fe-a99b-0d79489d62e3/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/e090c1e1-dbd4-40f8-bbb3-93cc07884d7f/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/e090c1e1-dbd4-40f8-bbb3-93cc07884d7f/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-18",
+    "title": "HTML Essentials",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Semantic Tags",
+      "Accessibility (a11y)",
+      "Forms",
+      "DOM Trees"
+    ],
+    "description": "Semantic HTML5 architecture, accessibility compliance, web forms, and document structure standards.",
+    "badgeBgColor": "from-orange-500 via-amber-600 to-red-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-html-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/459X66cNR3_HTML_Essentials"
+      },
+      {
+        "id": "v-html-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/rAVGsHhJgz_HTML_Essentials",
+        "credlyBadgeId": "7670e2fe-10c0-45c8-a680-cde94bf45d7f",
+        "credlyPublicUrl": "https://www.credly.com/badges/7670e2fe-10c0-45c8-a680-cde94bf45d7f/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/b1c17d0c-e76b-45fc-9b28-87b01ae1caf3/linkedin_thumb_blob"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/b1c17d0c-e76b-45fc-9b28-87b01ae1caf3/linkedin_thumb_blob"
+  },
+  {
+    "id": "cert-19",
+    "title": "CSS Essentials",
+    "subject": "Software Engineering",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Flexbox",
+      "Grid",
+      "Animations",
+      "Responsive Design"
+    ],
+    "description": "Modern CSS layout design: Flexbox, CSS Grid, custom properties, animations, and responsive breakpoints.",
+    "badgeBgColor": "from-blue-500 via-indigo-600 to-sky-600",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-css-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/cFjFG9fVKV_CSS_Essentials"
+      },
+      {
+        "id": "v-css-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/Cg2WNjnNhB_CSS_Essentials",
+        "credlyBadgeId": "4f7f4a03-37d9-4b2a-96c0-09acdf694362",
+        "credlyPublicUrl": "https://www.credly.com/badges/4f7f4a03-37d9-4b2a-96c0-09acdf694362/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/bd2bba36-66ad-4de2-9d91-e29433e51a16/linkedin_thumb_blob"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/bd2bba36-66ad-4de2-9d91-e29433e51a16/linkedin_thumb_blob"
+  },
+  {
+    "id": "cert-20",
+    "title": "Introduction to IoT and Digital Transformation",
+    "subject": "Systems & IoT",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Sensors",
+      "Digital Transformation",
+      "IoT Platforms"
+    ],
+    "description": "Introduction to IoT-driven digital transformation and connected systems for modern operations.",
+    "badgeBgColor": "from-cyan-600 via-teal-600 to-blue-700",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-iot-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/zKPWFcF65t_Introduction_to_IoT_and_Digital_Transformation"
+      },
+      {
+        "id": "v-iot-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/2C9j626zpZ_Introduction_to_IoT_and_Digital_Transformation",
+        "credlyBadgeId": "85504c74-946a-46eb-a293-028044350480",
+        "credlyPublicUrl": "https://www.credly.com/badges/85504c74-946a-46eb-a293-028044350480/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/fce226c2-0f13-4e17-b60c-24fa6ffd88cb/linkedin_thumb_Intro2IoT.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/fce226c2-0f13-4e17-b60c-24fa6ffd88cb/linkedin_thumb_Intro2IoT.png"
+  },
+  {
+    "id": "cert-21",
+    "title": "Hardware and Upgrade Support",
+    "subject": "Systems & IoT",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Hardware Support",
+      "Upgrades",
+      "Troubleshooting"
+    ],
+    "description": "Practical hardware maintenance and upgrade support workflows for end-user and enterprise systems.",
+    "badgeBgColor": "from-slate-600 via-gray-700 to-zinc-800",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-hardware-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/fQvPZsLH52_Hardware_and_Upgrade_Support"
+      },
+      {
+        "id": "v-hardware-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/FGye98mqQs_Hardware_and_Upgrade_Support",
+        "credlyBadgeId": "1050e0bf-c6cb-4c56-baf1-1ec43dc4d50b",
+        "credlyPublicUrl": "https://www.credly.com/badges/1050e0bf-c6cb-4c56-baf1-1ec43dc4d50b/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/94cbdf0d-3e44-44b2-b213-866fe22aa7d5/linkedin_thumb_blob"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/94cbdf0d-3e44-44b2-b213-866fe22aa7d5/linkedin_thumb_blob"
+  },
+  {
+    "id": "cert-22",
+    "title": "Operating Systems Support",
+    "subject": "Systems & IoT",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Linux Bash",
+      "Process Control",
+      "File Systems",
+      "Troubleshooting"
+    ],
+    "description": "Operating system internals, Linux bash scripting, process management, memory allocation, troubleshooting, and kernel config.",
+    "badgeBgColor": "from-zinc-600 via-slate-700 to-stone-800",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-os-support-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/ANxVkTnyTn_Operating_Systems_Support"
+      },
+      {
+        "id": "v-os-support-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/tDp7BrDSPh_Operating_Systems_Support",
+        "credlyBadgeId": "f39b2e79-5f07-4ea0-aeb3-e574befbb40a",
+        "credlyPublicUrl": "https://www.credly.com/badges/f39b2e79-5f07-4ea0-aeb3-e574befbb40a/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/70cc28ef-542c-4ce2-8bad-e8d95daf5138/linkedin_thumb_blob"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/70cc28ef-542c-4ce2-8bad-e8d95daf5138/linkedin_thumb_blob"
+  },
+  {
+    "id": "cert-29",
+    "title": "Enterprise Design Thinking Practitioner",
+    "subject": "Business & Professional",
+    "issuer": "IBM SkillsBuild x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Design Thinking",
+      "Enterprise Design Thinking",
+      "Collaboration",
+      "User Outcomes"
+    ],
+    "description": "IBM's Enterprise Design Thinking framework in practice: framing work around user outcomes, the observe–reflect–make Loop, and aligning diverse teams with Hills, Playbacks and Sponsor Users.",
+    "badgeBgColor": "from-blue-600 via-indigo-700 to-slate-900",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-ibm-edt",
+        "name": "IBM SkillsBuild",
+        "viewWebUrl": "https://pdfhost.io/v/KmTzKRrzW6_Enterprise_Design_Thinking_Practitioner",
+        "credlyBadgeId": "0cfc014b-0986-48e3-892c-54c639a9ab0e",
+        "credlyPublicUrl": "https://www.credly.com/badges/0cfc014b-0986-48e3-892c-54c639a9ab0e/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/520b12b6-dac0-4731-a4f6-e41427201422/linkedin_thumb_BadgeEmblem_EnterpriseDesignThinkingPractitioner.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/520b12b6-dac0-4731-a4f6-e41427201422/linkedin_thumb_BadgeEmblem_EnterpriseDesignThinkingPractitioner.png"
+  },
+  {
+    "id": "cert-23",
+    "title": "Discovering Entrepreneurship",
+    "subject": "Business & Professional",
+    "issuer": "Cisco Networking Academy x Credly",
+    "issueDate": "2026",
+    "skills": [
+      "Venture Strategy",
+      "Product Design",
+      "Monetization Models"
+    ],
+    "description": "Technology venture creation, product-market fit evaluation, business model strategy, agile planning, and monetization.",
+    "badgeBgColor": "from-emerald-600 via-green-600 to-teal-700",
+    "credlyVerified": true,
+    "variants": [
+      {
+        "id": "v-entrepreneur-dict",
+        "name": "DICT-ITU DTC Initiative",
+        "viewWebUrl": "https://pdfhost.io/v/xqDYLvmzDx_Discovering_Entrepreneurship"
+      },
+      {
+        "id": "v-entrepreneur-cisco",
+        "name": "Cisco Networking Academy",
+        "viewWebUrl": "https://pdfhost.io/v/xgNnknTPjn_Discovering_Entrepreneurship",
+        "credlyBadgeId": "8c470820-13ea-4385-8e62-ff40ebcd594f",
+        "credlyPublicUrl": "https://www.credly.com/badges/8c470820-13ea-4385-8e62-ff40ebcd594f/public_url",
+        "credlyBadgeImageUrl": "https://images.credly.com/images/0c77c11b-e3cf-4734-8fd4-2d920151ae0b/linkedin_thumb_image.png"
+      }
+    ],
+    "artwork": "https://images.credly.com/images/0c77c11b-e3cf-4734-8fd4-2d920151ae0b/linkedin_thumb_image.png"
+  },
+  {
+    "id": "cert-24",
+    "title": "Data Analytics: Your Game-Changer for 2025",
+    "subject": "Business & Professional",
+    "issuer": "UniAthena International Graduate School",
+    "issueDate": "2026",
+    "skills": [
+      "Executive Leadership",
+      "Strategic Management",
+      "Global Tech"
+    ],
+    "description": "International executive leadership, organizational strategy, and technology management certification.",
+    "badgeBgColor": "from-gray-600 via-slate-700 to-zinc-900",
+    "credlyVerified": false,
+    "variants": [
+      {
+        "id": "v-uniathena",
+        "name": "UniAthena International Graduate School",
+        "viewWebUrl": "https://pdfhost.io/v/UB2w3V3fDH_Data_Analytics__Your_Game-Changer_for_2025"
+      }
+    ],
+    "artwork": "https://play-lh.googleusercontent.com/GlLhzUqFThey7irbBznTNIEo67kCe6ArkmGFlngWnLXsVypm60OJqdpIZdNkQZ5qs18=w600-h300-pc0xffffff-pd"
+  },
+  {
+    "id": "cert-25",
+    "title": "MS Excel: For Real World Office Productivity",
+    "subject": "Business & Professional",
+    "issuer": "DataSense Analytics",
+    "issueDate": "2026",
+    "skills": [
+      "Excel",
+      "Office Productivity",
+      "Data Analysis"
+    ],
+    "description": "Real-world office productivity and spreadsheet analytics certification.",
+    "badgeBgColor": "from-cyan-600 via-blue-700 to-indigo-800",
+    "credlyVerified": false,
+    "variants": [
+      {
+        "id": "v-datasense",
+        "name": "DataSense Analytics",
+        "viewWebUrl": "https://pdfhost.io/v/FMZWnrgzxw_MS_Excel__For_Real_World_Office_Productivity"
+      }
+    ],
+    "artwork": "https://i.imgur.com/B1pn3na.png"
+  },
+  {
+    "id": "cert-26",
+    "title": "Cybersecurity for Small and Medium Enterprises (SMEs): Protecting Your Business From Cyber Threats",
+    "subject": "Business & Professional",
+    "issuer": "DICT - Caraga Region",
+    "issueDate": "2026",
+    "skills": [
+      "Cybersecurity",
+      "SME Protection",
+      "Risk Awareness"
+    ],
+    "description": "Cybersecurity for small and medium enterprises, focused on protecting businesses from cyber threats.",
+    "badgeBgColor": "from-slate-700 via-slate-800 to-slate-950",
+    "credlyVerified": false,
+    "variants": [
+      {
+        "id": "v-caraga-cyber",
+        "name": "DICT - Caraga Region",
+        "viewWebUrl": "https://pdfhost.io/v/7bUsJJLEpN_Cybersecurity_for_Small_and_Medium_Enterprises__SMEs___Protecting_Your_Business_From_Cyber_Threats"
+      }
+    ],
+    "artwork": "https://i.imgur.com/hZm8xlh.png"
+  },
+  {
+    "id": "cert-27",
+    "title": "Digital Marketing for Startups and MSMEs using AI",
+    "subject": "Business & Professional",
+    "issuer": "DICT - Caraga Region",
+    "issueDate": "2026",
+    "skills": [
+      "Digital Marketing",
+      "AI",
+      "SME Growth"
+    ],
+    "description": "Digital marketing for startups and MSMEs using AI tools and strategies.",
+    "badgeBgColor": "from-amber-600 via-orange-700 to-red-800",
+    "credlyVerified": false,
+    "variants": [
+      {
+        "id": "v-caraga-marketing",
+        "name": "DICT - Caraga Region",
+        "viewWebUrl": "https://pdfhost.io/v/YJa5arskM8_Digital_Marketing_for_Startups_and_MSMEs_using_AI"
+      }
+    ],
+    "artwork": "https://i.imgur.com/hZm8xlh.png"
+  },
+  {
+    "id": "cert-28",
+    "title": "Module 4 - Object Oriented Programming",
+    "subject": "Business & Professional",
+    "issuer": "",
+    "issueDate": "2026",
+    "skills": [
+      "International Collaboration",
+      "Online Learning"
+    ],
+    "description": "Collaborative online international learning programme certification.",
+    "badgeBgColor": "from-cyan-600 via-blue-700 to-indigo-800",
+    "credlyVerified": false,
+    "variants": [
+      {
+        "id": "v-cavite",
+        "name": "Cavite State University x Universiti Teknologi Mara",
+        "viewWebUrl": "https://pdfhost.io/v/PwVgsvxpHE_Module_4_-_Object_Oriented_Programming"
+      }
+    ],
+    "artwork": [
+      "https://upload.wikimedia.org/wikipedia/en/d/d2/Cavite_State_University_%28CvSU%29.png",
+      "https://i.imgur.com/eDWNpBb.png"
+    ]
+  }
+]

@@ -7,7 +7,7 @@
    the frame to see it — and every open also pulled in pdfhost's ads and
    reCAPTCHA. A pre-rendered image shows the whole certificate instantly.
 
-   Usage (after adding a certificate / variant in Certifications.tsx):
+   Usage (after adding a certificate / variant in src/data/certifications.json):
      node scripts/build-cert-previews.mjs          # only missing previews
      node scripts/build-cert-previews.mjs --force  # re-render everything
 
@@ -21,18 +21,19 @@ import { fileURLToPath } from "url";
 import { chromium } from "playwright";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const SRC = path.join(root, "src/components/sections/Certifications.tsx");
+const SRC = path.join(root, "src/data/certifications.json");
 const OUT_DIR = path.join(root, "public/certs");
 const MANIFEST = path.join(root, "src/data/certPreviews.json");
 const PDFJS = path.join(root, "node_modules/pdfjs-dist/build");
 const TARGET_WIDTH = 1600;
 const force = process.argv.includes("--force");
 
-// variant id → viewer URL, straight from the component's data block.
-const src = fs.readFileSync(SRC, "utf8");
-const variants = [...src.matchAll(/id:\s*"(v-[^"]+)",\s*name:\s*"[^"]*",\s*viewWebUrl:\s*"([^"]+)"/g)].map(
-  ([, id, url]) => ({ id, url })
-);
+// variant id → viewer URL, straight from the certifications data file.
+// Badge-only variants (no viewWebUrl, e.g. AWS Educate) are skipped.
+const variants = JSON.parse(fs.readFileSync(SRC, "utf8"))
+  .flatMap((cert) => cert.variants)
+  .filter((v) => v.viewWebUrl)
+  .map((v) => ({ id: v.id, url: v.viewWebUrl }));
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 const manifest = fs.existsSync(MANIFEST) ? JSON.parse(fs.readFileSync(MANIFEST, "utf8")) : {};

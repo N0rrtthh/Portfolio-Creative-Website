@@ -24,6 +24,7 @@ import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/lib/data";
 import { asset } from "@/lib/assets";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import profilePic from "@/../public/profile.jpg";
+import certificationData from "@/data/certifications.json";
 
 const ParticleField = dynamic(() => import("@/components/three/ParticleField"), {
   ssr: false,
@@ -41,7 +42,7 @@ const GRAIN_SVG =
 const METRICS = [
   { end: 12, suffix: "+", decimals: 0, label: "Projects Shipped" },
   { end: 4, suffix: "+ Yrs", decimals: 0, label: "Building & Crafting" },
-  { end: 29, suffix: "", decimals: 0, label: "Certifications" },
+  { end: certificationData.length, suffix: "", decimals: 0, label: "Certifications" },
 ];
 
 /** Counts a metric up from 0 the first time it scrolls into view. */
