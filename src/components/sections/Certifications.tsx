@@ -160,7 +160,7 @@ function CertPreview({ variant, title }: { variant: CertVariant; title: string }
     const href = variant.credlyPublicUrl;
     const img = variant.credlyBadgeImageUrl;
     return (
-      <div className="relative w-full rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-transparent py-8 sm:py-10 flex flex-col items-center gap-4">
+      <div className="relative w-full rounded-2xl border border-[var(--color-glass-border)] bg-gradient-to-b from-[var(--color-starlight)]/[0.05] to-transparent py-8 sm:py-10 flex flex-col items-center gap-4">
         {img ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
@@ -179,7 +179,7 @@ function CertPreview({ variant, title }: { variant: CertVariant; title: string }
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-[10px] uppercase tracking-widest text-slate-400 hover:text-white transition-colors"
+            className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-ash)] hover:text-[var(--color-starlight)] transition-colors"
           >
             Digital badge · view on Credly ↗
           </a>
@@ -189,7 +189,7 @@ function CertPreview({ variant, title }: { variant: CertVariant; title: string }
   }
   if (!dims) {
     return (
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl border border-white/10 bg-black/20 overflow-hidden">
+      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-starlight)]/[0.04] overflow-hidden">
         <ScaledFrame src={variant.viewWebUrl} title={title} />
       </div>
     );
@@ -202,7 +202,7 @@ function CertPreview({ variant, title }: { variant: CertVariant; title: string }
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${title} — open the full certificate in a new tab`}
-      className="group/cert relative mx-auto block cursor-zoom-in overflow-hidden rounded-xl border border-white/10 bg-white shadow-[0_18px_50px_-20px_rgba(0,0,0,0.8)]"
+      className="group/cert relative mx-auto block cursor-zoom-in overflow-hidden rounded-xl border border-[var(--color-glass-border)] bg-white shadow-[0_18px_50px_-20px_rgba(0,0,0,0.45)]"
       style={{
         aspectRatio: `${w} / ${h}`,
         width: `min(100%, calc(max(11rem, 100svh - 30rem) * ${ratio.toFixed(4)}))`,
@@ -753,7 +753,7 @@ export default function Certifications() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
                 onClick={() => setSelectedCert(null)}
-                className="fixed inset-0 z-[99999] flex items-start justify-center overflow-hidden px-4 py-6 bg-black/65 backdrop-blur-md select-none pointer-events-auto"
+                className="fixed inset-0 z-[99999] flex items-start justify-center overflow-hidden px-4 py-6 bg-black/50 backdrop-blur-md select-none pointer-events-auto"
               >
                 <motion.div
                   initial={{ scale: 0.92, opacity: 0, y: 16 }}
@@ -764,7 +764,7 @@ export default function Certifications() {
                   role="dialog"
                   aria-modal="true"
                   aria-label={`${selectedCert.title} credential inspector`}
-                  className="relative w-full max-w-6xl my-auto rounded-[1.75rem] p-4 sm:p-5 border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.55)] text-white flex flex-col max-h-[calc(100svh-3rem)] overflow-hidden bg-[#0a0a0a] z-[100000]"
+                  className="relative w-full max-w-6xl my-auto rounded-[1.75rem] p-4 sm:p-5 border border-[var(--color-glass-border)] shadow-[var(--shadow-raised,0_24px_80px_rgba(0,0,0,0.55))] text-[var(--color-starlight)] flex flex-col max-h-[calc(100svh-3rem)] overflow-hidden bg-[var(--color-obsidian)] z-[100000]"
                 >
                   {/* ── Header: identity only ──────────────────────
                       Priority order in this panel is deliberate:
@@ -772,16 +772,16 @@ export default function Certifications() {
                       The two links used to sit UNDER a 42rem-tall preview,
                       i.e. a full screen of scrolling away on a phone, which
                       buried the one thing a recruiter opens this for. */}
-                  <div className="flex items-start justify-between gap-4 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-white/10">
+                  <div className="flex items-start justify-between gap-4 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-[var(--color-glass-border)]">
                     <div className="min-w-0 pr-2">
-                      <span className="font-mono text-[9px] uppercase tracking-widest text-amber-300 font-bold bg-amber-950/40 px-2.5 py-0.5 rounded-full border border-amber-500/25 inline-flex items-center gap-1 mb-2">
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-[var(--color-accent-warm)] font-bold bg-[var(--color-accent-warm)]/10 px-2.5 py-0.5 rounded-full border border-[var(--color-accent-warm)]/30 inline-flex items-center gap-1 mb-2">
                         <CheckCircle2 size={10} />
                         AUTHENTICATED CREDENTIAL VAULT ({selectedCert.issueDate})
                       </span>
-                      <h3 className="font-display text-xl sm:text-[1.75rem] font-bold text-slate-50 leading-tight max-w-3xl">
+                      <h3 className="font-display text-xl sm:text-[1.75rem] font-bold text-[var(--color-starlight)] leading-tight max-w-3xl">
                         {selectedCert.title}
                       </h3>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1.5">
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-silver)] mt-1.5">
                         {currentVariant.name}
                       </p>
                     </div>
@@ -790,7 +790,7 @@ export default function Certifications() {
                       type="button"
                       onClick={() => setSelectedCert(null)}
                       aria-label="Close inspector"
-                      className="shrink-0 h-10 px-3 sm:px-4 rounded-full bg-white/10 hover:bg-white/15 flex items-center gap-2 text-white/80 hover:text-white transition-[background-color,color,transform] duration-150 ease-out cursor-pointer active:scale-[0.97] border border-white/10 font-mono text-[10px] font-bold uppercase tracking-widest"
+                      className="shrink-0 h-10 px-3 sm:px-4 rounded-full bg-[var(--color-starlight)]/[0.06] hover:bg-[var(--color-starlight)]/[0.12] flex items-center gap-2 text-[var(--color-silver)] hover:text-[var(--color-starlight)] transition-[background-color,color,transform] duration-150 ease-out cursor-pointer active:scale-[0.97] border border-[var(--color-glass-border)] font-mono text-[10px] font-bold uppercase tracking-widest"
                     >
                       <X size={16} />
                       <span className="hidden sm:inline">Close inspector</span>
@@ -800,15 +800,15 @@ export default function Certifications() {
                   {/* ── Actions: pinned above the scroll area ──────
                       Outside the scroll container on purpose, so they stay
                       reachable no matter how far down the preview is. */}
-                  <div className="shrink-0 flex flex-row items-stretch gap-2 sm:gap-2.5 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-white/10">
+                  <div className="shrink-0 flex flex-row items-stretch gap-2 sm:gap-2.5 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-[var(--color-glass-border)]">
                     {currentVariant.viewWebUrl && (
                     <a
                       href={currentVariant.viewWebUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 sm:gap-2.5 rounded-xl border border-white/15 bg-white/10 px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-[11px] sm:text-[13px] font-bold uppercase tracking-wide text-white transition-[background-color,border-color,transform,box-shadow] duration-200 ease-out hover:bg-white/20 hover:border-white/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]"
+                      className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 sm:gap-2.5 rounded-xl border border-[var(--color-glass-border)] bg-[var(--color-starlight)]/[0.06] px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-[11px] sm:text-[13px] font-bold uppercase tracking-wide text-[var(--color-starlight)] transition-[background-color,border-color,transform,box-shadow] duration-200 ease-out hover:bg-[var(--color-starlight)]/[0.14] hover:border-[var(--color-starlight)]/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]"
                     >
-                      <Globe size={17} className="text-cyan-400 shrink-0" />
+                      <Globe size={17} className="text-[var(--color-accent-primary)] shrink-0" />
                       <span className="sm:hidden">Certificate</span>
                       <span className="hidden sm:inline">Visit certificate page</span>
                     </a>
@@ -825,7 +825,7 @@ export default function Certifications() {
                         <span className="hidden sm:inline">Verify on Credly</span>
                       </a>
                     ) : (
-                      <div className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-wide text-slate-500 text-center">
+                      <div className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--color-glass-border)] bg-[var(--color-starlight)]/[0.03] px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-wide text-[var(--color-starlight)]0 text-center">
                         <span className="sm:hidden">No Credly badge</span>
                         <span className="hidden sm:inline">No Credly badge for this issuer</span>
                       </div>
@@ -842,19 +842,19 @@ export default function Certifications() {
                       reflow entirely, so the pill only ever animates between
                       stable tab positions. */}
                   {selectedCert.variants.length > 1 && (
-                    <div className="shrink-0 px-1 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-white/10">
+                    <div className="shrink-0 px-1 pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-[var(--color-glass-border)]">
                       <div className="flex items-center justify-between gap-3 mb-2 sm:mb-3">
-                        <span className="font-mono text-[10px] uppercase tracking-[0.32em] text-slate-400">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.32em] text-[var(--color-ash)]">
                           Issued by
                         </span>
-                        <span className="font-mono text-[9px] uppercase tracking-wider text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 px-2.5 py-1 rounded-full flex items-center gap-1 shrink-0">
+                        <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10 border border-[var(--color-accent-primary)]/30 px-2.5 py-1 rounded-full flex items-center gap-1 shrink-0">
                           <Layers size={10} />
                           {selectedCert.variants.length} issuers
                         </span>
                       </div>
 
                       {/* Notch-style animated pill tab switcher — spans full width, tabs share it evenly */}
-                      <div className="relative flex items-end gap-1 rounded-full bg-white/[0.04] border border-white/10 p-1.5 pt-4 w-full">
+                      <div className="relative flex items-end gap-1 rounded-full bg-[var(--color-starlight)]/[0.04] border border-[var(--color-glass-border)] p-1.5 pt-4 w-full">
                         {selectedCert.variants.map((variant) => {
                           const isTabActive = variant.id === currentVariant.id;
                           return (
@@ -873,7 +873,7 @@ export default function Certifications() {
                               )}
                               <span
                                 className={`relative block truncate transition-colors duration-200 ${
-                                  isTabActive ? "text-white" : "text-slate-400 hover:text-slate-100"
+                                  isTabActive ? "text-white" : "text-[var(--color-silver)] hover:text-[var(--color-starlight)]"
                                 }`}
                               >
                                 <span className="lg:hidden">{SHORT_ISSUER[variant.name] ?? variant.name}</span>
@@ -894,9 +894,9 @@ export default function Certifications() {
                         animate={{ opacity: 1, transform: "translateY(0px)" }}
                         exit={{ opacity: 0, transform: "translateY(-6px)" }}
                         transition={{ duration: 0.2, ease: EASING }}
-                        className="rounded-3xl border border-white/10 bg-slate-950/70 p-3 sm:p-4 flex flex-col gap-3"
+                        className="rounded-3xl border border-[var(--color-glass-border)] bg-[var(--color-abyss)]/70 p-3 sm:p-4 flex flex-col gap-3"
                       >
-                        <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400 block">
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-ash)] block">
                           Certificate Preview
                         </span>
 
@@ -905,7 +905,7 @@ export default function Certifications() {
                           title={`${selectedCert.title} — ${currentVariant.name} certificate`}
                         />
 
-                        <p className="font-body text-sm text-slate-300 leading-relaxed">
+                        <p className="font-body text-sm text-[var(--color-silver)] leading-relaxed">
                           {selectedCert.description}
                         </p>
 
@@ -913,7 +913,7 @@ export default function Certifications() {
                           {selectedCert.skills.map((skill) => (
                             <span
                               key={skill}
-                              className="font-mono text-[9px] text-slate-300 bg-white/5 px-2 py-0.5 rounded-md border border-white/10"
+                              className="font-mono text-[9px] text-[var(--color-silver)] bg-[var(--color-starlight)]/[0.04] px-2 py-0.5 rounded-md border border-[var(--color-glass-border)]"
                             >
                               {skill}
                             </span>
