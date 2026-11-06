@@ -15,6 +15,7 @@ import {
   Code2,
   Sparkles,
   Filter,
+  Download,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/BrandIcons";
 import { getProjectImage, getProjectScreens } from "@/data/projectImages";
@@ -475,6 +476,16 @@ export default function EvaProjects() {
                       className="flex items-center gap-2 rounded-xl bg-[var(--color-accent-warm)] px-6 py-3 font-mono text-xs font-bold text-black shadow-[0_0_20px_rgba(57,255,20,0.5)] transition-colors hover:bg-white"
                     >
                       <ExternalLink size={16} /> LIVE DEPLOYMENT
+                    </a>
+                  )}
+                  {selectedProject.download && (
+                    <a
+                      href={selectedProject.download.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 rounded-xl bg-[var(--color-accent-warm)] px-6 py-3 font-mono text-xs font-bold text-black shadow-[0_0_20px_rgba(57,255,20,0.5)] transition-colors hover:bg-white"
+                    >
+                      <Download size={16} /> {selectedProject.download.label.toUpperCase()}
                     </a>
                   )}
                   {selectedProject.github && (

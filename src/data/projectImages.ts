@@ -6,6 +6,9 @@ import bidabossMobileSplashImg from "@/../public/projects/bidaboss-mobile-splash
 import waterwiseImg from "@/../public/projects/waterwise.webp";
 import quickAttendImg from "@/../public/projects/quick-attend.webp";
 import resumakerImg from "@/../public/projects/resumaker.webp";
+import pasadoImg from "@/../public/projects/pasado.webp";
+import pasadoMobileHomeImg from "@/../public/projects/pasado-mobile-home.webp";
+import pasadoMobileQuestionImg from "@/../public/projects/pasado-mobile-question.webp";
 import jasfocusImg from "@/../public/projects/jasfocus.webp";
 import wavelengthImg from "@/../public/projects/wavelength.webp";
 
@@ -37,6 +40,7 @@ export const PROJECT_IMAGES: Record<string, StaticImageData> = {
   waterwise: waterwiseImg,
   "quick-attend": quickAttendImg,
   resumaker: resumakerImg,
+  "pasado-web": pasadoImg,
   jasfocus: jasfocusImg,
   wavelength: wavelengthImg,
 };
@@ -47,6 +51,7 @@ export const PROJECT_IMAGES: Record<string, StaticImageData> = {
    is the hero screen, the rest stand behind it. */
 export const PROJECT_SCREENS: Record<string, StaticImageData[]> = {
   "bidaboss-mobile": [bidabossMobileDashboardImg, bidabossMobileSplashImg],
+  "pasado-mobile": [pasadoMobileHomeImg, pasadoMobileQuestionImg],
 };
 
 export function getProjectImage(id: string): StaticImageData | undefined {

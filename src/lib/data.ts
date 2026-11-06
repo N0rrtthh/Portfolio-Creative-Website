@@ -16,6 +16,8 @@ export interface Project {
   color: string;
   github?: string;
   live?: string;
+  /** A downloadable build, e.g. an Android APK. */
+  download?: { label: string; href: string };
   /* Screenshots deliberately live in src/data/projectImages.ts, keyed by `id`.
      A path string here would be emitted verbatim and 404 under the Pages
      basePath; a static import is resolved by the bundler instead. */
@@ -104,13 +106,13 @@ export const PROJECTS: Project[] = [
     title: "ResuMaker",
     subtitle: "ATS-friendly resume builder",
     description:
-      "A two-panel resume builder with a live preview, an ATS-inspired quality score, and PDF export powered by pdfjs-dist.",
+      "A resume builder whose preview is the real thing: true A4 or Letter pages, split exactly where the PDF will break, with five ATS-friendly templates.",
     problem:
-      "Most resume builders are either overpriced or ignore what actually gets candidates past applicant tracking systems.",
+      "Most resume builders are paywalled, and their previews crop or rescale the page, so you only see where it really breaks after exporting.",
     solution:
-      "Built a React + TypeScript app with structured controls for every resume section, a resume quality checklist, action-verb suggestions, and client-side PDF generation.",
+      "Built in React + TypeScript: the resume is cut into blocks, measured at the real column width and packed Word-style into pages, with a one-click fit to one page, a built-in checklist and PDF/JSON import.",
     outcome:
-      "A print-ready, ATS-friendly resume builder with local draft persistence, JSON import/export, and theme customization — live on GitHub Pages.",
+      "Text-based PDF export with clickable links, several resumes saved on the device, undo/redo and light/dark mode, live on GitHub Pages.",
     technologies: ["React", "TypeScript", "Vite", "pdfjs-dist"],
     type: "Web Application",
     year: "2026",
@@ -119,6 +121,46 @@ export const PROJECTS: Project[] = [
     live: "https://n0rrtthh.github.io/ResuMaker/",
     featured: true,
 
+  },
+  {
+    id: "pasado-web",
+    title: "Pasado",
+    subtitle: "Civil Service Exam reviewer",
+    description:
+      "An offline-first reviewer for the Philippine Civil Service Exam: timed mock exams, drills, flashcards and math lessons, installable from the browser.",
+    problem:
+      "Civil Service Exam reviewers are scattered PDFs and paid apps, and most don't work offline on the phones test-takers actually study on.",
+    solution:
+      "One vanilla JavaScript app, packaged by a build script into an installable web app with a service worker that caches every file for offline use.",
+    outcome:
+      "Mock exams for both Professional and Subprofessional levels, explanations for every answer, a study plan and a math game, with progress kept on the device.",
+    technologies: ["JavaScript", "HTML", "CSS", "PWA"],
+    type: "Web Application",
+    year: "2026",
+    color: "#2b4fa8",
+    github: "https://github.com/N0rrtthh/Pasado---CSC-Exam-Reviewer",
+    live: "https://n0rrtthh.github.io/Pasado---CSC-Exam-Reviewer/",
+    featured: true,
+  },
+  {
+    id: "pasado-mobile",
+    title: "Pasado for Android",
+    subtitle: "Offline exam reviewer app",
+    description:
+      "The same Pasado reviewer as a native Android app, built from the web codebase with Capacitor.",
+    problem:
+      "Test-takers study on their phones, often with patchy data, and want reminders without installing anything heavy.",
+    solution:
+      "Wrapped the web build with Capacitor and added native haptics, daily reminder notifications and read-aloud, detected at runtime so the web version runs the same code.",
+    outcome:
+      "A small offline APK that keeps every answer, score and study plan on the phone, with no account, ads or tracking.",
+    technologies: ["Capacitor", "JavaScript", "Android"],
+    type: "Mobile Application",
+    year: "2026",
+    color: "#c96f55",
+    github: "https://github.com/N0rrtthh/Pasado---CSC-Exam-Reviewer",
+    download: { label: "Download APK", href: "https://github.com/N0rrtthh/Pasado---CSC-Exam-Reviewer/releases/latest" },
+    featured: true,
   },
   {
     id: "jasfocus",

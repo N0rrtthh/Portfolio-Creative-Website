@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight, X, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/BrandIcons";
 import RevealText from "@/components/ui/RevealText";
 import TiltPanel from "@/components/ui/TiltPanel";
@@ -515,7 +515,7 @@ export default function Projects() {
                   </div>{/* end scrollable content area */}
 
                   {/* Footer — actions (hidden when the project has no links) */}
-                  {(selectedProject.github || selectedProject.live) && (
+                  {(selectedProject.github || selectedProject.live || selectedProject.download) && (
                     <div className="flex shrink-0 flex-wrap items-center gap-3 border-t border-[var(--color-glass-border)] px-6 py-4 sm:px-8">
                       {selectedProject.live && (
                         <a
@@ -525,6 +525,16 @@ export default function Projects() {
                           className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-accent-primary)] px-5 py-2.5 font-mono text-xs font-bold text-white transition-opacity hover:opacity-90"
                         >
                           Launch Live Site <ArrowUpRight size={14} />
+                        </a>
+                      )}
+                      {selectedProject.download && (
+                        <a
+                          href={selectedProject.download.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-accent-primary)] px-5 py-2.5 font-mono text-xs font-bold text-white transition-opacity hover:opacity-90"
+                        >
+                          <Download size={14} /> {selectedProject.download.label}
                         </a>
                       )}
                       {selectedProject.github && (
