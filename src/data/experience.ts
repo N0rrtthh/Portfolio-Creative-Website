@@ -6,7 +6,7 @@ import type { TimelineEntry } from "@/types/experience";
    "My Experience" cinematic flight-path section.
    ──────────────────────────────────────────────────────────
    Every line here is something that can be backed up: the
-   internship and org roles come from the résumé, the WaterWise
+   internship and org roles come from the resume, the WaterWise
    numbers from the defended thesis manuscript. No invented
    metrics, awards or uptime figures.
 

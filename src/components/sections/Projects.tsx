@@ -82,7 +82,7 @@ function MobileProjectCarousel({ onSelect }: { onSelect: (p: Project) => void })
             <div className="relative z-10 p-6">
               <div className="flex items-center gap-2 mb-2">
                 <span className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: project.color }} />
-                <span className="chapter-label">{project.type} · {project.year}</span>
+                <span className="chapter-label">{project.type}{project.year && ` · ${project.year}`}</span>
               </div>
               <h3 className="font-display text-2xl font-bold text-[var(--color-starlight)]">{project.title}</h3>
               <p className="mt-1 font-body text-sm text-[var(--color-silver)] line-clamp-2">{project.subtitle}</p>
@@ -278,7 +278,7 @@ export default function Projects() {
                       style={{ backgroundColor: project.color }}
                     />
                     <span className="chapter-label">
-                      {project.type} · {project.year}
+                      {project.type}{project.year && ` · ${project.year}`}
                     </span>
                   </div>
 
@@ -406,7 +406,7 @@ export default function Projects() {
                   <div className="flex items-start justify-between gap-4 border-b border-[var(--color-glass-border)] px-6 pb-5 pt-6 sm:px-8">
                     <div className="min-w-0">
                       <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--color-ash)]">
-                        {selectedProject.type} · {selectedProject.year}
+                        {selectedProject.type}{selectedProject.year && ` · ${selectedProject.year}`}
                       </p>
                       <h3 className="mt-1.5 font-display text-2xl font-bold text-[var(--color-starlight)] sm:text-3xl">
                         {selectedProject.title}
@@ -472,7 +472,9 @@ export default function Projects() {
                       {selectedProject.description}
                     </p>
 
-                    {/* Problem / Solution / Outcome — quiet rows, one accent */}
+                    {/* Problem / Solution / Outcome — quiet rows, one accent.
+                        Rows without text are skipped (small side projects). */}
+                    {[selectedProject.problem, selectedProject.solution, selectedProject.outcome].some(Boolean) && (
                     <dl className="mt-6 divide-y divide-[var(--color-glass-border)] border-y border-[var(--color-glass-border)]">
                       {(
                         [
@@ -480,7 +482,7 @@ export default function Projects() {
                           ["Solution", selectedProject.solution],
                           ["Outcome", selectedProject.outcome],
                         ] as const
-                      ).map(([label, text]) => (
+                      ).filter(([, text]) => text).map(([label, text]) => (
                         <div
                           key={label}
                           className="grid grid-cols-[5.5rem_1fr] gap-4 py-3.5 sm:grid-cols-[7rem_1fr]"
@@ -494,6 +496,7 @@ export default function Projects() {
                         </div>
                       ))}
                     </dl>
+                    )}
 
                     {/* Stack */}
                     <div className="mt-6 pb-1">

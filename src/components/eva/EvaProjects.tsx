@@ -166,7 +166,7 @@ const ProjectCard = memo(function ProjectCard({
                 {project.type.toUpperCase()}
               </span>
               <span className="text-[var(--color-ash)]">
-                [SCHEMATIC_v{project.year}]
+                [SCHEMATIC_v{project.year || "0"}]
               </span>
             </div>
 
@@ -225,7 +225,7 @@ const ProjectCard = memo(function ProjectCard({
           VIEW TACTICAL DATA <ArrowUpRight size={14} />
         </span>
         <span className="text-[10px] text-[var(--color-ash)]">
-          [{project.year}]
+          {project.year && `[${project.year}]`}
         </span>
       </div>
     </motion.article>
@@ -399,7 +399,7 @@ export default function EvaProjects() {
                     <Code2 size={16} />
                     <span>MAGI ANALYSIS // {selectedProject.id.toUpperCase()}</span>
                     <span className="text-[var(--color-ash)]">
-                      [{selectedProject.year}]
+                      {selectedProject.year && `[${selectedProject.year}]`}
                     </span>
                   </div>
                   <h3 className="font-display text-3xl font-extrabold text-white uppercase sm:text-4xl">

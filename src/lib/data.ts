@@ -12,6 +12,7 @@ export interface Project {
   outcome: string;
   technologies: string[];
   type: string;
+  /** Empty when unknown; the UI then shows the type alone. */
   year: string;
   color: string;
   github?: string;
@@ -123,43 +124,24 @@ export const PROJECTS: Project[] = [
 
   },
   {
-    id: "pasado-web",
+    id: "pasado",
     title: "Pasado",
-    subtitle: "Civil Service Exam reviewer",
+    subtitle: "Civil Service Exam reviewer · Web + Android",
     description:
-      "An offline-first reviewer for the Philippine Civil Service Exam: timed mock exams, drills, flashcards and math lessons, installable from the browser.",
+      "An offline-first reviewer for the Philippine Civil Service Exam: timed mock exams, drills, flashcards and math lessons. Install it from the browser or get the Android app.",
     problem:
       "Civil Service Exam reviewers are scattered PDFs and paid apps, and most don't work offline on the phones test-takers actually study on.",
     solution:
-      "One vanilla JavaScript app, packaged by a build script into an installable web app with a service worker that caches every file for offline use.",
+      "One vanilla JavaScript app, packaged by a build script into an installable offline web app (service worker + manifest) and wrapped with Capacitor for Android, which adds haptics, daily reminders and read-aloud.",
     outcome:
-      "Mock exams for both Professional and Subprofessional levels, explanations for every answer, a study plan and a math game, with progress kept on the device.",
-    technologies: ["JavaScript", "HTML", "CSS", "PWA"],
-    type: "Web Application",
+      "Mock exams for both Professional and Subprofessional levels, explanations for every answer, a study plan and a math game, in light and dark mode, with progress kept on the device.",
+    technologies: ["JavaScript", "PWA", "Capacitor", "Android"],
+    type: "Web + Mobile Application",
     year: "2026",
     color: "#2b4fa8",
-    github: "https://github.com/N0rrtthh/Pasado---CSC-Exam-Reviewer",
-    live: "https://n0rrtthh.github.io/Pasado---CSC-Exam-Reviewer/",
-    featured: true,
-  },
-  {
-    id: "pasado-mobile",
-    title: "Pasado for Android",
-    subtitle: "Offline exam reviewer app",
-    description:
-      "The same Pasado reviewer as a native Android app, built from the web codebase with Capacitor.",
-    problem:
-      "Test-takers study on their phones, often with patchy data, and want reminders without installing anything heavy.",
-    solution:
-      "Wrapped the web build with Capacitor and added native haptics, daily reminder notifications and read-aloud, detected at runtime so the web version runs the same code.",
-    outcome:
-      "A small offline APK that keeps every answer, score and study plan on the phone, with no account, ads or tracking.",
-    technologies: ["Capacitor", "JavaScript", "Android"],
-    type: "Mobile Application",
-    year: "2026",
-    color: "#c96f55",
-    github: "https://github.com/N0rrtthh/Pasado---CSC-Exam-Reviewer",
-    download: { label: "Download APK", href: "https://github.com/N0rrtthh/Pasado---CSC-Exam-Reviewer/releases/latest" },
+    github: "https://github.com/N0rrtthh/Pasado-CSC-Exam-Reviewer-App",
+    live: "https://n0rrtthh.github.io/Pasado-CSC-Exam-Reviewer-App/",
+    download: { label: "Download APK", href: "https://github.com/N0rrtthh/Pasado-CSC-Exam-Reviewer-App/releases/latest" },
     featured: true,
   },
   {
@@ -201,7 +183,7 @@ export const PROJECTS: Project[] = [
     color: "#8b5cf6",
     github: "https://github.com/N0rrtthh/WaveLength",
     live: "https://n0rrtthh.github.io/WaveLength/",
-    featured: false,
+    featured: true,
   },
   {
     id: "quick-attend",
@@ -220,6 +202,85 @@ export const PROJECTS: Project[] = [
     year: "2024",
     color: "#06b6d4",
     github: "https://github.com/N0rrtthh/Quick-Attend-Mobile",
+    live: "https://quick-attend-web-1dsail.flutterflow.app/",
+    featured: true,
+  },
+  {
+    id: "neon-smash",
+    title: "Neon Smash",
+    subtitle: "Arcade brick-breaker in Python",
+    description:
+      "A neon brick-breaker: bounce the ball off the paddle to clear the wall of blocks, with a title screen, player names and a top-scores leaderboard saved between runs.",
+    problem: "",
+    solution: "Built with Python and Pygame: paddle and ball physics, block collisions, a typed player name and a scoreboard kept in a local file.",
+    outcome: "",
+    technologies: ["Python", "Pygame"],
+    type: "Game",
+    year: "2023",
+    color: "#22d3ee",
+    github: "https://github.com/N0rrtthh/Neon-Smash",
+    featured: false,
+  },
+  {
+    id: "schedease",
+    title: "SchedEase",
+    subtitle: "Classroom scheduling prototype",
+    description:
+      "A clickable Figma prototype of an organizing system for simplifying classroom scheduling at Cavite State University, with sign-in and sign-up flows.",
+    problem: "",
+    solution: "",
+    outcome: "",
+    technologies: ["Figma", "Prototyping", "UI/UX"],
+    type: "UI/UX Prototype",
+    year: "",
+    color: "#16a34a",
+    live: "https://figma.fun/1LmgU7",
+    featured: false,
+  },
+  {
+    id: "quest-adventure-land",
+    title: "Quest of the Adventure Land",
+    subtitle: "Platformer game",
+    description: "A 2D platformer game developed in GDevelop.",
+    problem: "",
+    solution: "",
+    outcome: "",
+    technologies: ["GDevelop"],
+    type: "Game",
+    year: "",
+    color: "#f59e0b",
+    live: "https://shorturl.at/4yaOr",
+    featured: false,
+  },
+  {
+    id: "north",
+    title: "NORTH",
+    subtitle: "Web portfolio for motion graphics and animation",
+    description: "My first portfolio website: a showcase for motion graphics and animation work, built by hand in HTML, CSS and JavaScript.",
+    problem: "",
+    solution: "",
+    outcome: "",
+    technologies: ["HTML", "CSS", "JavaScript"],
+    type: "Web Application",
+    year: "2022",
+    color: "#ec4899",
+    live: "https://n0rrtthh.github.io/NORTH/",
+    featured: false,
+  },
+  {
+    id: "professional-portfolio",
+    title: "Professional Portfolio",
+    subtitle: "Recruiter-focused portfolio site",
+    description:
+      "The quieter companion to this site: projects, certifications and a generated resume, built for recruiters to scan fast.",
+    problem: "",
+    solution: "Built with Astro, with a live liquid-glass lens on the navigation pill, light and dark themes, and certifications managed from a JSON file.",
+    outcome: "",
+    technologies: ["Astro", "TypeScript", "CSS"],
+    type: "Web Application",
+    year: "2026",
+    color: "#f97316",
+    live: "https://n0rrtthh.github.io/Portfolio-Professional-Website/",
     featured: false,
   },
 ];
