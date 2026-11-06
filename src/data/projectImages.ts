@@ -9,6 +9,7 @@ import resumakerImg from "@/../public/projects/resumaker.webp";
 import pasadoImg from "@/../public/projects/pasado.webp";
 import neonSmashImg from "@/../public/projects/neon-smash.webp";
 import schedeaseImg from "@/../public/projects/schedease.webp";
+import questAdventureLandImg from "@/../public/projects/quest-adventure-land.webp";
 import northImg from "@/../public/projects/north.webp";
 import professionalPortfolioImg from "@/../public/projects/professional-portfolio.webp";
 import jasfocusImg from "@/../public/projects/jasfocus.webp";
@@ -45,6 +46,7 @@ export const PROJECT_IMAGES: Record<string, StaticImageData> = {
   pasado: pasadoImg,
   "neon-smash": neonSmashImg,
   schedease: schedeaseImg,
+  "quest-adventure-land": questAdventureLandImg,
   north: northImg,
   "professional-portfolio": professionalPortfolioImg,
   jasfocus: jasfocusImg,

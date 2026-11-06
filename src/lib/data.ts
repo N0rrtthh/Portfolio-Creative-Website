@@ -241,7 +241,7 @@ export const PROJECTS: Project[] = [
     id: "quest-adventure-land",
     title: "Quest of the Adventure Land",
     subtitle: "Platformer game",
-    description: "A 2D platformer game developed in GDevelop.",
+    description: "A 2D pixel-art platformer built in GDevelop: jump across grass platforms, dodge barrels and enemies, and collect coins to raise your score. Plays right in the browser.",
     problem: "",
     solution: "",
     outcome: "",
@@ -249,7 +249,7 @@ export const PROJECTS: Project[] = [
     type: "Game",
     year: "",
     color: "#f59e0b",
-    live: "https://shorturl.at/4yaOr",
+    live: "https://games.gdevelop-app.com/game-eb9d51d1-4b83-488c-822a-d9c32aeea689/index.html",
     featured: false,
   },
   {
@@ -307,8 +307,8 @@ export const PLAYGROUND: PlaygroundItem[] = [
     id: "quest-adventure-land",
     title: "Quest Adventure Land",
     description:
-      "A 2D adventure concept exploring tile-based world design, character progression, and quest systems in Godot.",
-    tags: ["Godot", "GDScript", "Concept"],
+      "A 2D pixel-art platformer built in GDevelop, with coins to collect, barrels and enemies to dodge, and a running score.",
+    tags: ["GDevelop", "Game"],
     color: "#8b5cf6",
   },
   {
